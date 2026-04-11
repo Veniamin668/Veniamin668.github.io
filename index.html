@@ -2,10 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ktoya? — macOS Hyper Portfolio Ultimate+</title>
+    <title>ktoya? — macOS Tahoe Ultra Pack</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Security-ish meta -->
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
@@ -38,6 +36,10 @@
 
             --noise-opacity: 0.12;
 
+            --tint-hue: 210deg;
+            --tint-sat: 80%;
+            --tint-light: 55%;
+
             scroll-behavior: smooth;
             color-scheme: dark;
         }
@@ -58,7 +60,6 @@
             --border-strong: rgba(129,140,248,0.8);
         }
 
-        /* macOS glass mode */
         body.macos-glass {
             --surface: rgba(15, 23, 42, 0.55);
             --surface-soft: rgba(15, 23, 42, 0.45);
@@ -66,16 +67,13 @@
             --bg: transparent;
         }
 
-        /* Lite mode: меньше blur, меньше теней, меньше шума */
         body.lite {
             --noise-opacity: 0.05;
             --elev-soft: 0 12px 30px rgba(0,0,0,0.7);
             --elev-card: 0 10px 24px rgba(0,0,0,0.7);
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -106,11 +104,24 @@
             opacity: 0.95;
             z-index: -3;
             transform-origin: center;
-            transition: transform 0.2s ease-out;
+            transition: transform 0.2s ease-out, filter 0.3s ease-out;
         }
 
         body.macos-glass .bg-gradient-overlay {
             opacity: 0.6;
+        }
+
+        .bg-tint-layer {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
+            pointer-events: none;
+            mix-blend-mode: soft-light;
+            background: radial-gradient(circle at 50% 0%,
+                hsla(var(--tint-hue), var(--tint-sat), var(--tint-light), 0.35),
+                transparent 60%);
+            opacity: 0.9;
+            transition: background 0.5s ease-out;
         }
 
         .noise-overlay {
@@ -1131,7 +1142,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: transform 0.15s ease;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
 
         .dock-item svg {
@@ -1140,7 +1151,26 @@
             fill: #fff;
         }
 
-        /* macOS window block */
+        .dock-item.active {
+            box-shadow: 0 10px 24px rgba(0,0,0,0.9);
+            transform: translateY(-4px) scale(1.1);
+        }
+
+        .dock-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            min-width: 14px;
+            height: 14px;
+            border-radius: 999px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .window-block {
             margin-top: 40px;
             border-radius: 20px;
@@ -1213,7 +1243,6 @@
             display: block;
         }
 
-        /* Control center */
         .control-center {
             position: fixed;
             top: 60px;
@@ -1258,7 +1287,15 @@
             border-color: transparent;
         }
 
-        /* Notification toast */
+        .cc-slider {
+            width: 100%;
+            margin-top: 4px;
+        }
+
+        .cc-slider input[type="range"] {
+            width: 100%;
+        }
+
         .toast {
             position: fixed;
             top: 16px;
@@ -1287,6 +1324,102 @@
             color: var(--text);
         }
 
+        .stage-manager {
+            position: fixed;
+            left: 10px;
+            top: 80px;
+            width: 120px;
+            border-radius: 18px;
+            background: rgba(15,23,42,0.92);
+            border: 1px solid var(--border-subtle);
+            padding: 8px 6px;
+            font-size: 11px;
+            color: var(--muted);
+            backdrop-filter: blur(18px) saturate(1.3);
+            -webkit-backdrop-filter: blur(18px) saturate(1.3);
+            z-index: 26;
+        }
+
+        .stage-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 6px;
+        }
+
+        .stage-item {
+            border-radius: 12px;
+            padding: 6px 6px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            background: rgba(15,23,42,0.9);
+            border: 1px solid transparent;
+        }
+
+        .stage-item.active {
+            border-color: var(--primary);
+            background: rgba(15,23,42,0.95);
+        }
+
+        .stage-item span {
+            display: block;
+            font-size: 11px;
+        }
+
+        .mission-control-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at top, rgba(15,23,42,0.9), rgba(3,7,18,0.98));
+            z-index: 70;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .mission-control-overlay.visible {
+            display: flex;
+        }
+
+        .mission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .mission-window {
+            border-radius: 18px;
+            background: rgba(15,23,42,0.9);
+            border: 1px solid var(--border-subtle);
+            padding: 10px 12px;
+            color: var(--muted);
+            font-size: 12px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.9);
+            transform: scale(0.8);
+            opacity: 0;
+            animation: missionIn 0.4s ease forwards;
+        }
+
+        .mission-window-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .mission-window-body {
+            font-size: 12px;
+        }
+
+        @keyframes missionIn {
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
         @keyframes heroIn {
             from { opacity: 0; transform: translateY(18px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -1310,6 +1443,9 @@
             .toc {
                 display: none;
             }
+            .stage-manager {
+                display: none;
+            }
         }
 
         @media (max-width: 640px) {
@@ -1330,6 +1466,7 @@
 
 <canvas id="bg-canvas"></canvas>
 <div class="bg-gradient-overlay" id="bg-overlay"></div>
+<div class="bg-tint-layer" id="bgTint"></div>
 <div class="noise-overlay"></div>
 <div class="spotlight" id="spotlight"></div>
 
@@ -1420,7 +1557,7 @@
                         GitHub
                     </a>
                     <span>·</span>
-                    <span>Shortcuts: G / P / S / C / T · Debug: Ctrl+Shift+D</span>
+                    <span>Shortcuts: G / P / S / C / T · Debug: Ctrl+Shift+D · Mission Control: M</span>
                 </div>
             </div>
 
@@ -1460,7 +1597,6 @@
             <div class="stack-chip">Long‑term maintainability</div>
         </div>
 
-        <!-- macOS window block -->
         <div class="window-block">
             <div class="window-header">
                 <div class="window-dots">
@@ -1481,7 +1617,7 @@
                 </div>
                 <div class="window-body-section" data-window-body="performance">
                     Performance is treated as a feature: reduced layout thrashing, GPU‑accelerated animations, lazy‑loaded
-                    assets, and a Lite mode that can be toggled when needed.
+                    assets, and a Lite mode that can be toggled when needed. An auto‑optimizer can reduce effects if FPS drops.
                 </div>
                 <div class="window-body-section" data-window-body="ui">
                     UI is dense but intentional: gradients, blur, and motion are tuned to feel like a desktop environment,
@@ -1641,7 +1777,7 @@
 
         <div class="projects-grid">
 
-            <article class="project-card" data-tilt>
+            <article class="project-card" data-tilt data-stage="Projects">
                 <div class="project-header">
                     <div class="project-icon">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -1665,7 +1801,7 @@
                 </div>
             </article>
 
-            <article class="project-card" data-tilt>
+            <article class="project-card" data-tilt data-stage="Projects">
                 <div class="project-header">
                     <div class="project-icon">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -1689,7 +1825,7 @@
                 </div>
             </article>
 
-            <article class="project-card" data-tilt>
+            <article class="project-card" data-tilt data-stage="Projects">
                 <div class="project-header">
                     <div class="project-icon">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -1748,7 +1884,7 @@
         <h2 class="section-title">Contact</h2>
         <p class="section-subtitle">Feel free to reach out.</p>
 
-        <div class="contact-card">
+        <div class="contact-card" data-stage="Contact">
             <div class="contact-card-inner">
                 <div class="contact-header">
                     <div class="contact-icon">
@@ -1810,11 +1946,20 @@
     <a href="#contact" data-section="contact">Contact</a>
 </div>
 
+<div class="stage-manager" id="stageManager">
+    <div class="stage-title">Stage Manager</div>
+    <div class="stage-item" data-target="#top"><span>Top</span></div>
+    <div class="stage-item" data-target="#projects"><span>Projects</span></div>
+    <div class="stage-item" data-target="#github"><span>ShitHub</span></div>
+    <div class="stage-item" data-target="#contact"><span>Contact</span></div>
+</div>
+
 <div class="debug-panel" id="debugPanel">
     <div class="debug-row"><span>FPS:</span><span id="fpsValue">0</span></div>
     <div class="debug-row"><span>Theme:</span><span id="themeValue">default</span></div>
     <div class="debug-row"><span>Glass:</span><span id="glassValue">off</span></div>
     <div class="debug-row"><span>Lite:</span><span id="liteValue">off</span></div>
+    <div class="debug-row"><span>AutoLite:</span><span id="autoLiteValue">idle</span></div>
 </div>
 
 <div class="dock" id="dock">
@@ -1824,8 +1969,12 @@
     <div class="dock-item" data-target="#projects" title="Projects">
         <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4V4Zm0 5h16v2H4V9Zm0 5h10v2H4v-2Z"/></svg>
     </div>
-    <div class="dock-item" data-target="#github" title="ShitHub">
+    <div class="dock-item" data-target="#github" title="GitHub">
         <svg viewBox="0 0 24 24"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.4 1.1 3 .8.1-.7.4-1.1.7-1.4-2.6-.3-5.3-1.3-5.3-5.8 0-1.1.4-2 1-2.8-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.8 1 .8-.2 1.6-.3 2.4-.3s1.6.1 2.4.3c2-1.3 2.8-1 2.8-1 .5 1.3.2 2.3.1 2.6.6.8 1 1.7 1 2.8 0 4.5-2.7 5.5-5.3 5.8.4.3.8 1 .8 2v3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5Z"/></svg>
+    </div>
+    <div class="dock-item" data-target="#contact" title="Contact">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v1.2l-10 5.6-10-5.6V6a2 2 0 0 1 2-2Zm-2 6.3 9.4 5.3a2 2 0 0 0 2 0L23 10.3V18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-7.7Z"/></svg>
+        <div class="dock-badge">1</div>
     </div>
 </div>
 
@@ -1842,12 +1991,45 @@
         <span>Glass (macOS)</span>
         <button class="cc-toggle-btn" data-cc="glass">Auto</button>
     </div>
+    <div class="cc-row">
+        <span>Brightness</span>
+    </div>
+    <div class="cc-slider">
+        <input type="range" id="brightnessSlider" min="70" max="120" value="100">
+    </div>
+    <div class="cc-row">
+        <span>Noise</span>
+    </div>
+    <div class="cc-slider">
+        <input type="range" id="noiseSlider" min="0" max="20" value="12">
+    </div>
 </div>
 
 <div class="toast" id="toast">
     <div class="toast-title">macOS glass mode</div>
     <div class="toast-body">
         Detected macOS‑style environment. Glass effects are enabled and blend with your wallpaper.
+    </div>
+</div>
+
+<div class="mission-control-overlay" id="missionControl">
+    <div class="mission-grid">
+        <div class="mission-window">
+            <div class="mission-window-title">Top</div>
+            <div class="mission-window-body">Hero, navigation, and quick access to everything.</div>
+        </div>
+        <div class="mission-window">
+            <div class="mission-window-title">Stack & Focus</div>
+            <div class="mission-window-body">Workflow, philosophy, and focus areas.</div>
+        </div>
+        <div class="mission-window">
+            <div class="mission-window-title">Projects</div>
+            <div class="mission-window-body">Selected work and open‑source contributions.</div>
+        </div>
+        <div class="mission-window">
+            <div class="mission-window-title">GitHub & Contact</div>
+            <div class="mission-window-body">Live stats and ways to reach out.</div>
+        </div>
     </div>
 </div>
 
@@ -1877,6 +2059,7 @@
     let w, h;
     let particleCount = 110;
     let liteMode = false;
+    let autoLiteState = 'idle';
 
     function resize() {
         w = canvas.width = window.innerWidth;
@@ -1955,7 +2138,6 @@
 
     document.querySelectorAll('.project-card, .contact-card').forEach(el => observer.observe(el));
 
-    // Tilt effect (disabled in Lite mode)
     function enableTilt() {
         document.querySelectorAll('[data-tilt]').forEach(card => {
             card.__tiltHandler = (e) => {
@@ -2016,6 +2198,10 @@
         tocLinks.forEach(link => {
             link.classList.toggle('active', link.getAttribute('data-section') === current);
         });
+        document.querySelectorAll('.stage-item').forEach(item => {
+            const target = item.getAttribute('data-target');
+            item.classList.toggle('active', target === '#' + current);
+        });
     }
 
     window.addEventListener('scroll', updateActiveNav);
@@ -2025,7 +2211,7 @@
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         const key = e.key.toLowerCase();
         if (key === 'g') {
-            document.getElementById('ShitHub').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('github').scrollIntoView({ behavior: 'smooth' });
         } else if (key === 'p') {
             document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
         } else if (key === 's') {
@@ -2120,6 +2306,8 @@
                 const el = document.querySelector(target);
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
             }
+            dockItems.forEach(d => d.classList.remove('active'));
+            item.classList.add('active');
         });
     });
 
@@ -2137,16 +2325,19 @@
     const themeValue = document.getElementById('themeValue');
     const glassValue = document.getElementById('glassValue');
     const liteValue = document.getElementById('liteValue');
+    const autoLiteValue = document.getElementById('autoLiteValue');
 
     function updateDebug() {
         themeValue.textContent = document.body.classList.contains('neon') ? 'neon' : 'default';
         glassValue.textContent = document.body.classList.contains('macos-glass') ? 'on' : 'off';
         liteValue.textContent = document.body.classList.contains('lite') ? 'on' : 'off';
+        autoLiteValue.textContent = autoLiteState;
     }
     updateDebug();
 
     let lastFrameTime = performance.now();
     let frameCount = 0;
+    let fpsHistory = [];
 
     function fpsLoop(now) {
         frameCount++;
@@ -2154,6 +2345,18 @@
         if (delta >= 1000) {
             const fps = Math.round((frameCount * 1000) / delta);
             fpsValue.textContent = fps;
+            fpsHistory.push(fps);
+            if (fpsHistory.length > 5) fpsHistory.shift();
+
+            const avg = fpsHistory.reduce((a,b)=>a+b,0) / fpsHistory.length;
+            if (!liteMode && avg < 35) {
+                autoLiteState = 'enabled';
+                liteToggle.click();
+            } else if (liteMode && avg > 50 && autoLiteState === 'enabled') {
+                autoLiteState = 'idle';
+            }
+            updateDebug();
+
             frameCount = 0;
             lastFrameTime = now;
         }
@@ -2174,7 +2377,6 @@
     }
     dockItems.forEach(item => item.addEventListener('click', vibrateShort));
 
-    // macOS window tabs
     document.querySelectorAll('.window-tab').forEach(tab => {
         tab.addEventListener('click', () => {
             const name = tab.getAttribute('data-window-tab');
@@ -2185,7 +2387,6 @@
         });
     });
 
-    // Control center
     const ccToggle = document.getElementById('ccToggle');
     const controlCenter = document.getElementById('controlCenter');
     const ccButtons = controlCenter.querySelectorAll('.cc-toggle-btn');
@@ -2224,6 +2425,50 @@
             }
         });
     });
+
+    const brightnessSlider = document.getElementById('brightnessSlider');
+    const noiseSlider = document.getElementById('noiseSlider');
+    const bgTint = document.getElementById('bgTint');
+
+    brightnessSlider.addEventListener('input', () => {
+        const val = brightnessSlider.value;
+        document.documentElement.style.setProperty('--tint-light', val + '%');
+    });
+
+    noiseSlider.addEventListener('input', () => {
+        const val = noiseSlider.value;
+        document.documentElement.style.setProperty('--noise-opacity', (val / 100).toString());
+    });
+
+    const stageManager = document.getElementById('stageManager');
+    stageManager.querySelectorAll('.stage-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const target = item.getAttribute('data-target');
+            const el = document.querySelector(target);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    const missionControl = document.getElementById('missionControl');
+    window.addEventListener('keydown', (e) => {
+        if (e.key.toLowerCase() === 'm') {
+            missionControl.classList.toggle('visible');
+        }
+        if (e.key === 'Escape' && missionControl.classList.contains('visible')) {
+            missionControl.classList.remove('visible');
+        }
+    });
+
+    // Fake dynamic wallpaper tint: use time of day to shift hue
+    (function updateTint() {
+        const hour = new Date().getHours();
+        let hue = 210;
+        if (hour >= 6 && hour < 12) hue = 200;
+        else if (hour >= 12 && hour < 18) hue = 220;
+        else if (hour >= 18 && hour < 22) hue = 260;
+        else hue = 230;
+        document.documentElement.style.setProperty('--tint-hue', hue + 'deg');
+    })();
 </script>
 
 </body>
