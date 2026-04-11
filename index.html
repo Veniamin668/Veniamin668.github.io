@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Veniamin668 — GitHub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #1e1e2f, #2a2a40, #3a3a55);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .card {
+            padding: 40px;
+            border-radius: 20px;
+            width: 420px;
+            max-width: 95%;
+            text-align: center;
+
+            /* Акрил */
+            background: rgba(255,255,255,0.10);
+            box-shadow: 0 0 25px rgba(0,0,0,0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+
+            animation: fadeIn 0.8s ease;
+        }
+
+        /* Fallback если blur не поддерживается */
+        @supports not ((backdrop-filter: blur(10px))) {
+            .card {
+                background: rgba(255,255,255,0.15);
+            }
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            font-size: 32px;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 25px;
+            font-size: 16px;
+            opacity: 0.85;
+            line-height: 1.4;
+        }
+
+        a {
+            display: block;
+            margin: 10px 0;
+            padding: 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-profile {
+            background: #4a6cf7;
+        }
+        .btn-profile:hover {
+            background: #3a58d8;
+        }
+
+        .btn-repo {
+            background: #f76c6c;
+        }
+        .btn-repo:hover {
+            background: #d85a5a;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>Veniamin668</h1>
+        <p>Добро пожаловать на мой GitHub сайт.  
+        Здесь находятся мои проекты, репозитории и разработки.</p>
+
+        <a class="btn-profile" href="https://github.com/Veniamin668" target="_blank">
+            Мой GitHub профиль
+        </a>
+
+        <a class="btn-repo" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">
+            GitHub Codespaces (репозиторий)
+        </a>
+    </div>
+</body>
+</html>
