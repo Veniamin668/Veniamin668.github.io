@@ -9,80 +9,255 @@
         :root {
             --bg: #000000;
             --surface: #0f0f0f;
-            --surface-variant: #1a1a1a;
+            --surface-variant: #171717;
 
             --primary: #ff1744;
             --primary-soft: #ff5252;
 
             --text: #ffffff;
-            --radius: 22px;
-            --elev: 0 6px 18px rgba(0,0,0,0.6);
+            --muted: #b3b3b3;
 
+            --radius-lg: 22px;
+            --radius-md: 16px;
+
+            --elev-soft: 0 10px 30px rgba(0,0,0,0.7);
+            --elev-card: 0 8px 24px rgba(0,0,0,0.65);
+
+            scroll-behavior: smooth;
             color-scheme: dark;
+        }
+
+        :root.light {
+            --bg: #f5f5f7;
+            --surface: #ffffff;
+            --surface-variant: #f0f0f3;
+
+            --primary: #ff1744;
+            --primary-soft: #ff5252;
+
+            --text: #111111;
+            --muted: #666666;
+
+            --elev-soft: 0 10px 30px rgba(0,0,0,0.08);
+            --elev-card: 0 8px 24px rgba(0,0,0,0.06);
+
+            color-scheme: light;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            font-family: "Inter", "Roboto", "Segoe UI", sans-serif;
-            background: var(--bg);
+            font-family: "Inter", "Roboto", "Segoe UI", system-ui, sans-serif;
+            background: radial-gradient(circle at top, #111 0, #000 55%, #000 100%);
             color: var(--text);
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
+        :root.light body {
+            background: radial-gradient(circle at top, #ffffff 0, #f5f5f7 55%, #f5f5f7 100%);
+        }
+
+        /* STICKY HEADER */
         header {
-            padding: 26px;
-            text-align: center;
-            font-size: 28px;
-            font-weight: 700;
-            background: rgba(15,15,15,0.9);
+            position: sticky;
+            top: 0;
+            z-index: 20;
             backdrop-filter: blur(18px);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            -webkit-backdrop-filter: blur(18px);
+            background: rgba(0,0,0,0.82);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        :root.light header {
+            background: rgba(245,245,247,0.9);
+            border-bottom-color: rgba(0,0,0,0.06);
+        }
+
+        .nav {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-left {
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            font-size: 18px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-right a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .nav-right a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.2s ease;
+        }
+
+        .nav-right a:hover::after {
+            width: 100%;
+        }
+
+        .theme-toggle {
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 6px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.04);
+            color: var(--muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        :root.light .theme-toggle {
+            border-color: rgba(0,0,0,0.12);
+            background: rgba(0,0,0,0.02);
+        }
+
+        .theme-toggle svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
         }
 
         .container {
             max-width: 980px;
-            margin: 40px auto;
-            padding: 20px;
+            margin: 40px auto 60px auto;
+            padding: 0 20px;
         }
 
         /* HERO */
         .hero {
-            background: var(--surface);
-            padding: 50px;
-            border-radius: var(--radius);
-            text-align: center;
-            box-shadow: var(--elev);
+            background: radial-gradient(circle at top left, rgba(255,23,68,0.18), transparent 55%),
+                        radial-gradient(circle at bottom right, rgba(255,255,255,0.06), transparent 55%),
+                        var(--surface);
+            padding: 40px 32px 46px 32px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--elev-soft);
             position: relative;
             overflow: hidden;
-            animation: fadeIn 0.8s ease;
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+            gap: 28px;
+            margin-top: 26px;
+            opacity: 0;
+            transform: translateY(18px);
+            animation: heroIn 0.8s ease forwards;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        :root.light .hero {
+            background: radial-gradient(circle at top left, rgba(255,23,68,0.12), transparent 55%),
+                        radial-gradient(circle at bottom right, rgba(0,0,0,0.04), transparent 55%),
+                        var(--surface);
+        }
+
+        .hero-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-title {
+            font-size: 40px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin: 0 0 10px 0;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin: 0 0 18px 0;
+        }
+
+        .hero-meta {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 22px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .hero-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .avatar-wrap {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            padding: 3px;
+            background: conic-gradient(from 210deg, #ff1744, #ff5252, #ff1744);
+            box-shadow: 0 0 40px rgba(255,23,68,0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        :root.light .avatar-wrap {
+            box-shadow: 0 0 30px rgba(255,23,68,0.25);
         }
 
         .avatar {
-            width: 140px;
-            height: 140px;
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            margin-bottom: 20px;
-            box-shadow: 0 0 25px rgba(255,23,68,0.35);
-            cursor: pointer;
-            transition: transform 0.25s ease;
+            background: #111;
         }
 
-        .avatar:hover {
-            transform: scale(1.05);
+        :root.light .avatar {
+            background: #f0f0f3;
         }
 
-        .hero h1 {
-            margin: 0;
-            font-size: 46px;
-            font-weight: 800;
-            letter-spacing: -1px;
+        .avatar-glow {
+            position: absolute;
+            inset: -18px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,23,68,0.18), transparent 60%);
+            opacity: 0.7;
+            pointer-events: none;
         }
 
-        .hero p {
-            opacity: 0.85;
+        .hero-tagline {
             margin-top: 16px;
-            font-size: 19px;
-            line-height: 1.6;
+            font-size: 14px;
+            color: var(--muted);
+            text-align: center;
         }
 
         /* BUTTONS */
@@ -90,85 +265,232 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin: 16px 10px;
-            padding: 14px 26px;
-            border-radius: var(--radius);
-            text-decoration: none;
-            color: var(--text);
-            font-weight: 600;
+            gap: 8px;
+            padding: 11px 20px;
+            border-radius: 999px;
+            border: none;
+            outline: none;
             cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            background: transparent;
             position: relative;
             overflow: hidden;
-            transition: transform 0.15s ease, background 0.15s ease;
+            transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
         }
 
         .btn-primary {
-            background: var(--primary);
-            box-shadow: 0 4px 12px rgba(255,23,68,0.45);
+            background: linear-gradient(135deg, var(--primary), var(--primary-soft));
+            box-shadow: 0 8px 22px rgba(255,23,68,0.55);
         }
+
         .btn-primary:hover {
-            background: var(--primary-soft);
             transform: translateY(-1px);
+            box-shadow: 0 10px 26px rgba(255,23,68,0.7);
         }
 
         .btn-secondary {
-            background: var(--surface-variant);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
         }
+
+        :root.light .btn-secondary {
+            background: rgba(0,0,0,0.02);
+            border-color: rgba(0,0,0,0.08);
+        }
+
         .btn-secondary:hover {
-            background: #2a2a2a;
+            background: rgba(255,255,255,0.06);
             transform: translateY(-1px);
         }
 
+        :root.light .btn-secondary:hover {
+            background: rgba(0,0,0,0.04);
+        }
+
+        .btn-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
         /* SECTIONS */
+        .section {
+            margin-top: 60px;
+        }
+
         .section-title {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
-            margin: 60px 0 24px 0;
+            margin-bottom: 10px;
+        }
+
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 22px;
         }
 
         /* PROJECT CARDS */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 20px;
+        }
+
         .project-card {
             background: var(--surface);
-            padding: 28px;
-            border-radius: var(--radius);
-            margin-bottom: 28px;
-            box-shadow: var(--elev);
-            transition: 0.25s;
+            border-radius: var(--radius-md);
+            padding: 20px 20px 18px 20px;
+            box-shadow: var(--elev-card);
             position: relative;
             overflow: hidden;
+            transform-style: preserve-3d;
+            transform: perspective(900px) rotateX(0deg) rotateY(0deg);
+            transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease, translate 0.25s ease;
+            opacity: 0;
+            translate: 0 14px;
+        }
+
+        :root.light .project-card {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
+
+        .project-card.visible {
+            opacity: 1;
+            translate: 0 0;
         }
 
         .project-card:hover {
-            transform: translateY(-4px);
             background: var(--surface-variant);
+            box-shadow: 0 14px 40px rgba(0,0,0,0.85);
         }
 
-        .project-card h3 {
-            margin: 0 0 12px 0;
-            font-size: 24px;
-            font-weight: 700;
+        :root.light .project-card:hover {
+            box-shadow: 0 14px 40px rgba(0,0,0,0.12);
         }
 
-        .project-card p {
-            opacity: 0.85;
-            margin: 0 0 16px 0;
-            font-size: 16px;
+        .project-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .project-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        :root.light .project-icon {
+            background: rgba(0,0,0,0.04);
+        }
+
+        .project-icon svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--muted);
+        }
+
+        .project-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .project-desc {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+
+        .project-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .project-link {
+            font-size: 13px;
+            color: var(--text);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .project-link svg {
+            width: 14px;
+            height: 14px;
         }
 
         /* CONTACT */
         .contact-card {
             background: var(--surface);
-            padding: 32px;
-            border-radius: var(--radius);
-            box-shadow: var(--elev);
+            border-radius: var(--radius-md);
+            padding: 24px 22px 22px 22px;
+            box-shadow: var(--elev-card);
             position: relative;
             overflow: hidden;
+            opacity: 0;
+            translate: 0 14px;
+            transition: opacity 0.25s ease, translate 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
         }
 
-        .contact-card p {
-            opacity: 0.85;
-            font-size: 17px;
-            margin-bottom: 20px;
+        :root.light .contact-card {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
+
+        .contact-card.visible {
+            opacity: 1;
+            translate: 0 0;
+        }
+
+        .contact-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .contact-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        :root.light .contact-icon {
+            background: rgba(0,0,0,0.04);
+        }
+
+        .contact-icon svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--muted);
+        }
+
+        .contact-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .contact-text {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 18px;
         }
 
         /* RIPPLE */
@@ -195,12 +517,47 @@
             transition: opacity 0.25s ease, transform 0.25s ease;
         }
 
+        /* FOOTER */
         footer {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 18px 20px 26px 20px;
+            font-size: 12px;
+            color: var(--muted);
             text-align: center;
-            opacity: 0.6;
-            margin-top: 60px;
-            padding: 20px;
-            font-size: 14px;
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+
+        :root.light footer {
+            border-top-color: rgba(0,0,0,0.06);
+        }
+
+        /* ANIMATIONS */
+        @keyframes heroIn {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 780px) {
+            .hero {
+                grid-template-columns: minmax(0, 1fr);
+                text-align: left;
+            }
+            .hero-right {
+                order: -1;
+                align-items: flex-start;
+            }
+            .hero-tagline {
+                text-align: left;
+            }
+            .nav-right a {
+                display: none;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .hero {
+                padding: 28px 22px 32px 22px;
+            }
         }
     </style>
 </head>
@@ -208,66 +565,232 @@
 <body>
 
 <header>
-    ktoya? — Developer Portfolio
+    <div class="nav">
+        <div class="nav-left">ktoya?</div>
+        <div class="nav-right">
+            <a href="#projects">Projects</a>
+            <a href="#contact">Contact</a>
+            <button class="theme-toggle" id="themeToggle" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 4a1 1 0 0 1 1 1v1.1a1 1 0 1 1-2 0V5a1 1 0 0 1 1-1Zm0 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm7-3a1 1 0 0 1 1 1 1 1 0 0 1-1 1h-1.1a1 1 0 1 1 0-2H19ZM7.1 11a1 1 0 0 1 0 2H6a1 1 0 1 1 0-2h1.1Zm9.19-4.24a1 1 0 0 1 1.41 0l.78.78a1 1 0 0 1-1.41 1.41l-.78-.78a1 1 0 0 1 0-1.41Zm-9.6 9.6a1 1 0 0 1 1.41 0l.78.78a1 1 0 0 1-1.41 1.41l-.78-.78a1 1 0 0 1 0-1.41Zm0-9.6.78.78A1 1 0 0 1 6.07 9.2l-.78-.78A1 1 0 0 1 6.7 7.01Zm9.6 9.6.78.78a1 1 0 0 1-1.41 1.41l-.78-.78a1 1 0 0 1 1.41-1.41ZM12 17a1 1 0 0 1 1 1v1.1a1 1 0 1 1-2 0V18a1 1 0 0 1 1-1Z"/>
+                </svg>
+                Theme
+            </button>
+        </div>
+    </div>
 </header>
 
 <div class="container">
 
     <!-- HERO -->
-    <div class="hero">
-        <img class="avatar" src="https://github.com/Veniamin668.png" alt="Avatar">
+    <section class="hero" id="top">
+        <div class="hero-left">
+            <h1 class="hero-title">ktoya?</h1>
+            <p class="hero-subtitle">
+                Developer focused on performance, clean interfaces, and modern web technologies.
+            </p>
+            <p class="hero-meta">
+                Building fast, minimalistic, and elegant digital experiences across desktop and web.
+            </p>
 
-        <h1>ktoya?</h1>
-        <p>Developer focused on performance, clean interfaces, and modern web technologies.  
-        Building fast, minimalistic, and elegant digital experiences.</p>
+            <div class="hero-buttons">
+                <a class="btn btn-primary" href="https://github.com/Veniamin668" target="_blank">
+                    <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.4 1.1 3 .8.1-.7.4-1.1.7-1.4-2.6-.3-5.3-1.3-5.3-5.8 0-1.1.4-2 1-2.8-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.8 1 .8-.2 1.6-.3 2.4-.3s1.6.1 2.4.3c2-1.3 2.8-1 2.8-1 .5 1.3.2 2.3.1 2.6.6.8 1 1.7 1 2.8 0 4.5-2.7 5.5-5.3 5.8.4.3.8 1 .8 2v3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5Z"/>
+                    </svg>
+                    GitHub Profile
+                </a>
 
-        <a class="btn btn-primary" href="https://github.com/Veniamin668" target="_blank">
-            ShitHub Profile
-        </a>
+                <a class="btn btn-secondary" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">
+                    <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 4h16v3H4V4Zm0 6h16v3H4v-3Zm0 6h10v3H4v-3Z"/>
+                    </svg>
+                    Codespaces Repo
+                </a>
+            </div>
+        </div>
 
-        <a class="btn btn-secondary" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">
-            Codespaces Repository
-        </a>
-    </div>
+        <div class="hero-right">
+            <div class="avatar-wrap">
+                <div class="avatar-glow"></div>
+                <img class="avatar" src="https://github.com/Veniamin668.png" alt="Avatar">
+            </div>
+            <div class="hero-tagline">
+                Based on GitHub profile avatar.
+            </div>
+        </div>
+    </section>
 
     <!-- PROJECTS -->
-    <h2 class="section-title">Projects</h2>
+    <section class="section" id="projects">
+        <h2 class="section-title">Projects</h2>
+        <p class="section-subtitle">Selected work and open‑source contributions.</p>
 
-    <div class="project-card" onclick="window.open('https://github.com/zen-browser/desktop','_blank')">
-        <h3>Zen Browser</h3>
-        <p>A modern, privacy‑focused browser with a clean, customizable interface.</p>
-        <a class="btn btn-primary" href="https://github.com/zen-browser/desktop" target="_blank">Open Repository</a>
-    </div>
+        <div class="projects-grid">
 
-    <div class="project-card" onclick="window.open('https://github.com/kukuruzka165/materialgram','_blank')">
-        <h3>Materialgram</h3>
-        <p>A messenger UI concept built with a modern design approach.</p>
-        <a class="btn btn-primary" href="https://github.com/kukuruzka165/materialgram" target="_blank">Open Repository</a>
-    </div>
+            <article class="project-card" data-tilt>
+                <div class="project-header">
+                    <div class="project-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M3 4h18v2H3V4Zm2 4h14v2H5V8Zm-2 4h18v2H3v-2Zm2 4h10v3H5v-3Z"/>
+                        </svg>
+                    </div>
+                    <div class="project-title">Zen Browser</div>
+                </div>
+                <p class="project-desc">
+                    A modern, privacy‑focused browser with a clean, customizable interface and a focus on user control.
+                </p>
+                <div class="project-footer">
+                    <span>Desktop browser project</span>
+                    <a class="project-link" href="https://github.com/zen-browser/desktop" target="_blank">
+                        Open Repository
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h5v2H7v10h10v-3h2v5H5V5Z"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
 
-    <div class="project-card" onclick="window.open('https://github.com/Veniamin668/gitlab_codespaces','_blank')">
-        <h3>Codespaces</h3>
-        <p>Lightweight development environment setup and workspace configuration.</p>
-        <a class="btn btn-primary" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">Open Repository</a>
-    </div>
+            <article class="project-card" data-tilt>
+                <div class="project-header">
+                    <div class="project-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 3a9 9 0 1 0 .001 18.001A9 9 0 0 0 12 3Zm0 2a7 7 0 0 1 5.48 11.38l-2.1-2.1A3.5 3.5 0 0 0 12 8.5V5Zm-1 0v3.5A3.5 3.5 0 0 0 8.5 12H5A7 7 0 0 1 11 5Zm-6 7h3.5A3.5 3.5 0 0 0 12 15.5V19a7 7 0 0 1-7-7Zm9 7v-3.5a3.5 3.5 0 0 0 2.5-2.5H19a7 7 0 0 1-5 6Z"/>
+                        </svg>
+                    </div>
+                    <div class="project-title">Materialgram</div>
+                </div>
+                <p class="project-desc">
+                    A messenger UI concept with a modern, polished design and a focus on clarity and usability.
+                </p>
+                <div class="project-footer">
+                    <span>Interface concept</span>
+                    <a class="project-link" href="https://github.com/kukuruzka165/materialgram" target="_blank">
+                        Open Repository
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h5v2H7v10h10v-3h2v5H5V5Z"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+
+            <article class="project-card" data-tilt>
+                <div class="project-header">
+                    <div class="project-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M4 4h16v3H4V4Zm0 6h16v3H4v-3Zm0 6h10v3H4v-3Z"/>
+                        </svg>
+                    </div>
+                    <div class="project-title">Codespaces</div>
+                </div>
+                <p class="project-desc">
+                    Lightweight development environment setup and workspace configuration for efficient coding workflows.
+                </p>
+                <div class="project-footer">
+                    <span>Dev environment</span>
+                    <a class="project-link" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">
+                        Open Repository
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h5v2H7v10h10v-3h2v5H5V5Z"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+
+        </div>
+    </section>
 
     <!-- CONTACT -->
-    <h2 class="section-title">Contact</h2>
+    <section class="section" id="contact">
+        <h2 class="section-title">Contact</h2>
+        <p class="section-subtitle">Feel free to reach out.</p>
 
-    <div class="contact-card">
-        <p>You can contact me anytime, but I may not respond immediately.</p>
+        <div class="contact-card">
+            <div class="contact-header">
+                <div class="contact-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 4h16a2 2 0 0 1 2 2v1.2l-10 5.6-10-5.6V6a2 2 0 0 1 2-2Zm-2 6.3 9.4 5.3a2 2 0 0 0 2 0L23 10.3V18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-7.7Z"/>
+                    </svg>
+                </div>
+                <div class="contact-title">Get in touch</div>
+            </div>
+            <p class="contact-text">
+                You can contact me anytime, but I may not respond immediately.
+            </p>
 
-        <!-- INSERT YOUR EMAIL HERE -->
-        <a class="btn btn-primary" href="mailto:venik1821@gmail.com">
-            Contact via Email
-        </a>
-    </div>
+            <!-- INSERT YOUR EMAIL HERE -->
+            <a class="btn btn-primary" href="mailto:venik1821@gmail.com">
+                <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 4h16a2 2 0 0 1 2 2v1.2l-10 5.6-10-5.6V6a2 2 0 0 1 2-2Zm-2 6.3 9.4 5.3a2 2 0 0 0 2 0L23 10.3V18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-7.7Z"/>
+                </svg>
+                Contact via Email
+            </a>
+        </div>
+    </section>
 
 </div>
 
 <footer>
     © 2026 ktoya? — All rights reserved
 </footer>
+
+<script>
+    // Theme toggle with localStorage
+    const root = document.documentElement;
+    const toggleBtn = document.getElementById('themeToggle');
+
+    function setTheme(mode) {
+        if (mode === 'light') {
+            root.classList.add('light');
+            localStorage.setItem('theme', 'light');
+        } else {
+            root.classList.remove('light');
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        setTheme('light');
+    }
+
+    toggleBtn.addEventListener('click', () => {
+        if (root.classList.contains('light')) {
+            setTheme('dark');
+        } else {
+            setTheme('light');
+        }
+    });
+
+    // IntersectionObserver for cards & contact
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.project-card, .contact-card').forEach(el => observer.observe(el));
+
+    // Simple tilt effect
+    document.querySelectorAll('[data-tilt]').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            const rotateX = (-y / rect.height) * 6;
+            const rotateY = (x / rect.width) * 6;
+            card.style.transform =
+                `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-2px)`;
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform =
+                'perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0)';
+        });
+    });
+</script>
 
 </body>
 </html>
