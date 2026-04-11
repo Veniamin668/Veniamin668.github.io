@@ -2,14 +2,14 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Veniamin668 — GitHub</title>
+    <title>Veniamin668 вЂ” GitHub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
         body {
             margin: 0;
             font-family: "Segoe UI", sans-serif;
-            background: linear-gradient(135deg, #1e1e2f, #2a2a40, #3a3a55);
+            background: linear-gradient(135deg, #141421, #1c1c2b, #2a2a3d);
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -25,19 +25,20 @@
             max-width: 95%;
             text-align: center;
 
-            /* Акрил */
-            background: rgba(255,255,255,0.10);
-            box-shadow: 0 0 25px rgba(0,0,0,0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            /* РўС‘РјРЅС‹Р№ Р°РєСЂРёР» */
+            background: rgba(20, 20, 30, 0.55);
+            box-shadow: 0 0 25px rgba(0,0,0,0.5);
+
+            backdrop-filter: blur(14px) saturate(140%);
+            -webkit-backdrop-filter: blur(14px) saturate(140%);
 
             animation: fadeIn 0.8s ease;
         }
 
-        /* Fallback если blur не поддерживается */
+        /* Fallback РµСЃР»Рё blur РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚СЃСЏ */
         @supports not ((backdrop-filter: blur(10px))) {
             .card {
-                background: rgba(255,255,255,0.15);
+                background: rgba(20, 20, 30, 0.75);
             }
         }
 
@@ -89,15 +90,15 @@
 <body>
     <div class="card">
         <h1>Veniamin668</h1>
-        <p>Добро пожаловать на мой GitHub сайт.  
-        Здесь находятся мои проекты, репозитории и разработки.</p>
+        <p>Р”РѕР±СЂРѕ РїРѕР¶Р°Р»РѕРІР°С‚СЊ РЅР° РјРѕР№ GitHub СЃР°Р№С‚.  
+        Р—РґРµСЃСЊ РЅР°С…РѕРґСЏС‚СЃСЏ РјРѕРё РїСЂРѕРµРєС‚С‹, СЂРµРїРѕР·РёС‚РѕСЂРёРё Рё СЂР°Р·СЂР°Р±РѕС‚РєРё.</p>
 
         <a class="btn-profile" href="https://github.com/Veniamin668" target="_blank">
-            Мой GitHub профиль
+            РњРѕР№ GitHub РїСЂРѕС„РёР»СЊ
         </a>
 
         <a class="btn-repo" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">
-            GitHub Codespaces (репозиторий)
+            GitHub Codespaces (СЂРµРїРѕР·РёС‚РѕСЂРёР№)
         </a>
     </div>
 </body>
