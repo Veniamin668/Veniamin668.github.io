@@ -1,83 +1,124 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Veniamin668 — GitHub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
+        :root {
+            --bg: #121212;
+            --card: rgba(255,255,255,0.08);
+            --accent: #8ab4f8;
+            --accent2: #ff8a80;
+            --text: #ffffff;
+            --radius: 22px;
+        }
+
         body {
             margin: 0;
-            font-family: "Segoe UI", sans-serif;
-            background: linear-gradient(135deg, #141421, #1c1c2b, #2a2a3d);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
+            font-family: "Roboto", "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 0;
+        }
+
+        header {
+            padding: 20px;
+            text-align: center;
+            font-size: 26px;
+            font-weight: 600;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
             padding: 20px;
         }
 
-        .card {
-            padding: 40px;
-            border-radius: 20px;
-            width: 420px;
-            max-width: 95%;
+        .profile-card {
+            background: var(--card);
+            padding: 30px;
+            border-radius: var(--radius);
             text-align: center;
-
-            /* Тёмный акрил */
-            background: rgba(20, 20, 30, 0.55);
-            box-shadow: 0 0 25px rgba(0,0,0,0.5);
-
             backdrop-filter: blur(14px) saturate(140%);
             -webkit-backdrop-filter: blur(14px) saturate(140%);
-
             animation: fadeIn 0.8s ease;
         }
 
-        /* Fallback если blur не поддерживается */
-        @supports not ((backdrop-filter: blur(10px))) {
-            .card {
-                background: rgba(20, 20, 30, 0.75);
-            }
-        }
-
-        h1 {
-            margin-bottom: 10px;
+        .profile-card h1 {
+            margin: 0;
             font-size: 32px;
             font-weight: 600;
         }
 
-        p {
-            margin-bottom: 25px;
-            font-size: 16px;
+        .profile-card p {
             opacity: 0.85;
-            line-height: 1.4;
+            margin-top: 10px;
+            font-size: 16px;
         }
 
-        a {
-            display: block;
-            margin: 10px 0;
-            padding: 14px;
-            border-radius: 12px;
+        .btn {
+            display: inline-block;
+            margin: 12px 8px;
+            padding: 14px 22px;
+            border-radius: var(--radius);
             text-decoration: none;
-            color: white;
-            font-weight: bold;
+            color: var(--text);
+            font-weight: 600;
             transition: 0.2s;
         }
 
-        .btn-profile {
-            background: #4a6cf7;
+        .btn-primary {
+            background: var(--accent);
         }
-        .btn-profile:hover {
-            background: #3a58d8;
+        .btn-primary:hover {
+            background: #6ea2f5;
         }
 
-        .btn-repo {
-            background: #f76c6c;
+        .btn-secondary {
+            background: var(--accent2);
         }
-        .btn-repo:hover {
-            background: #d85a5a;
+        .btn-secondary:hover {
+            background: #ff6f6a;
+        }
+
+        .projects {
+            margin-top: 40px;
+        }
+
+        .projects h2 {
+            font-size: 26px;
+            margin-bottom: 20px;
+        }
+
+        .project-card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            transition: 0.25s;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255,255,255,0.12);
+        }
+
+        .project-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+        }
+
+        .project-card p {
+            opacity: 0.85;
+            margin: 0 0 12px 0;
         }
 
         @keyframes fadeIn {
@@ -88,18 +129,57 @@
 </head>
 
 <body>
-    <div class="card">
-        <h1>Veniamin668</h1>
-        <p>Добро пожаловать на мой GitHub сайт.  
-        Здесь находятся мои проекты, репозитории и разработки.</p>
 
-        <a class="btn-profile" href="https://github.com/Veniamin668" target="_blank">
-            Мой GitHub профиль
+<header>
+    Material You — Veniamin668
+</header>
+
+<div class="container">
+
+    <div class="profile-card">
+        <h1>Veniamin668</h1>
+        <p>Developer, creator, and enthusiast.  
+        Explore my GitHub projects and repositories.</p>
+
+        <a class="btn btn-primary" href="https://github.com/Veniamin668" target="_blank">
+            GitHub Profile
         </a>
 
-        <a class="btn-repo" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">
-            GitHub Codespaces (репозиторий)
+        <a class="btn btn-secondary" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">
+            GitHub Codespaces Repo
         </a>
     </div>
+
+    <div class="projects">
+        <h2>Projects</h2>
+
+        <div class="project-card">
+            <h3>GitHub Codespaces</h3>
+            <p>A lightweight environment setup and development workspace.</p>
+            <a class="btn btn-primary" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">
+                Open Repository
+            </a>
+        </div>
+
+        <div class="project-card">
+            <h3>Materialgram</h3>
+            <p>Material You styled UI concept for a modern messenger.</p>
+            <a class="btn btn-primary" href="#" target="_blank">
+                Coming Soon
+            </a>
+        </div>
+
+        <div class="project-card">
+            <h3>Zen</h3>
+            <p>Minimalistic UI experiment with smooth animations.</p>
+            <a class="btn btn-primary" href="#" target="_blank">
+                Coming Soon
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
 </body>
 </html>
