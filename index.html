@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ktoya? — macOS Hyper Portfolio Ultimate</title>
+    <title>ktoya? — macOS Hyper Portfolio Ultimate+</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Security-ish meta (частично, остальное на сервере) -->
+    <!-- Security-ish meta -->
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
@@ -58,12 +58,19 @@
             --border-strong: rgba(129,140,248,0.8);
         }
 
-        /* macOS glass mode (для Safari / macOS / Zen и т.п.) */
+        /* macOS glass mode */
         body.macos-glass {
             --surface: rgba(15, 23, 42, 0.55);
             --surface-soft: rgba(15, 23, 42, 0.45);
             --surface-strong: rgba(15, 23, 42, 0.65);
             --bg: transparent;
+        }
+
+        /* Lite mode: меньше blur, меньше теней, меньше шума */
+        body.lite {
+            --noise-opacity: 0.05;
+            --elev-soft: 0 12px 30px rgba(0,0,0,0.7);
+            --elev-card: 0 10px 24px rgba(0,0,0,0.7);
         }
 
         * {
@@ -83,7 +90,6 @@
             background: transparent;
         }
 
-        /* BACKGROUND LAYERS */
         #bg-canvas {
             position: fixed;
             inset: 0;
@@ -130,7 +136,6 @@
             transition: opacity 0.3s ease-out;
         }
 
-        /* HEADER (macOS style) */
         header {
             position: sticky;
             top: 0;
@@ -143,6 +148,11 @@
 
         body.macos-glass header {
             background: rgba(15,23,42,0.55);
+        }
+
+        body.lite header {
+            backdrop-filter: blur(12px) saturate(1.2);
+            -webkit-backdrop-filter: blur(12px) saturate(1.2);
         }
 
         .nav {
@@ -232,7 +242,15 @@
             width: 100%;
         }
 
-        .theme-toggle {
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle,
+        .lite-toggle,
+        .cc-toggle {
             border-radius: 999px;
             border: 1px solid var(--border-subtle);
             background: rgba(15,23,42,0.9);
@@ -245,7 +263,9 @@
             cursor: pointer;
         }
 
-        .theme-toggle span {
+        .theme-toggle span,
+        .lite-toggle span,
+        .cc-toggle span {
             font-size: 12px;
         }
 
@@ -255,7 +275,6 @@
             padding: 0 20px 40px 20px;
         }
 
-        /* HERO */
         .hero {
             background:
                 radial-gradient(circle at top left, rgba(248,113,113,0.22), transparent 55%),
@@ -280,6 +299,11 @@
 
         body.macos-glass .hero {
             background: var(--surface);
+        }
+
+        body.lite .hero {
+            backdrop-filter: blur(16px) saturate(1.2);
+            -webkit-backdrop-filter: blur(16px) saturate(1.2);
         }
 
         .hero::before {
@@ -434,7 +458,6 @@
             text-align: center;
         }
 
-        /* BUTTONS */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -500,7 +523,6 @@
             fill: currentColor;
         }
 
-        /* SECTIONS */
         .section {
             margin-top: 64px;
         }
@@ -541,7 +563,6 @@
             100% { transform: translateX(260%); }
         }
 
-        /* BIG DESCRIPTION BLOCK */
         .big-description {
             background: var(--surface-soft);
             border: 1px solid var(--border-strong);
@@ -555,6 +576,11 @@
             overflow: hidden;
             backdrop-filter: blur(24px) saturate(1.4);
             -webkit-backdrop-filter: blur(24px) saturate(1.4);
+        }
+
+        body.lite .big-description {
+            backdrop-filter: blur(14px) saturate(1.2);
+            -webkit-backdrop-filter: blur(14px) saturate(1.2);
         }
 
         .big-description::before {
@@ -571,7 +597,6 @@
             z-index: 1;
         }
 
-        /* STACK CHIPS */
         .stack-chips {
             display: flex;
             flex-wrap: wrap;
@@ -588,7 +613,6 @@
             background: rgba(15,23,42,0.9);
         }
 
-        /* FOCUS AREAS */
         .focus-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -608,6 +632,11 @@
             -webkit-backdrop-filter: blur(18px) saturate(1.3);
         }
 
+        body.lite .focus-card {
+            backdrop-filter: blur(10px) saturate(1.1);
+            -webkit-backdrop-filter: blur(10px) saturate(1.1);
+        }
+
         .focus-title {
             font-size: 15px;
             font-weight: 600;
@@ -615,7 +644,6 @@
             color: var(--text);
         }
 
-        /* SKILLS MATRIX */
         .skills-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -666,7 +694,6 @@
             transition: width 0.8s ease-out;
         }
 
-        /* TIMELINE */
         .timeline {
             margin-top: 18px;
             border-left: 1px dashed var(--border-subtle);
@@ -699,7 +726,6 @@
             color: var(--muted);
         }
 
-        /* FAQ */
         .faq-list {
             margin-top: 18px;
         }
@@ -744,7 +770,6 @@
             padding-bottom: 10px;
         }
 
-        /* PROJECT CARDS */
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -766,6 +791,11 @@
             border: 1px solid var(--border-subtle);
             backdrop-filter: blur(18px) saturate(1.3);
             -webkit-backdrop-filter: blur(18px) saturate(1.3);
+        }
+
+        body.lite .project-card {
+            backdrop-filter: blur(10px) saturate(1.1);
+            -webkit-backdrop-filter: blur(10px) saturate(1.1);
         }
 
         .project-card::before {
@@ -792,6 +822,10 @@
 
         .project-card:hover::before {
             opacity: 0.35;
+        }
+
+        body.lite .project-card:hover {
+            box-shadow: 0 16px 40px rgba(0,0,0,0.85);
         }
 
         .project-header {
@@ -850,7 +884,6 @@
             height: 14px;
         }
 
-        /* GITHUB STATS */
         .gh-stats-grid {
             display: grid;
             grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
@@ -878,7 +911,6 @@
             background: #020617;
         }
 
-        /* CONTACT */
         .contact-card {
             background: var(--surface-soft);
             border-radius: var(--radius-md);
@@ -892,6 +924,11 @@
             border: 1px solid var(--border-subtle);
             backdrop-filter: blur(18px) saturate(1.3);
             -webkit-backdrop-filter: blur(18px) saturate(1.3);
+        }
+
+        body.lite .contact-card {
+            backdrop-filter: blur(10px) saturate(1.1);
+            -webkit-backdrop-filter: blur(10px) saturate(1.1);
         }
 
         .contact-card::before {
@@ -949,7 +986,6 @@
             margin-bottom: 18px;
         }
 
-        /* RIPPLE */
         .btn::after,
         .project-card::after,
         .contact-card::after,
@@ -973,7 +1009,6 @@
             transition: opacity 0.25s ease, transform 0.25s ease;
         }
 
-        /* BACK TO TOP BUTTON */
         .back-to-top {
             position: fixed;
             right: 20px;
@@ -991,7 +1026,6 @@
             transform: translateY(0);
         }
 
-        /* FLOATING TOC */
         .toc {
             position: fixed;
             right: 20px;
@@ -1025,7 +1059,6 @@
             color: var(--text);
         }
 
-        /* DEBUG PANEL */
         .debug-panel {
             position: fixed;
             left: 20px;
@@ -1050,7 +1083,6 @@
             justify-content: space-between;
         }
 
-        /* FOOTER */
         footer {
             border-top: 1px solid var(--border-subtle);
             padding: 18px 20px 26px 20px;
@@ -1074,7 +1106,6 @@
             color: var(--text);
         }
 
-        /* DOCK (macOS style) */
         .dock {
             position: fixed;
             left: 50%;
@@ -1109,7 +1140,153 @@
             fill: #fff;
         }
 
-        /* ANIMATIONS */
+        /* macOS window block */
+        .window-block {
+            margin-top: 40px;
+            border-radius: 20px;
+            background: var(--surface-soft);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--elev-card);
+            overflow: hidden;
+            backdrop-filter: blur(18px) saturate(1.3);
+            -webkit-backdrop-filter: blur(18px) saturate(1.3);
+        }
+
+        body.lite .window-block {
+            backdrop-filter: blur(10px) saturate(1.1);
+            -webkit-backdrop-filter: blur(10px) saturate(1.1);
+        }
+
+        .window-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: rgba(15,23,42,0.9);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .window-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .window-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+        }
+
+        .window-dot.red { background: #ff5f57; }
+        .window-dot.yellow { background: #febc2e; }
+        .window-dot.green { background: #28c840; }
+
+        .window-tabs {
+            display: flex;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .window-tab {
+            padding: 4px 10px;
+            border-radius: 999px;
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .window-tab.active {
+            background: rgba(15,23,42,0.9);
+            color: var(--text);
+        }
+
+        .window-body {
+            padding: 14px 16px 16px 16px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .window-body-section {
+            display: none;
+        }
+
+        .window-body-section.active {
+            display: block;
+        }
+
+        /* Control center */
+        .control-center {
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            width: 260px;
+            background: rgba(15,23,42,0.96);
+            border-radius: 18px;
+            border: 1px solid var(--border-subtle);
+            padding: 10px 12px 12px 12px;
+            font-size: 12px;
+            color: var(--muted);
+            backdrop-filter: blur(18px) saturate(1.3);
+            -webkit-backdrop-filter: blur(18px) saturate(1.3);
+            z-index: 50;
+            display: none;
+        }
+
+        .control-center.visible {
+            display: block;
+        }
+
+        .cc-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .cc-toggle-btn {
+            border-radius: 999px;
+            border: 1px solid var(--border-subtle);
+            padding: 3px 8px;
+            cursor: pointer;
+            background: rgba(15,23,42,0.9);
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .cc-toggle-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-soft));
+            color: #fff;
+            border-color: transparent;
+        }
+
+        /* Notification toast */
+        .toast {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            min-width: 220px;
+            max-width: 280px;
+            background: rgba(15,23,42,0.96);
+            border-radius: 14px;
+            border: 1px solid var(--border-subtle);
+            padding: 10px 12px;
+            font-size: 12px;
+            color: var(--muted);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.9);
+            display: none;
+            z-index: 60;
+        }
+
+        .toast.visible {
+            display: block;
+        }
+
+        .toast-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
         @keyframes heroIn {
             from { opacity: 0; transform: translateY(18px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -1176,16 +1353,23 @@
             <a href="#projects" data-section="projects">Projects</a>
             <a href="#github" data-section="github">GitHub</a>
             <a href="#contact" data-section="contact">Contact</a>
-            <button class="theme-toggle" id="themeToggle" type="button">
-                <span>Theme</span>
-            </button>
+            <div class="nav-controls">
+                <button class="lite-toggle" id="liteToggle" type="button">
+                    <span>Lite</span>
+                </button>
+                <button class="theme-toggle" id="themeToggle" type="button">
+                    <span>Theme</span>
+                </button>
+                <button class="cc-toggle" id="ccToggle" type="button">
+                    <span>Control</span>
+                </button>
+            </div>
         </div>
     </div>
 </header>
 
 <div class="container">
 
-    <!-- HERO -->
     <section class="hero" id="top">
         <div class="hero-inner">
             <div class="hero-left">
@@ -1215,7 +1399,7 @@
 
                     <a class="btn btn-secondary" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">
                         <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M4 4h16v3H4V4Zm0 6h16v3H4v-3Zm0 6h10v3H4v-3Z"/>
+                            <path d="M4 4h16v2H4V4Zm2 4h14v2H6V8Zm-2 4h18v2H4v-2Zm2 4h10v3H6v-3Z"/>
                         </svg>
                         GitLab for Codespaces
                     </a>
@@ -1255,7 +1439,6 @@
 
     <div class="section-divider"></div>
 
-    <!-- STACK / WORKFLOW -->
     <section class="section" id="stack">
         <h2 class="section-title">Workflow & philosophy</h2>
         <p class="section-subtitle">How I approach development and system setups.</p>
@@ -1276,11 +1459,40 @@
             <div class="stack-chip">Readable UI structure</div>
             <div class="stack-chip">Long‑term maintainability</div>
         </div>
+
+        <!-- macOS window block -->
+        <div class="window-block">
+            <div class="window-header">
+                <div class="window-dots">
+                    <div class="window-dot red"></div>
+                    <div class="window-dot yellow"></div>
+                    <div class="window-dot green"></div>
+                </div>
+                <div class="window-tabs">
+                    <div class="window-tab active" data-window-tab="overview">Overview</div>
+                    <div class="window-tab" data-window-tab="performance">Performance</div>
+                    <div class="window-tab" data-window-tab="ui">UI details</div>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="window-body-section active" data-window-body="overview">
+                    A macOS‑style window that summarizes how everything fits together: minimal configs, clear structure,
+                    and a focus on predictable behavior across environments.
+                </div>
+                <div class="window-body-section" data-window-body="performance">
+                    Performance is treated as a feature: reduced layout thrashing, GPU‑accelerated animations, lazy‑loaded
+                    assets, and a Lite mode that can be toggled when needed.
+                </div>
+                <div class="window-body-section" data-window-body="ui">
+                    UI is dense but intentional: gradients, blur, and motion are tuned to feel like a desktop environment,
+                    not just a web page. macOS‑style glass integrates with your wallpaper where possible.
+                </div>
+            </div>
+        </div>
     </section>
 
     <div class="section-divider"></div>
 
-    <!-- FOCUS AREAS -->
     <section class="section" id="focus">
         <h2 class="section-title">Focus areas</h2>
         <p class="section-subtitle">What I care about when building things.</p>
@@ -1306,7 +1518,6 @@
 
     <div class="section-divider"></div>
 
-    <!-- SKILLS MATRIX -->
     <section class="section" id="skills">
         <h2 class="section-title">Skills matrix</h2>
         <p class="section-subtitle">A quick overview of what I work with.</p>
@@ -1364,7 +1575,6 @@
 
     <div class="section-divider"></div>
 
-    <!-- TIMELINE -->
     <section class="section" id="timeline">
         <h2 class="section-title">Timeline</h2>
         <p class="section-subtitle">A simplified view of how my setup and focus evolved.</p>
@@ -1395,7 +1605,6 @@
 
     <div class="section-divider"></div>
 
-    <!-- FAQ -->
     <section class="section" id="faq">
         <h2 class="section-title">FAQ</h2>
         <p class="section-subtitle">Some quick answers.</p>
@@ -1426,7 +1635,6 @@
 
     <div class="section-divider"></div>
 
-    <!-- PROJECTS -->
     <section class="section" id="projects">
         <h2 class="section-title">Projects</h2>
         <p class="section-subtitle">Selected work and open‑source contributions.</p>
@@ -1510,7 +1718,6 @@
 
     <div class="section-divider"></div>
 
-    <!-- GITHUB STATS -->
     <section class="section" id="github">
         <h2 class="section-title">GitHub activity</h2>
         <p class="section-subtitle">Live stats generated from my GitHub profile.</p>
@@ -1537,7 +1744,6 @@
 
     <div class="section-divider"></div>
 
-    <!-- CONTACT -->
     <section class="section" id="contact">
         <h2 class="section-title">Contact</h2>
         <p class="section-subtitle">Feel free to reach out.</p>
@@ -1583,7 +1789,6 @@
     <div>© 2026 ktoya? — All rights reserved</div>
 </footer>
 
-<!-- BACK TO TOP BUTTON -->
 <a href="#top" class="back-to-top" id="backToTop">
     <button class="btn btn-secondary" type="button">
         <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -1593,7 +1798,6 @@
     </button>
 </a>
 
-<!-- FLOATING TOC -->
 <div class="toc" id="toc">
     <div class="toc-title">Sections</div>
     <a href="#top" data-section="top">Top</a>
@@ -1606,14 +1810,13 @@
     <a href="#contact" data-section="contact">Contact</a>
 </div>
 
-<!-- DEBUG PANEL -->
 <div class="debug-panel" id="debugPanel">
     <div class="debug-row"><span>FPS:</span><span id="fpsValue">0</span></div>
     <div class="debug-row"><span>Theme:</span><span id="themeValue">default</span></div>
     <div class="debug-row"><span>Glass:</span><span id="glassValue">off</span></div>
+    <div class="debug-row"><span>Lite:</span><span id="liteValue">off</span></div>
 </div>
 
-<!-- DOCK -->
 <div class="dock" id="dock">
     <div class="dock-item" data-target="#top" title="Top">
         <svg viewBox="0 0 24 24"><path d="M12 4 4 12h5v8h6v-8h5L12 4Z"/></svg>
@@ -1623,6 +1826,28 @@
     </div>
     <div class="dock-item" data-target="#github" title="GitHub">
         <svg viewBox="0 0 24 24"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.4 1.1 3 .8.1-.7.4-1.1.7-1.4-2.6-.3-5.3-1.3-5.3-5.8 0-1.1.4-2 1-2.8-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.8 1 .8-.2 1.6-.3 2.4-.3s1.6.1 2.4.3c2-1.3 2.8-1 2.8-1 .5 1.3.2 2.3.1 2.6.6.8 1 1.7 1 2.8 0 4.5-2.7 5.5-5.3 5.8.4.3.8 1 .8 2v3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5Z"/></svg>
+    </div>
+</div>
+
+<div class="control-center" id="controlCenter">
+    <div class="cc-row">
+        <span>Lite mode</span>
+        <button class="cc-toggle-btn" data-cc="lite">Off</button>
+    </div>
+    <div class="cc-row">
+        <span>Neon theme</span>
+        <button class="cc-toggle-btn" data-cc="neon">Off</button>
+    </div>
+    <div class="cc-row">
+        <span>Glass (macOS)</span>
+        <button class="cc-toggle-btn" data-cc="glass">Auto</button>
+    </div>
+</div>
+
+<div class="toast" id="toast">
+    <div class="toast-title">macOS glass mode</div>
+    <div class="toast-body">
+        Detected macOS‑style environment. Glass effects are enabled and blend with your wallpaper.
     </div>
 </div>
 
@@ -1637,14 +1862,21 @@
 
         if (isMac && (isSafari || isZen || isFirefox)) {
             document.body.classList.add('macos-glass');
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.classList.add('visible');
+                setTimeout(() => toast.classList.remove('visible'), 3500);
+            }
         }
     })();
 
-    // Background particles
+    // Background particles with Lite mode support
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
     let w, h;
+    let particleCount = 110;
+    let liteMode = false;
 
     function resize() {
         w = canvas.width = window.innerWidth;
@@ -1667,7 +1899,7 @@
         }
     }
 
-    createParticles(110);
+    createParticles(particleCount);
 
     function draw() {
         ctx.clearRect(0, 0, w, h);
@@ -1696,7 +1928,6 @@
     }
     draw();
 
-    // Parallax for gradient overlay + spotlight
     const overlay = document.getElementById('bg-overlay');
     const spotlight = document.getElementById('spotlight');
     window.addEventListener('mousemove', (e) => {
@@ -1713,7 +1944,6 @@
         spotlight.style.opacity = 0;
     });
 
-    // IntersectionObserver for cards & contact
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -1725,24 +1955,40 @@
 
     document.querySelectorAll('.project-card, .contact-card').forEach(el => observer.observe(el));
 
-    // Simple tilt effect
-    document.querySelectorAll('[data-tilt]').forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-            const rotateX = (-y / rect.height) * 6;
-            const rotateY = (x / rect.width) * 6;
-            card.style.transform =
-                `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-2px)`;
+    // Tilt effect (disabled in Lite mode)
+    function enableTilt() {
+        document.querySelectorAll('[data-tilt]').forEach(card => {
+            card.__tiltHandler = (e) => {
+                if (liteMode) return;
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                const rotateX = (-y / rect.height) * 6;
+                const rotateY = (x / rect.width) * 6;
+                card.style.transform =
+                    `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-2px)`;
+            };
+            card.__tiltLeave = () => {
+                card.style.transform =
+                    'perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0)';
+            };
+            card.addEventListener('mousemove', card.__tiltHandler);
+            card.addEventListener('mouseleave', card.__tiltLeave);
         });
-        card.addEventListener('mouseleave', () => {
+    }
+    enableTilt();
+
+    function disableTilt() {
+        document.querySelectorAll('[data-tilt]').forEach(card => {
+            if (card.__tiltHandler) {
+                card.removeEventListener('mousemove', card.__tiltHandler);
+                card.removeEventListener('mouseleave', card.__tiltLeave);
+            }
             card.style.transform =
                 'perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0)';
         });
-    });
+    }
 
-    // Back to top visibility
     const backToTop = document.getElementById('backToTop');
     window.addEventListener('scroll', () => {
         if (window.scrollY > 260) {
@@ -1752,7 +1998,6 @@
         }
     });
 
-    // Scroll spy + TOC
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-right a[data-section]');
     const tocLinks = document.querySelectorAll('.toc a[data-section]');
@@ -1776,7 +2021,6 @@
     window.addEventListener('scroll', updateActiveNav);
     updateActiveNav();
 
-    // Keyboard shortcuts
     window.addEventListener('keydown', (e) => {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         const key = e.key.toLowerCase();
@@ -1793,7 +2037,6 @@
         }
     });
 
-    // Konami code → neon mode
     const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
     let konamiIndex = 0;
 
@@ -1803,22 +2046,39 @@
             konamiIndex++;
             if (konamiIndex === konami.length) {
                 document.body.classList.toggle('neon');
-                konamiIndex = 0;
                 updateDebug();
+                updateControlCenterButtons();
+                konamiIndex = 0;
             }
         } else {
             konamiIndex = 0;
         }
     });
 
-    // Theme toggle button
     const themeToggle = document.getElementById('themeToggle');
     themeToggle.addEventListener('click', () => {
         document.body.classList.toggle('neon');
         updateDebug();
+        updateControlCenterButtons();
     });
 
-    // FAQ accordion
+    const liteToggle = document.getElementById('liteToggle');
+    liteToggle.addEventListener('click', () => {
+        liteMode = !liteMode;
+        document.body.classList.toggle('lite', liteMode);
+        if (liteMode) {
+            particleCount = 60;
+            createParticles(particleCount);
+            disableTilt();
+        } else {
+            particleCount = 110;
+            createParticles(particleCount);
+            enableTilt();
+        }
+        updateDebug();
+        updateControlCenterButtons();
+    });
+
     document.querySelectorAll('.faq-item').forEach(item => {
         const header = item.querySelector('.faq-header');
         header.addEventListener('click', () => {
@@ -1828,7 +2088,6 @@
         });
     });
 
-    // Skills bars animation
     const skillsObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -1843,7 +2102,6 @@
 
     document.querySelectorAll('.skills-card').forEach(card => skillsObserver.observe(card));
 
-    // Dock hover scaling
     const dockItems = document.querySelectorAll('.dock-item');
     dockItems.forEach(item => {
         item.addEventListener('mousemove', (e) => {
@@ -1865,7 +2123,6 @@
         });
     });
 
-    // TOC click
     document.querySelectorAll('.toc a').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
@@ -1875,27 +2132,27 @@
         });
     });
 
-    // Debug panel + FPS
     const debugPanel = document.getElementById('debugPanel');
     const fpsValue = document.getElementById('fpsValue');
     const themeValue = document.getElementById('themeValue');
     const glassValue = document.getElementById('glassValue');
+    const liteValue = document.getElementById('liteValue');
 
     function updateDebug() {
         themeValue.textContent = document.body.classList.contains('neon') ? 'neon' : 'default';
         glassValue.textContent = document.body.classList.contains('macos-glass') ? 'on' : 'off';
+        liteValue.textContent = document.body.classList.contains('lite') ? 'on' : 'off';
     }
     updateDebug();
 
     let lastFrameTime = performance.now();
     let frameCount = 0;
-    let fps = 0;
 
     function fpsLoop(now) {
         frameCount++;
         const delta = now - lastFrameTime;
         if (delta >= 1000) {
-            fps = Math.round((frameCount * 1000) / delta);
+            const fps = Math.round((frameCount * 1000) / delta);
             fpsValue.textContent = fps;
             frameCount = 0;
             lastFrameTime = now;
@@ -1910,7 +2167,6 @@
         }
     });
 
-    // Haptic feedback (mobile)
     function vibrateShort() {
         if (navigator.vibrate) {
             navigator.vibrate(10);
@@ -1918,6 +2174,56 @@
     }
     dockItems.forEach(item => item.addEventListener('click', vibrateShort));
 
+    // macOS window tabs
+    document.querySelectorAll('.window-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const name = tab.getAttribute('data-window-tab');
+            document.querySelectorAll('.window-tab').forEach(t => t.classList.toggle('active', t === tab));
+            document.querySelectorAll('.window-body-section').forEach(sec => {
+                sec.classList.toggle('active', sec.getAttribute('data-window-body') === name);
+            });
+        });
+    });
+
+    // Control center
+    const ccToggle = document.getElementById('ccToggle');
+    const controlCenter = document.getElementById('controlCenter');
+    const ccButtons = controlCenter.querySelectorAll('.cc-toggle-btn');
+
+    ccToggle.addEventListener('click', () => {
+        controlCenter.classList.toggle('visible');
+    });
+
+    function updateControlCenterButtons() {
+        ccButtons.forEach(btn => {
+            const type = btn.getAttribute('data-cc');
+            if (type === 'lite') {
+                btn.classList.toggle('active', liteMode);
+                btn.textContent = liteMode ? 'On' : 'Off';
+            } else if (type === 'neon') {
+                const neon = document.body.classList.contains('neon');
+                btn.classList.toggle('active', neon);
+                btn.textContent = neon ? 'On' : 'Off';
+            } else if (type === 'glass') {
+                const glass = document.body.classList.contains('macos-glass');
+                btn.textContent = glass ? 'On' : 'Auto';
+            }
+        });
+    }
+    updateControlCenterButtons();
+
+    ccButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const type = btn.getAttribute('data-cc');
+            if (type === 'lite') {
+                liteToggle.click();
+            } else if (type === 'neon') {
+                themeToggle.click();
+            } else if (type === 'glass') {
+                // glass is auto; button just shows state
+            }
+        });
+    });
 </script>
 
 </body>
