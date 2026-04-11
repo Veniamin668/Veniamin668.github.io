@@ -2,17 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Veniamin668 — GitHub</title>
+    <title>Veniamin668 — Material You</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
         :root {
-            --bg: #121212;
-            --card: rgba(255,255,255,0.08);
-            --accent: #8ab4f8;
-            --accent2: #ff8a80;
+            --bg: #0f0f0f;
+            --surface: rgba(255,255,255,0.08);
+            --surface-hover: rgba(255,255,255,0.12);
+            --primary: #8ab4f8;
+            --secondary: #ff8a80;
             --text: #ffffff;
             --radius: 22px;
+            --elev: 0 4px 12px rgba(0,0,0,0.4);
         }
 
         body {
@@ -20,17 +22,16 @@
             font-family: "Roboto", "Segoe UI", sans-serif;
             background: var(--bg);
             color: var(--text);
-            padding: 0;
         }
 
         header {
-            padding: 20px;
+            padding: 22px;
             text-align: center;
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 600;
             background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             border-bottom: 1px solid rgba(255,255,255,0.08);
         }
 
@@ -41,10 +42,11 @@
         }
 
         .profile-card {
-            background: var(--card);
-            padding: 30px;
+            background: var(--surface);
+            padding: 32px;
             border-radius: var(--radius);
             text-align: center;
+            box-shadow: var(--elev);
             backdrop-filter: blur(14px) saturate(140%);
             -webkit-backdrop-filter: blur(14px) saturate(140%);
             animation: fadeIn 0.8s ease;
@@ -52,14 +54,14 @@
 
         .profile-card h1 {
             margin: 0;
-            font-size: 32px;
-            font-weight: 600;
+            font-size: 34px;
+            font-weight: 700;
         }
 
         .profile-card p {
             opacity: 0.85;
-            margin-top: 10px;
-            font-size: 16px;
+            margin-top: 12px;
+            font-size: 17px;
         }
 
         .btn {
@@ -74,51 +76,55 @@
         }
 
         .btn-primary {
-            background: var(--accent);
+            background: var(--primary);
         }
         .btn-primary:hover {
             background: #6ea2f5;
         }
 
         .btn-secondary {
-            background: var(--accent2);
+            background: var(--secondary);
         }
         .btn-secondary:hover {
             background: #ff6f6a;
         }
 
         .projects {
-            margin-top: 40px;
+            margin-top: 45px;
         }
 
         .projects h2 {
             font-size: 26px;
             margin-bottom: 20px;
+            font-weight: 600;
         }
 
         .project-card {
-            background: var(--card);
-            padding: 20px;
+            background: var(--surface);
+            padding: 22px;
             border-radius: var(--radius);
-            margin-bottom: 20px;
+            margin-bottom: 22px;
             transition: 0.25s;
+            box-shadow: var(--elev);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
 
         .project-card:hover {
             transform: translateY(-4px);
-            background: rgba(255,255,255,0.12);
+            background: var(--surface-hover);
         }
 
         .project-card h3 {
             margin: 0 0 10px 0;
-            font-size: 20px;
+            font-size: 22px;
+            font-weight: 600;
         }
 
         .project-card p {
             opacity: 0.85;
             margin: 0 0 12px 0;
+            font-size: 15px;
         }
 
         @keyframes fadeIn {
@@ -139,14 +145,14 @@
     <div class="profile-card">
         <h1>Veniamin668</h1>
         <p>Developer, creator, and enthusiast.  
-        Explore my GitHub projects and repositories.</p>
+        Explore my Material You styled ShitHub projects.</p>
 
         <a class="btn btn-primary" href="https://github.com/Veniamin668" target="_blank">
-            GitHub Profile
+            ShitHub Profile
         </a>
 
         <a class="btn btn-secondary" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">
-            GitHub Codespaces Repo
+            ShitHub Codespaces Repo
         </a>
     </div>
 
@@ -154,26 +160,26 @@
         <h2>Projects</h2>
 
         <div class="project-card">
-            <h3>GitHub Codespaces</h3>
-            <p>A lightweight environment setup and development workspace.</p>
-            <a class="btn btn-primary" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">
+            <h3>Zen Browser</h3>
+            <p>A modern, privacy‑focused browser with a clean UI.</p>
+            <a class="btn btn-primary" href="https://github.com/zen-browser/desktop" target="_blank">
                 Open Repository
             </a>
         </div>
 
         <div class="project-card">
             <h3>Materialgram</h3>
-            <p>Material You styled UI concept for a modern messenger.</p>
-            <a class="btn btn-primary" href="#" target="_blank">
-                Coming Soon
+            <p>A Material You styled messenger UI concept.</p>
+            <a class="btn btn-primary" href="https://github.com/kukuruzka165/materialgram" target="_blank">
+                Open Repository
             </a>
         </div>
 
         <div class="project-card">
-            <h3>Zen</h3>
-            <p>Minimalistic UI experiment with smooth animations.</p>
-            <a class="btn btn-primary" href="#" target="_blank">
-                Coming Soon
+            <h3>ShitHub Codespaces</h3>
+            <p>Lightweight development environment setup.</p>
+            <a class="btn btn-primary" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">
+                Open Repository
             </a>
         </div>
 
