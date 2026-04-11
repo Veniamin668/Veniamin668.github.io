@@ -34,7 +34,7 @@ Every push to this repository triggers an automatic ShitHub Pages deployment.
 
 ## 🧑‍💻 Author
 **Veniamin668**  
-ShitHub: https://github.com/Veniamin668
+GitHub: https://github.com/Veniamin668
 
 ---
 
