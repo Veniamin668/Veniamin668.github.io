@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ktoya? — Developer Portfolio</title>
+    <title>ktoya? — Developer Portfolio (Ultimate)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
@@ -23,8 +23,24 @@
             --elev-soft: 0 18px 45px rgba(0,0,0,0.9);
             --elev-card: 0 12px 32px rgba(0,0,0,0.85);
 
+            --border-subtle: rgba(148,163,184,0.25);
+            --border-strong: rgba(148,163,184,0.4);
+
             scroll-behavior: smooth;
             color-scheme: dark;
+        }
+
+        body.neon {
+            --bg: #020617;
+            --surface: #020617;
+            --surface-variant: #020617;
+            --primary: #22d3ee;
+            --primary-soft: #a855f7;
+            --text: #e5e7eb;
+            --muted: #9ca3af;
+            --border-subtle: rgba(56,189,248,0.4);
+            --border-strong: rgba(129,140,248,0.8);
+            background: radial-gradient(circle at top, #0f172a 0, #020617 55%, #020617 100%);
         }
 
         * {
@@ -39,11 +55,11 @@
             overflow-x: hidden;
         }
 
-        /* BACKGROUND PARTICLES */
+        /* BACKGROUND PARTICLES + PARALLAX */
         #bg-canvas {
             position: fixed;
             inset: 0;
-            z-index: -2;
+            z-index: -3;
         }
 
         .bg-gradient-overlay {
@@ -53,7 +69,9 @@
                 radial-gradient(circle at top left, rgba(239,68,68,0.18), transparent 55%),
                 radial-gradient(circle at bottom right, rgba(59,130,246,0.18), transparent 55%);
             opacity: 0.9;
-            z-index: -1;
+            z-index: -2;
+            transform-origin: center;
+            transition: transform 0.2s ease-out;
         }
 
         /* STICKY HEADER */
@@ -64,7 +82,7 @@
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
             background: rgba(3,7,18,0.9);
-            border-bottom: 1px solid rgba(148,163,184,0.25);
+            border-bottom: 1px solid var(--border-subtle);
         }
 
         .nav {
@@ -94,6 +112,7 @@
             text-decoration: none;
             font-size: 14px;
             position: relative;
+            padding-bottom: 2px;
         }
 
         .nav-right a::after {
@@ -108,6 +127,14 @@
         }
 
         .nav-right a:hover::after {
+            width: 100%;
+        }
+
+        .nav-right a.active {
+            color: var(--text);
+        }
+
+        .nav-right a.active::after {
             width: 100%;
         }
 
@@ -135,6 +162,23 @@
             opacity: 0;
             transform: translateY(18px);
             animation: heroIn 0.8s ease forwards;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            background: conic-gradient(from 210deg, rgba(248,113,113,0.4), rgba(59,130,246,0.4), transparent, transparent);
+            opacity: 0.25;
+            mix-blend-mode: screen;
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 1;
         }
 
         .hero-left {
@@ -173,9 +217,9 @@
             font-size: 11px;
             padding: 4px 10px;
             border-radius: 999px;
-            border: 1px solid rgba(148,163,184,0.4);
+            border: 1px solid var(--border-strong);
             color: var(--muted);
-            background: rgba(15,23,42,0.7);
+            background: rgba(15,23,42,0.9);
         }
 
         .hero-buttons {
@@ -205,6 +249,11 @@
             justify-content: center;
         }
 
+        body.neon .avatar-wrap {
+            background: conic-gradient(from 210deg, #22d3ee, #a855f7, #22d3ee);
+            box-shadow: 0 0 40px rgba(56,189,248,0.6);
+        }
+
         .avatar {
             width: 100%;
             height: 100%;
@@ -220,6 +269,10 @@
             background: radial-gradient(circle, rgba(248,113,113,0.18), transparent 60%);
             opacity: 0.7;
             pointer-events: none;
+        }
+
+        body.neon .avatar-glow {
+            background: radial-gradient(circle, rgba(56,189,248,0.25), transparent 60%);
         }
 
         .hero-tagline {
@@ -255,14 +308,22 @@
             box-shadow: 0 8px 22px rgba(248,113,113,0.55);
         }
 
+        body.neon .btn-primary {
+            box-shadow: 0 0 30px rgba(56,189,248,0.7);
+        }
+
         .btn-primary:hover {
             transform: translateY(-1px);
             box-shadow: 0 10px 26px rgba(248,113,113,0.7);
         }
 
+        body.neon .btn-primary:hover {
+            box-shadow: 0 0 40px rgba(56,189,248,0.9);
+        }
+
         .btn-secondary {
             background: rgba(15,23,42,0.9);
-            border: 1px solid rgba(148,163,184,0.4);
+            border: 1px solid var(--border-strong);
         }
 
         .btn-secondary:hover {
@@ -296,34 +357,53 @@
         .section-divider {
             height: 1px;
             margin: 40px 0 0 0;
-            background: linear-gradient(90deg, transparent, rgba(148,163,184,0.5), transparent);
+            background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+            position: relative;
+            overflow: hidden;
         }
 
-        /* SKILLS */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 14px;
+        .section-divider::before {
+            content: "";
+            position: absolute;
+            width: 120px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            left: -120px;
+            top: 0;
+            animation: dividerGlow 4s linear infinite;
         }
 
-        .skill-pill {
+        @keyframes dividerGlow {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(260%); }
+        }
+
+        /* BIG DESCRIPTION BLOCK */
+        .big-description {
             background: rgba(15,23,42,0.9);
-            border-radius: 999px;
-            padding: 8px 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
+            border: 1px solid var(--border-strong);
+            padding: 22px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.6;
             color: var(--muted);
-            border: 1px solid rgba(148,163,184,0.4);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.65);
+            position: relative;
+            overflow: hidden;
         }
 
-        .skill-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--primary);
-            box-shadow: 0 0 10px rgba(248,113,113,0.8);
+        .big-description::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top left, rgba(248,113,113,0.18), transparent 60%);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .big-description-inner {
+            position: relative;
+            z-index: 1;
         }
 
         /* PROJECT CARDS */
@@ -345,6 +425,19 @@
             transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease, translate 0.25s ease;
             opacity: 0;
             translate: 0 14px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .project-card::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(248,113,113,0.4), rgba(59,130,246,0.4));
+            opacity: 0;
+            mix-blend-mode: screen;
+            transition: opacity 0.25s ease;
+            pointer-events: none;
         }
 
         .project-card.visible {
@@ -355,6 +448,10 @@
         .project-card:hover {
             background: var(--surface-variant);
             box-shadow: 0 18px 50px rgba(0,0,0,0.95);
+        }
+
+        .project-card:hover::before {
+            opacity: 0.35;
         }
 
         .project-header {
@@ -414,33 +511,6 @@
             height: 14px;
         }
 
-        /* STATS CARDS */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 16px 16px 14px 16px;
-            box-shadow: var(--elev-card);
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            font-size: 13px;
-        }
-
-        .stat-label {
-            color: var(--muted);
-        }
-
-        .stat-value {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
         /* GITHUB STATS IMAGES */
         .gh-stats-grid {
             display: grid;
@@ -451,7 +521,7 @@
         .gh-stats-grid img {
             width: 100%;
             border-radius: 16px;
-            border: 1px solid rgba(148,163,184,0.4);
+            border: 1px solid var(--border-strong);
             background: #020617;
         }
 
@@ -460,6 +530,13 @@
             grid-template-columns: minmax(0, 1fr);
             gap: 16px;
             margin-top: 16px;
+        }
+
+        .gh-row img {
+            width: 100%;
+            border-radius: 16px;
+            border: 1px solid var(--border-strong);
+            background: #020617;
         }
 
         /* CONTACT */
@@ -473,6 +550,23 @@
             opacity: 0;
             translate: 0 14px;
             transition: opacity 0.25s ease, translate 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .contact-card::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(248,113,113,0.4), rgba(59,130,246,0.4));
+            opacity: 0.2;
+            mix-blend-mode: screen;
+            pointer-events: none;
+        }
+
+        .contact-card-inner {
+            position: relative;
+            z-index: 1;
         }
 
         .contact-card.visible {
@@ -538,13 +632,46 @@
             transition: opacity 0.25s ease, transform 0.25s ease;
         }
 
+        /* BACK TO TOP BUTTON */
+        .back-to-top {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 30;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
         /* FOOTER */
         footer {
-            border-top: 1px solid rgba(148,163,184,0.25);
+            border-top: 1px solid var(--border-subtle);
             padding: 18px 20px 26px 20px;
             font-size: 12px;
             color: var(--muted);
             text-align: center;
+        }
+
+        .footer-links {
+            margin-bottom: 6px;
+        }
+
+        .footer-links a {
+            color: var(--muted);
+            text-decoration: none;
+            margin: 0 8px;
+            font-size: 12px;
+        }
+
+        .footer-links a:hover {
+            color: var(--text);
         }
 
         /* ANIMATIONS */
@@ -584,16 +711,17 @@
 <body>
 
 <canvas id="bg-canvas"></canvas>
-<div class="bg-gradient-overlay"></div>
+<div class="bg-gradient-overlay" id="bg-overlay"></div>
 
 <header>
     <div class="nav">
         <div class="nav-left">ktoya?</div>
         <div class="nav-right">
-            <a href="#projects">Projects</a>
-            <a href="#stack">Stack</a>
-            <a href="#github">GitHub</a>
-            <a href="#contact">Contact</a>
+            <a href="#top" data-section="top">Top</a>
+            <a href="#stack" data-section="stack">Stack</a>
+            <a href="#projects" data-section="projects">Projects</a>
+            <a href="#github" data-section="github">GitHub</a>
+            <a href="#contact" data-section="contact">Contact</a>
         </div>
     </div>
 </header>
@@ -602,76 +730,70 @@
 
     <!-- HERO -->
     <section class="hero" id="top">
-        <div class="hero-left">
-            <h1 class="hero-title">ktoya?</h1>
-            <p class="hero-subtitle">
-                Developer focused on performance, clean interfaces, and modern web technologies.
-            </p>
-            <p class="hero-meta">
-                Building fast, minimalistic, and elegant digital experiences across desktop and web.
-            </p>
+        <div class="hero-inner">
+            <div class="hero-left">
+                <h1 class="hero-title">ktoya?</h1>
+                <p class="hero-subtitle">
+                    Developer focused on performance, clean interfaces, and modern web technologies.
+                </p>
+                <p class="hero-meta">
+                    Building fast, minimalistic, and elegant digital experiences across desktop and web.
+                </p>
 
-            <div class="hero-badges">
-                <span class="badge">Core 2 Duo enjoyer</span>
-                <span class="badge">Windows 11 minimalism</span>
-                <span class="badge">UNIX‑style workflows</span>
+                <div class="hero-badges">
+                    <span class="badge">Clean setups</span>
+                    <span class="badge">No‑bloat philosophy</span>
+                    <span class="badge">Long‑term stability</span>
+                </div>
+
+                <div class="hero-buttons">
+                    <a class="btn btn-primary" href="https://github.com/Veniamin668" target="_blank">
+                        <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.4 1.1 3 .8.1-.7.4-1.1.7-1.4-2.6-.3-5.3-1.3-5.3-5.8 0-1.1.4-2 1-2.8-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.8 1 .8-.2 1.6-.3 2.4-.3s1.6.1 2.4.3c2-1.3 2.8-1 2.8-1 .5 1.3.2 2.3.1 2.6.6.8 1 1.7 1 2.8 0 4.5-2.7 5.5-5.3 5.8.4.3.8 1 .8 2v3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5Z"/>
+                        </svg>
+                        GitHub Profile
+                    </a>
+
+                    <a class="btn btn-secondary" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">
+                        <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M4 4h16v3H4V4Zm0 6h16v3H4v-3Zm0 6h10v3H4v-3Z"/>
+                        </svg>
+                        GitLab for Codespaces
+                    </a>
+                </div>
             </div>
 
-            <div class="hero-buttons">
-                <a class="btn btn-primary" href="https://github.com/Veniamin668" target="_blank">
-                    <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.4 1.1 3 .8.1-.7.4-1.1.7-1.4-2.6-.3-5.3-1.3-5.3-5.8 0-1.1.4-2 1-2.8-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.8 1 .8-.2 1.6-.3 2.4-.3s1.6.1 2.4.3c2-1.3 2.8-1 2.8-1 .5 1.3.2 2.3.1 2.6.6.8 1 1.7 1 2.8 0 4.5-2.7 5.5-5.3 5.8.4.3.8 1 .8 2v3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5Z"/>
-                    </svg>
-                    GitHub Profile
-                </a>
-
-                <a class="btn btn-secondary" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">
-                    <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M4 4h16v3H4V4Zm0 6h16v3H4v-3Zm0 6h10v3H4v-3Z"/>
-                    </svg>
-                    Codespaces Repo
-                </a>
-            </div>
-        </div>
-
-        <div class="hero-right">
-            <div class="avatar-wrap">
-                <div class="avatar-glow"></div>
-                <img class="avatar" src="https://github.com/Veniamin668.png" alt="Avatar">
-            </div>
-            <div class="hero-tagline">
-                Based on GitHub profile avatar.
+            <div class="hero-right">
+                <div class="avatar-wrap">
+                    <div class="avatar-glow"></div>
+                    <img class="avatar" src="https://github.com/Veniamin668.png" alt="Avatar">
+                </div>
+                <div class="hero-tagline">
+                    Based on GitHub profile avatar.
+                </div>
             </div>
         </div>
     </section>
 
     <div class="section-divider"></div>
 
-    <!-- STACK / SKILLS -->
+    <!-- STACK / WORKFLOW -->
     <section class="section" id="stack">
-        <h2 class="section-title">Stack & workflow</h2>
-        <p class="section-subtitle">Tools and technologies I enjoy working with.</p>
+        <h2 class="section-title">Workflow & philosophy</h2>
+        <p class="section-subtitle">How I approach development and system setups.</p>
 
-        <div class="skills-grid">
-            <div class="skill-pill">
-                <span class="skill-dot"></span> JavaScript / TypeScript
-            </div>
-            <div class="skill-pill">
-                <span class="skill-dot"></span> HTML / CSS / Responsive UI
-            </div>
-            <div class="skill-pill">
-                <span class="skill-dot"></span> Git / GitHub
-            </div>
-            <div class="skill-pill">
-                <span class="skill-dot"></span> Bindoj 11 tuning
-            </div>
-            <div class="skill-pill">
-                <span class="skill-dot"></span> UNIX‑style CLI tools
-            </div>
-            <div class="skill-pill">
-                <span class="skill-dot"></span> Minimalistic system setups
+        <div class="big-description">
+            <div class="big-description-inner">
+                I build clean, efficient, and minimalistic development environments focused on stability, speed, and clarity.
+                My workflow is centered around reproducible setups, lightweight tooling, and a strict “no‑bloat” philosophy.
+                Every configuration is designed to be portable, transparent, and optimized for long‑term use, so that tools
+                never get in the way of actually building things.
             </div>
         </div>
+
+        <a class="btn btn-primary" style="margin-top: 16px; padding: 14px 28px; font-size: 15px;" href="#github">
+            Explore My Workflow
+        </a>
     </section>
 
     <div class="section-divider"></div>
@@ -690,14 +812,15 @@
                             <path d="M3 4h18v2H3V4Zm2 4h14v2H5V8Zm-2 4h18v2H3v-2Zm2 4h10v3H5v-3Z"/>
                         </svg>
                     </div>
-                    <div class="project-title">Zen Browser</div>
+                    <div class="project-title">GitLab for Codespaces</div>
                 </div>
                 <p class="project-desc">
-                    A modern, privacy‑focused browser with a clean, customizable interface and a focus on user control.
+                    A custom GitLab‑powered development environment designed to work seamlessly with GitHub Codespaces workflows,
+                    focusing on reproducibility, clarity, and minimal configuration overhead.
                 </p>
                 <div class="project-footer">
-                    <span>Desktop browser project</span>
-                    <a class="project-link" href="https://github.com/zen-browser/desktop" target="_blank">
+                    <span>Dev environment</span>
+                    <a class="project-link" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">
                         Open Repository
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h5v2H7v10h10v-3h2v5H5V5Z"/>
@@ -716,7 +839,8 @@
                     <div class="project-title">Materialgram</div>
                 </div>
                 <p class="project-desc">
-                    A messenger UI concept with a modern, polished design and a focus on clarity and usability.
+                    A messenger UI concept with a modern, polished design and a focus on clarity and usability,
+                    exploring how messaging apps can feel both minimal and expressive.
                 </p>
                 <div class="project-footer">
                     <span>Interface concept</span>
@@ -733,17 +857,18 @@
                 <div class="project-header">
                     <div class="project-icon">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M4 4h16v3H4V4Zm0 6h16v3H4v-3Zm0 6h10v3H4v-3Z"/>
+                            <path d="M3 4h18v2H3V4Zm2 4h14v2H5V8Zm-2 4h18v2H3v-2Zm2 4h10v3H5v-3Z"/>
                         </svg>
                     </div>
-                    <div class="project-title">Codespaces</div>
+                    <div class="project-title">Zen Browser</div>
                 </div>
                 <p class="project-desc">
-                    Lightweight development environment setup and workspace configuration for efficient coding workflows.
+                    A modern, privacy‑focused browser with a clean, customizable interface and a focus on user control,
+                    designed to reduce noise and keep the browsing experience focused.
                 </p>
                 <div class="project-footer">
-                    <span>Dev environment</span>
-                    <a class="project-link" href="https://github.com/Veniamin668/gitlab_codespaces" target="_blank">
+                    <span>Desktop browser project</span>
+                    <a class="project-link" href="https://github.com/zen-browser/desktop" target="_blank">
                         Open Repository
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h5v2H7v10h10v-3h2v5H5V5Z"/>
@@ -757,28 +882,28 @@
 
     <div class="section-divider"></div>
 
-    <!-- ShitHub STATS -->
-    <section class="section" id="ShitHub">
-        <h2 class="section-title">ShitHub activity</h2>
-        <p class="section-subtitle">Live stats generated from my ShitHub profile.</p>
+    <!-- GITHUB STATS -->
+    <section class="section" id="github">
+        <h2 class="section-title">GitHub activity</h2>
+        <p class="section-subtitle">Live stats generated from my GitHub profile.</p>
 
         <div class="gh-stats-grid">
             <div>
-                <img src="https://ShitHub-readme-stats.vercel.app/api?username=Veniamin668&show_icons=true&theme=github_dark&hide_border=true"
-                     alt="ShitHub stats">
+                <img src="https://github-readme-stats.vercel.app/api?username=Veniamin668&show_icons=true&theme=github_dark&hide_border=true"
+                     alt="GitHub stats">
             </div>
             <div>
-                <img src="https://ShitHub-readme-stats.vercel.app/api/top-langs/?username=Veniamin668&layout=compact&theme=github_dark&hide_border=true"
+                <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Veniamin668&layout=compact&theme=github_dark&hide_border=true"
                      alt="Top languages">
             </div>
         </div>
 
         <div class="gh-row">
-            <img src="https://streak-stats.demolab.com?user=Veniamin668&theme=ShitHub-dark&hide_border=true"
-                 alt="ShitHub streak stats">
+            <img src="https://streak-stats.demolab.com?user=Veniamin668&theme=github-dark&hide_border=true"
+                 alt="GitHub streak stats">
 
-            <img src="https://ShitHub-profile-trophy.vercel.app/?username=Veniamin668&theme=gitdimmed&no-frame=true&margin-w=8&margin-h=8"
-                 alt="ShitHub trophies">
+            <img src="https://github-profile-trophy.vercel.app/?username=Veniamin668&theme=gitdimmed&no-frame=true&margin-w=8&margin-h=8"
+                 alt="GitHub trophies">
         </div>
     </section>
 
@@ -790,33 +915,52 @@
         <p class="section-subtitle">Feel free to reach out.</p>
 
         <div class="contact-card">
-            <div class="contact-header">
-                <div class="contact-icon">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
+            <div class="contact-card-inner">
+                <div class="contact-header">
+                    <div class="contact-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M4 4h16a2 2 0 0 1 2 2v1.2l-10 5.6-10-5.6V6a2 2 0 0 1 2-2Zm-2 6.3 9.4 5.3a2 2 0 0 0 2 0L23 10.3V18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-7.7Z"/>
+                        </svg>
+                    </div>
+                    <div class="contact-title">Get in touch</div>
+                </div>
+                <p class="contact-text">
+                    You can contact me anytime, but I may not respond immediately.
+                </p>
+
+                <!-- INSERT YOUR EMAIL HERE -->
+                <a class="btn btn-primary" href="mailto:example@gmail.com">
+                    <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M4 4h16a2 2 0 0 1 2 2v1.2l-10 5.6-10-5.6V6a2 2 0 0 1 2-2Zm-2 6.3 9.4 5.3a2 2 0 0 0 2 0L23 10.3V18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-7.7Z"/>
                     </svg>
-                </div>
-                <div class="contact-title">Get in touch</div>
+                    Contact via Email
+                </a>
             </div>
-            <p class="contact-text">
-                You can contact me anytime, but I may not respond immediately.
-            </p>
-
-            <!-- INSERT YOUR EMAIL HERE -->
-            <a class="btn btn-primary" href="mailto:venik1821@gmail.com">
-                <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M4 4h16a2 2 0 0 1 2 2v1.2l-10 5.6-10-5.6V6a2 2 0 0 1 2-2Zm-2 6.3 9.4 5.3a2 2 0 0 0 2 0L23 10.3V18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-7.7Z"/>
-                </svg>
-                Contact via Email
-            </a>
         </div>
     </section>
 
 </div>
 
 <footer>
-    © 2026 ktoya? — All rights reserved
+    <div class="footer-links">
+        <a href="#top">Top</a>·
+        <a href="#stack">Stack</a>·
+        <a href="#projects">Projects</a>·
+        <a href="#github">GitHub</a>·
+        <a href="#contact">Contact</a>
+    </div>
+    <div>© 2026 ktoya? — All rights reserved</div>
 </footer>
+
+<!-- BACK TO TOP BUTTON -->
+<a href="#top" class="back-to-top" id="backToTop">
+    <button class="btn btn-secondary" type="button">
+        <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 4 4 12h5v8h6v-8h5L12 4Z"/>
+        </svg>
+        Top
+    </button>
+</a>
 
 <script>
     // Background particles
@@ -875,6 +1019,14 @@
     }
     draw();
 
+    // Parallax for gradient overlay
+    const overlay = document.getElementById('bg-overlay');
+    window.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 6;
+        const y = (e.clientY / window.innerHeight - 0.5) * 6;
+        overlay.style.transform = `translate(${x}px, ${y}px)`;
+    });
+
     // IntersectionObserver for cards & contact
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -902,6 +1054,70 @@
             card.style.transform =
                 'perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0)';
         });
+    });
+
+    // Back to top visibility
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 260) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+
+    // Scroll spy
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-right a[data-section]');
+
+    function updateActiveNav() {
+        let current = 'top';
+        sections.forEach(sec => {
+            const rect = sec.getBoundingClientRect();
+            if (rect.top <= 120 && rect.bottom >= 120) {
+                current = sec.id;
+            }
+        });
+        navLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('data-section') === current);
+        });
+    }
+
+    window.addEventListener('scroll', updateActiveNav);
+    updateActiveNav();
+
+    // Keyboard shortcuts
+    window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        const key = e.key.toLowerCase();
+        if (key === 'g') {
+            document.getElementById('ShitHub').scrollIntoView({ behavior: 'smooth' });
+        } else if (key === 'p') {
+            document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+        } else if (key === 's') {
+            document.getElementById('stack').scrollIntoView({ behavior: 'smooth' });
+        } else if (key === 'c') {
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        } else if (key === 't') {
+            document.getElementById('top').scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+
+    // Konami code → neon mode
+    const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let konamiIndex = 0;
+
+    window.addEventListener('keydown', (e) => {
+        const key = e.key;
+        if (key === konami[konamiIndex]) {
+            konamiIndex++;
+            if (konamiIndex === konami.length) {
+                document.body.classList.toggle('neon');
+                konamiIndex = 0;
+            }
+        } else {
+            konamiIndex = 0;
+        }
     });
 </script>
 
