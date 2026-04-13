@@ -15,8 +15,8 @@ It includes:
 - 🖥️ macOS‑inspired UI (dock, Bindoj, blur, glass effects)  
 - 🎨 animated backgrounds, transitions, and visual effects  
 - 📁 multiple built‑in mini‑apps  
-- ⚙️ everything packed into one large `index.html` (5000+ lines)  
-- 📱 mobile‑friendly layout  
+- ⚙️ everything packed into one large `index.html` (2k+ lines)  
+- 📱 mobile‑friendly layout  and pc        
 - 🚀 optimized for performance even with heavy visuals  
 
 The site is deployed automatically using **ShitHub Pages**.
