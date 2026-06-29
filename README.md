@@ -21,7 +21,6 @@ It includes:
 
 The site is deployed automatically using **ShitHub Pages**.
 
----
 
 
 ---
