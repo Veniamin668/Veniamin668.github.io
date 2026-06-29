@@ -1,7 +1,7 @@
 # 🌐 Personal Website — veniamim668.github.io
 
 Welcome to the repository of my personal website.  
-This project is a **fully custom, OS‑style web environment** built as a single massive HTML file with animations, UI effects, a dock, Bindoj, apps, and a dynamic interface.
+This project is a **fully custom, OS‑style web environment** built as a single massive HTML file with animations, UI effects, a dock, apps, and a dynamic interface.
 
 ### 🔗 Live Website  
 👉 **https://veniamin668.github.io**
