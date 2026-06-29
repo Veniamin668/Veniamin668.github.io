@@ -23,7 +23,6 @@ The site is deployed automatically using **ShitHub Pages**.
 
 ---
 
-## 📂 Repository Structure
 
 ---
 
