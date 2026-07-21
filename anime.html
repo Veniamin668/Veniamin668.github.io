@@ -70,19 +70,23 @@
     </div>
 
     <script>
-        // ТВОЯ МЕДИАТЕКА: Сюда дописывай новые ID со Шикимори через запятую
+        // ТВОЙ МАССИВ ID: Пиши сюда аниме через запятую, скрипт сам свяжет их с переменной
         const ids = [5114, 52991]
 
-        async function play(id) {
+        // Переменная автоматически берет ПЕРВЫЙ id из твоего массива ids сверху
+        let currentId = ids;
+
+        // Функция сборки сайта по значению из currentId
+        async function updatePage() {
+            if (!currentId) return; // Защита, если массив пустой
             try {
-                // Стучимся строго на фрейм видео онлайна shikimori.io
-                document.getElementById('ifr').src = `https://shikimori.io{id}/video_online`;
+                // Вуаля! Склеиваем домен с переменной через обычные плюсы
+                document.getElementById('ifr').src = 'https://shikimori.io' + currentId + '/video_online';
                 
-                // Выкачиваем инфу через официальное API нового домена
-                const res = await fetch(`https://shikimori.io{id}`);
+                const res = await fetch('https://shikimori.io' + currentId);
                 const data = await res.json();
                 
-                document.getElementById('img').src = data.image ? `https://shikimori.io${data.image.original}` : 'https://shikimori.io';
+                document.getElementById('img').src = data.image ? 'https://shikimori.io' + data.image.original : 'https://shikimori.io';
                 document.getElementById('title').innerText = data.russian || data.name;
                 document.getElementById('desc').innerText = data.description ? data.description.replace(/\[.*?\]/g, "") : "Описание пусто.";
             } catch (e) {
@@ -91,28 +95,39 @@
             }
         }
 
+        // Кнопка «Смотреть» для ручного ввода
         function load() {
             const val = document.getElementById('url').value.trim();
-            // Переваривает и ссылки .one/.io, и чистые ID
             const m = val.match(/\/animes\/[z]?(\d+)/);
-            if (m) play(m[1]); else if (!isNaN(val) && val !== "") play(val);
+            
+            if (m) currentId = m;
+            else if (!isNaN(val) && val !== "") currentId = val;
+            else return;
+
+            updatePage();
         }
 
-        // Строим плитки коллекции снизу
+        // Переключалка при выборе аниме из списка снизу
+        function selectAnime(id) {
+            currentId = id; // Привязываем выбранный ID к переменной
+            updatePage();   // Обновляем плеер и карточку
+        }
+
+        // Авто-построение плиток выбора
         ids.forEach(id => {
             const div = document.createElement('div');
-            div.className = 'item'; div.innerText = `ID: ${id}`;
-            div.onclick = () => play(id);
+            div.className = 'item'; div.innerText = 'ID: ' + id;
+            div.onclick = () => selectAnime(id);
             document.getElementById('box').appendChild(div);
             
-            fetch(`https://shikimori.io{id}`)
+            fetch('https://shikimori.io' + id)
                 .then(r => r.json())
                 .then(d => div.innerText = d.russian || d.name)
                 .catch(e => console.error(e));
         });
 
-        // Запуск Фрирен (первой в массиве) при старте
-        if(ids.length > 0) play(ids[0]);
+        // Запуск при открытии страницы
+        updatePage();
     </script>
 
 </body>
