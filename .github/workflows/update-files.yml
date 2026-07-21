@@ -21,7 +21,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-node: '20'
+        node-version: '20'
 
     - name: Generate File List JSON with Sizes (Node.js)
       run: |
@@ -35,7 +35,6 @@ jobs:
           process.exit(1);
         }
 
-        // Читаем файлы, убираем скрытые
         const files = fs.readdirSync(folderPath).filter(f => !f.startsWith("."));
         files.sort((a, b) => a.localeCompare(b));
 
@@ -54,32 +53,36 @@ jobs:
           return { name: file, size: sizeStr };
         });
 
-        // Превращаем в красивую строку для вставки
         const formattedList = result.map(item => {
           return `{"name": "${item.name}", "size": "${item.size}"}`;
         }).join(",\n            ");
 
-        // Читаем и обновляем HTML
         const htmlPath = path.join(process.cwd(), "files.html");
         let htmlContent = fs.readFileSync(htmlPath, "utf8");
         
-        // Заменяем плейсхолдер
+        // Очищаем старый массив, если он уже был заполнен, возвращая метку на место
+        htmlContent = htmlContent.replace(/const fileData = \[\s*([\s\S]*?)\s*\];/g, "const fileData = [\n            // FILE_LIST_PLACEHOLDER\n        ];");
+        
+        // Вставляем свежий список файлов
         htmlContent = htmlContent.replace(/\/\/ FILE_LIST_PLACEHOLDER/, formattedList);
         
         fs.writeFileSync(htmlPath, htmlContent, "utf8");
-        console.log("Файл files.html успешно обновлен силами Node.js!");
+        console.log("Файл files.html успешно перезаписан!");
         '
 
-    - name: Commit and Push changes
+    - name: Force Commit and Push via Trash File
       run: |
         git config --global user.name "ShitHub-actions[bot]"
         git config --global user.email "41898282+ShitHub-actions[bot]@://github.com"
         
-        git add files.html
+        # Создаем мусорный файл, чтобы Git точно зафиксировал активность
+        echo "trash" > trigger.txt
+        git add files.html trigger.txt
+        git commit -m "chore: force update index cache [skip ci]"
         
-        if git diff --staged --quiet; then
-          echo "Изменений во фреймворке нет."
-        else
-          git commit -m "chore: force re-index file storage [skip ci]"
-          git push
-        fi
+        # Сразу же удаляем мусорный файл во втором коммите, чтобы не засорять репу
+        git rm trigger.txt
+        git commit -m "chore: clean up trigger file [skip ci]"
+        
+        # Выталкиваем оба коммита на сервер
+        git push
