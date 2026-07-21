@@ -121,6 +121,12 @@
             color: #60a5fa;
         }
 
+        .file-size {
+            font-size: 0.78rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
         /* Современная минималистичная кнопка */
         .download-btn {
             background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
@@ -171,8 +177,8 @@
     <script>
         const BASE_URL = 'https://veniamin668.github.io/files/';
 
-        // Сюда автоматика гитхаба будет прописывать файлы
-        const fileNames = [
+        // Сюда автоматика гитхаба будет прописывать структурированные объекты
+        const fileData = [
             // FILE_LIST_PLACEHOLDER
         ];
 
@@ -197,16 +203,19 @@
                 return;
             }
 
-            list.forEach(name => {
-                const fileUrl = BASE_URL + name;
-                const icon = getIcon(name);
+            list.forEach(file => {
+                const fileUrl = BASE_URL + file.name;
+                const icon = getIcon(file.name);
 
                 const li = document.createElement('li');
                 li.className = 'file-item';
                 li.innerHTML = `
                     <div class="file-info">
                         <span class="file-icon">${icon}</span>
-                        <a href="${fileUrl}" class="file-name" download>${name}</a>
+                        <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                            <a href="${fileUrl}" class="file-name" download>${file.name}</a>
+                            <span class="file-size">Размер: ${file.size}</span>
+                        </div>
                     </div>
                     <a href="${fileUrl}" class="download-btn" download>Скачать</a>
                 `;
@@ -216,11 +225,11 @@
 
         document.getElementById('search').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
-            const filtered = fileNames.filter(name => name.toLowerCase().includes(query));
+            const filtered = fileData.filter(file => file.name.toLowerCase().includes(query));
             renderFiles(filtered);
         });
 
-        renderFiles(fileNames);
+        renderFiles(fileData);
     </script>
 
 </body>
