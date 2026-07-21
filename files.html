@@ -11,8 +11,8 @@
             margin: 40px auto;
             max-width: 750px;
             padding: 0 20px;
-            background-color: #0f172a; /* Глубокий тёмный фон */
-            color: #e2e8f0; /* Светлый текст */
+            background-color: #0f172a;
+            color: #e2e8f0;
         }
         h1 {
             color: #f8fafc;
@@ -49,7 +49,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #1e293b; /* Тёмные карточки */
+            background: #1e293b;
             padding: 14px 20px;
             margin-bottom: 10px;
             border-radius: 8px;
@@ -79,7 +79,7 @@
             transition: color 0.1s ease;
         }
         .file-name:hover {
-            color: #60a5fa; /* Голубой акцент при наведении */
+            color: #60a5fa;
         }
         .download-btn {
             background-color: #2563eb;
@@ -112,21 +112,11 @@
     <ul class="file-list" id="fileList"></ul>
 
     <script>
-        const BASE_URL = 'https://veniamin668.github.io/files/';
+        const BASE_URL = 'https://github.io';
 
+        // Сюда автоматика будет прописывать файлы
         const fileNames = [
-            "RadeonMod.zip",
-            "TgWsProxy_windows.exe",
-            "WinNTSetup.zip",
-            "Zapret2Setup_21_1_1_2.exe",
-            "flux-setup.exe",
-            "kuro_ax_build_1028[EXTREME].zip",
-            "lk-garden_Q.img",
-            "magisk-v28.1.zip",
-            "mark.via.gp-20260410.apk",
-            "winutil.ps1",
-            "zapret_module.zip",
-            "zen-mods-export.json"
+            // FILE_LIST_PLACEHOLDER
         ];
 
         function getIcon(filename) {
