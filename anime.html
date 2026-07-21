@@ -70,16 +70,19 @@
     </div>
 
     <script>
-        // ТВОЯ МЕДИАТЕКА: Фрирен и Алхимик на месте
-        const ids = [5114, 52991]
+        // ТВОЯ МЕДИАТЕКА: Номера аниме зашиты намертво
+        const ids = [5114, 52991];
 
         async function play(id) {
             try {
-                // Стабильный плеер Kodik, который ищет строго по ID Шикимори
-                document.getElementById('ifr').src = `https://kodik.link{id}`;
+                // Публичный неубиваемый плеер-балансер Kinobox (работает через прокси в РФ)
+                document.getElementById('ifr').src = `https://kinobox.tv{id}`;
                 
+                // Стучимся на новый рабочий домен .io
                 const res = await fetch(`https://shikimori.io{id}`);
                 const data = await res.json();
+                
+                // Подгружаем постеры и тексты сюжета
                 document.getElementById('img').src = data.image ? `https://shikimori.io${data.image.original}` : 'https://shikimori.io';
                 document.getElementById('title').innerText = data.russian || data.name;
                 document.getElementById('desc').innerText = data.description ? data.description.replace(/\[.*?\]/g, "") : "Описание пусто.";
@@ -95,17 +98,20 @@
             if (m) play(m[1]); else if (!isNaN(val) && val !== "") play(val);
         }
 
+        // Рендерим нижние плитки
         ids.forEach(id => {
             const div = document.createElement('div');
             div.className = 'item'; div.innerText = `ID: ${id}`;
             div.onclick = () => play(id);
             document.getElementById('box').appendChild(div);
+            
             fetch(`https://shikimori.io{id}`)
                 .then(r => r.json())
                 .then(d => div.innerText = d.russian || d.name)
                 .catch(e => console.error("Ошибка плитки:", e));
         });
 
+        // Стартуем первый элемент из массива (Алхимик)
         if(ids.length > 0) play(ids[0]);
     </script>
 
