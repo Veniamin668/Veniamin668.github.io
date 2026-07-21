@@ -70,35 +70,35 @@
     </div>
 
     <script>
-        // ТВОЯ МЕДИАТЕКА: Номера аниме зашиты намертво
-        const ids = [5114, 52991];
+        // ТВОЯ МЕДИАТЕКА: Сюда дописывай новые ID со Шикимори через запятую
+        const ids = [5114, 52991]
 
         async function play(id) {
             try {
-                // Публичный неубиваемый плеер-балансер Kinobox (работает через прокси в РФ)
-                document.getElementById('ifr').src = `https://kinobox.tv{id}`;
+                // Стучимся строго на фрейм видео онлайна shikimori.io
+                document.getElementById('ifr').src = `https://shikimori.io{id}/video_online`;
                 
-                // Стучимся на новый рабочий домен .io
+                // Выкачиваем инфу через официальное API нового домена
                 const res = await fetch(`https://shikimori.io{id}`);
                 const data = await res.json();
                 
-                // Подгружаем постеры и тексты сюжета
                 document.getElementById('img').src = data.image ? `https://shikimori.io${data.image.original}` : 'https://shikimori.io';
                 document.getElementById('title').innerText = data.russian || data.name;
                 document.getElementById('desc').innerText = data.description ? data.description.replace(/\[.*?\]/g, "") : "Описание пусто.";
             } catch (e) {
-                document.getElementById('title').innerText = "Включено";
-                console.error("Ошибка загрузки:", e);
+                console.error("Ошибка API Shikimori:", e);
+                document.getElementById('title').innerText = "Аниме загружено";
             }
         }
 
         function load() {
             const val = document.getElementById('url').value.trim();
+            // Переваривает и ссылки .one/.io, и чистые ID
             const m = val.match(/\/animes\/[z]?(\d+)/);
             if (m) play(m[1]); else if (!isNaN(val) && val !== "") play(val);
         }
 
-        // Рендерим нижние плитки
+        // Строим плитки коллекции снизу
         ids.forEach(id => {
             const div = document.createElement('div');
             div.className = 'item'; div.innerText = `ID: ${id}`;
@@ -108,10 +108,10 @@
             fetch(`https://shikimori.io{id}`)
                 .then(r => r.json())
                 .then(d => div.innerText = d.russian || d.name)
-                .catch(e => console.error("Ошибка плитки:", e));
+                .catch(e => console.error(e));
         });
 
-        // Стартуем первый элемент из массива (Алхимик)
+        // Запуск Фрирен (первой в массиве) при старте
         if(ids.length > 0) play(ids[0]);
     </script>
 
