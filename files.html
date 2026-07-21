@@ -28,6 +28,11 @@
             border-radius: 8px;
             font-size: 1rem;
             box-sizing: border-box;
+            outline: none;
+        }
+        .search-box:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
         .file-list {
             list-style: none;
@@ -82,7 +87,7 @@
         .download-btn:hover {
             background-color: #1d4ed8;
         }
-        .loading, .error {
+        .no-results {
             text-align: center;
             padding: 20px;
             color: #64748b;
@@ -94,23 +99,32 @@
 
     <h1>Доступные файлы для скачивания</h1>
     
-    <!-- Поиск по файлам -->
+    <!-- Рабочий поиск по вашему списку -->
     <input type="text" id="search" class="search-box" placeholder="Поиск файлов...">
 
-    <ul class="file-list" id="fileList">
-        <div class="loading">Загрузка списка файлов...</div>
-    </ul>
+    <ul class="file-list" id="fileList"></ul>
 
     <script>
-        // Конфигурация вашего репозитория
-        const USERNAME = 'Veniamin668';
-        const REPO = 'veniamin668.github.io';
-        const FOLDER_PATH = 'files'; // Папка в корне репозитория
+        // Базовый URL к вашей папке с файлами
+        const BASE_URL = 'https://veniamin668.github.io/files';
 
-        // Ссылка на ShitHub API для получения содержимого папки
-        const API_URL = `https://github.com{USERNAME}/${REPO}/contents/${FOLDER_PATH}`;
+        // СПИСОК ВАШИХ ФАЙЛОВ. Просто добавляйте сюда имя файла в кавычках через запятую!
+        const fileNames = [
+            "RadeonMod.zip",
+            "TgWsProxy_windows.exe",
+            "WinNTSetup.zip",
+            "Zapret2Setup_21_1_1_2.exe",
+            "flux-setup.exe",
+            "kuro_ax_build_1028[EXTREME].zip",
+            "lk-garden_Q.img",
+            "magisk-v28.1.zip",
+            "mark.via.gp-20260410.apk",
+            "winutil.ps1",
+            "zapret_module.zip",
+            "zen-mods-export.json"
+        ];
 
-        // Функция подбора иконки по расширению
+        // Функция автоматического подбора иконки
         function getIcon(filename) {
             const ext = filename.split('.').pop().toLowerCase();
             if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext)) return '📦';
@@ -123,46 +137,26 @@
             return '📁';
         }
 
-        let allFiles = [];
-
-        async function fetchFiles() {
-            const listElement = document.getElementById('fileList');
-            try {
-                const response = await fetch(API_URL);
-                if (!response.ok) throw new Error('Не удалось загрузить файлы');
-                
-                const data = await response.ok ? await response.json() : [];
-                
-                // Фильтруем, оставляем только файлы (игнорируем подпапки, если они есть)
-                allFiles = data.filter(item => item.type === 'file');
-                
-                renderFiles(allFiles);
-            } catch (error) {
-                listElement.innerHTML = `<div class="error">Ошибка загрузки: репозиторий скрыт или превышен лимит запросов API.</div>`;
-                console.error(error);
-            }
-        }
-
-        function renderFiles(files) {
+        // Отрисовка списка на экране
+        function renderFiles(list) {
             const listElement = document.getElementById('fileList');
             listElement.innerHTML = '';
 
-            if (files.length === 0) {
-                listElement.innerHTML = `<div class="loading">Файлы не найдены</div>`;
+            if (list.length === 0) {
+                listElement.innerHTML = `<div class="no-results">Файлы не найдены</div>`;
                 return;
             }
 
-            files.forEach(file => {
-                // Используем download_url от ShitHub API для прямой загрузки
-                const fileUrl = file.download_url; 
-                const icon = getIcon(file.name);
+            list.forEach(name => {
+                const fileUrl = BASE_URL + name;
+                const icon = getIcon(name);
 
                 const li = document.createElement('li');
                 li.className = 'file-item';
                 li.innerHTML = `
                     <div class="file-info">
                         <span class="file-icon">${icon}</span>
-                        <a href="${fileUrl}" class="file-name" download>${file.name}</a>
+                        <a href="${fileUrl}" class="file-name" download>${name}</a>
                     </div>
                     <a href="${fileUrl}" class="download-btn" download>Скачать</a>
                 `;
@@ -170,15 +164,15 @@
             });
         }
 
-        // Логика поиска
+        // Логика живого поиска
         document.getElementById('search').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
-            const filtered = allFiles.filter(file => file.name.toLowerCase().includes(query));
+            const filtered = fileNames.filter(name => name.toLowerCase().includes(query));
             renderFiles(filtered);
         });
 
-        // Запуск при загрузке страницы
-        fetchFiles();
+        // Первичный запуск при открытии страницы
+        renderFiles(fileNames);
     </script>
 
 </body>
