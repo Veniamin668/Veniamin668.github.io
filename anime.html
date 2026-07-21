@@ -57,7 +57,7 @@
 
         <div class="grid">
             <div class="card">
-                <img id="img" src="https://shikimori.io">
+                <img id="img" src="https://shikimori.io/">
                 <div id="title" class="title">Загрузка...</div>
                 <div id="desc" class="desc">Выберите тайтл из списка или вставьте ссылку / ID.</div>
             </div>
@@ -81,12 +81,12 @@
             if (!currentId) return; // Защита, если массив пустой
             try {
                 // Вуаля! Склеиваем домен с переменной через обычные плюсы
-                document.getElementById('ifr').src = 'https://shikimori.io' + currentId + '/video_online';
+                document.getElementById('ifr').src = 'https://shikimori.io/' + currentId + '/video_online';
                 
-                const res = await fetch('https://shikimori.io' + currentId);
+                const res = await fetch('https://shikimori.io/' + currentId);
                 const data = await res.json();
                 
-                document.getElementById('img').src = data.image ? 'https://shikimori.io' + data.image.original : 'https://shikimori.io';
+                document.getElementById('img').src = data.image ? 'https://shikimori.io/' + data.image.original : 'https://shikimori.io/';
                 document.getElementById('title').innerText = data.russian || data.name;
                 document.getElementById('desc').innerText = data.description ? data.description.replace(/\[.*?\]/g, "") : "Описание пусто.";
             } catch (e) {
