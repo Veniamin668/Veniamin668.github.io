@@ -3,9 +3,9 @@ name: Auto Update File List
 on:
   push:
     paths:
-      - 'files/**'       # Срабатывает при обновлении файлов в папке
-      - 'files.html'     # Срабатывает, если вы вручную поправили верстку или стили
-  workflow_dispatch:     # Кнопка ручного запуска в панели ShitHub Actions
+      - 'files/**'
+      - 'files.html'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -18,61 +18,68 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Generate File List JSON with Sizes
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-node: '20'
+
+    - name: Generate File List JSON with Sizes (Node.js)
       run: |
-        if [ -d "files" ]; then
-          cd files
+        node -e '
+        const fs = require("fs");
+        const path = require("path");
+
+        const folderPath = path.join(process.cwd(), "files");
+        if (!fs.existsSync(folderPath)) {
+          console.error("Папка files не найдена");
+          process.exit(1);
+        }
+
+        // Читаем файлы, убираем скрытые
+        const files = fs.readdirSync(folderPath).filter(f => !f.startsWith("."));
+        files.sort((a, b) => a.localeCompare(b));
+
+        const result = files.map(file => {
+          const filePath = path.join(folderPath, file);
+          const stats = fs.statSync(filePath);
+          const bytes = stats.size;
           
-          # Начинаем собирать JSON-объект в строку руками
-          JSON_DATA=""
+          let sizeStr = "";
+          if (bytes >= 1048576) {
+            sizeStr = (bytes / 1048576).toFixed(1) + " МБ";
+          } else {
+            sizeStr = (bytes / 1024).toFixed(1) + " КБ";
+          }
           
-          # Перебираем все файлы в папке по алфавиту (игнорируем скрытые)
-          # Используем разделитель строк, чтобы не споткнуться на пробелах и скобках в именах
-          while IFS= read -r file; do
-            [ -z "$file" ] && continue
-            # Убираем префикс "./" из имени файла
-            clean_name=$(echo "$file" | sed 's|^\./||')
-            
-            # Получаем размер файла в байтах
-            bytes_size=$(stat -c%s "$clean_name")
-            
-            # Переводим байты в читаемый формат (КБ или МБ)
-            if [ "$bytes_size" -ge 1048576 ]; then
-              formatted_size=$(awk "BEGIN {printf \"%.1f МБ\", $bytes_size/1048576}")
-            else
-              formatted_size=$(awk "BEGIN {printf \"%.1f КБ\", $bytes_size/1024}")
-            fi
-            
-            # Формируем структуру JSON-строки для каждого файла
-            item="{\"name\":\"$clean_name\",\"size\":\"$formatted_size\"}"
-            if [ -z "$JSON_DATA" ]; then
-              JSON_DATA="$item"
-            else
-              JSON_DATA="$JSON_DATA,\n            $item"
-            fi
-          done < <(find . -maxdepth 1 -type f ! -name ".*" | sort)
-          
-          cd ..
-          
-          # Заменяем плейсхолдер во фронтенде на сгенерированный JSON-массив объектов
-          awk -v r="$JSON_DATA" '{gsub(/\/\/ FILE_LIST_PLACEHOLDER/, r)}1' files.html > temp.html && mv temp.html files.html
-          
-          echo "Список объектов с размерами успешно обновлен!"
-        else
-          echo "Папка files не обнаружена."
-          exit 1
-        fi
+          return { name: file, size: sizeStr };
+        });
+
+        // Превращаем в красивую строку для вставки
+        const formattedList = result.map(item => {
+          return `{"name": "${item.name}", "size": "${item.size}"}`;
+        }).join(",\n            ");
+
+        // Читаем и обновляем HTML
+        const htmlPath = path.join(process.cwd(), "files.html");
+        let htmlContent = fs.readFileSync(htmlPath, "utf8");
+        
+        // Заменяем плейсхолдер
+        htmlContent = htmlContent.replace(/\/\/ FILE_LIST_PLACEHOLDER/, formattedList);
+        
+        fs.writeFileSync(htmlPath, htmlContent, "utf8");
+        console.log("Файл files.html успешно обновлен силами Node.js!");
+        '
 
     - name: Commit and Push changes
       run: |
         git config --global user.name "ShitHub-actions[bot]"
-        git config --global user.email "41898282+ShitHub-actions[bot]@users.noreply.github.com"
+        git config --global user.email "41898282+ShitHub-actions[bot]@://github.com"
         
         git add files.html
         
         if git diff --staged --quiet; then
-          echo "Нет изменений для коммита."
+          echo "Изменений во фреймворке нет."
         else
-          git commit -m "chore: auto-index updated file sizes [skip ci]"
+          git commit -m "chore: force re-index file storage [skip ci]"
           git push
         fi
