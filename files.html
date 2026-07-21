@@ -20,6 +20,15 @@
             padding-bottom: 12px;
             font-size: 1.8rem;
         }
+        .search-box {
+            width: 100%;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
         .file-list {
             list-style: none;
             padding: 0;
@@ -73,98 +82,104 @@
         .download-btn:hover {
             background-color: #1d4ed8;
         }
+        .loading, .error {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
 
     <h1>Доступные файлы для скачивания</h1>
+    
+    <!-- Поиск по файлам -->
+    <input type="text" id="search" class="search-box" placeholder="Поиск файлов...">
 
-    <ul class="file-list">
-        <li class="file-item">
-            <div class="file-info">
-                <span class="file-icon">📦</span>
-                <a href="https://veniamin668.github.io/files/RadeonMod.zip" class="file-name" download>RadeonMod.zip</a>
-            </div>
-            <a href="https://veniamin668.github.io/files/RadeonMod.zip" class="download-btn" download>Скачать</a>
-        </li>
-        <li class="file-item">
-            <div class="file-info">
-                <span class="file-icon">⚙️</span>
-                <a href="https://veniamin668.github.io/files/TgWsProxy_windows.exe" class="file-name" download>TgWsProxy_windows.exe</a>
-            </div>
-            <a href="https://veniamin668.github.io/files/TgWsProxy_windows.exe" class="download-btn" download>Скачать</a>
-        </li>
-        <li class="file-item">
-            <div class="file-info">
-                <span class="file-icon">📦</span>
-                <a href="https://veniamin668.github.io/files/WinNTSetup.zip" class="file-name" download>WinNTSetup.zip</a>
-            </div>
-            <a href="https://veniamin668.github.io/files/WinNTSetup.zip" class="download-btn" download>Скачать</a>
-        </li>
-        <li class="file-item">
-            <div class="file-info">
-                <span class="file-icon">⚙️</span>
-                <a href="https://veniamin668.github.io/files/Zapret2Setup_21_1_1_2.exe" class="file-name" download>Zapret2Setup_21_1_1_2.exe</a>
-            </div>
-            <a href="https://veniamin668.github.io/files/Zapret2Setup_21_1_1_2.exe" class="download-btn" download>Скачать</a>
-        </li>
-        <li class="file-item">
-            <div class="file-info">
-                <span class="file-icon">⚙️</span>
-                <a href="https://veniamin668.github.io/files/flux-setup.exe" class="file-name" download>flux-setup.exe</a>
-            </div>
-            <a href="https://veniamin668.github.io/files/flux-setup.exe" class="download-btn" download>Скачать</a>
-        </li>
-        <li class="file-item">
-            <div class="file-info">
-                <span class="file-icon">📦</span>
-                <a href="https://veniamin668.github.io/files/kuro_ax_build_1028[EXTREME].zip" class="file-name" download>kuro_ax_build_1028[EXTREME].zip</a>
-            </div>
-            <a href="https://veniamin668.github.io/files/kuro_ax_build_1028[EXTREME].zip" class="download-btn" download>Скачать</a>
-        </li>
-        <li class="file-item">
-            <div class="file-info">
-                <span class="file-icon">💾</span>
-                <a href="https://veniamin668.github.io/files/lk-garden_Q.img" class="file-name" download>lk-garden_Q.img</a>
-            </div>
-            <a href="https://veniamin668.github.io/files/lk-garden_Q.img" class="download-btn" download>Скачать</a>
-        </li>
-        <li class="file-item">
-            <div class="file-info">
-                <span class="file-icon">📦</span>
-                <a href="https://veniamin668.github.io/files/magisk-v28.1.zip" class="file-name" download>magisk-v28.1.zip</a>
-            </div>
-            <a href="https://veniamin668.github.io/files/magisk-v28.1.zip" class="download-btn" download>Скачать</a>
-        </li>
-        <li class="file-item">
-            <div class="file-info">
-                <span class="file-icon">🤖</span>
-                <a href="https://veniamin668.github.io/files/mark.via.gp-20260410.apk" class="file-name" download>mark.via.gp-20260410.apk</a>
-            </div>
-            <a href="https://veniamin668.github.io/files/mark.via.gp-20260410.apk" class="download-btn" download>Скачать</a>
-        </li>
-        <li class="file-item">
-            <div class="file-info">
-                <span class="file-icon">📜</span>
-                <a href="https://veniamin668.github.io/files/winutil.ps1" class="file-name" download>winutil.ps1</a>
-            </div>
-            <a href="https://veniamin668.github.io/files/winutil.ps1" class="download-btn" download>Скачать</a>
-        </li>
-        <li class="file-item">
-            <div class="file-info">
-                <span class="file-icon">📦</span>
-                <a href="https://veniamin668.github.io/files/zapret_module.zip" class="file-name" download>zapret_module.zip</a>
-            </div>
-            <a href="https://veniamin668.github.io/files/zapret_module.zip" class="download-btn" download>Скачать</a>
-        </li>
-        <li class="file-item">
-            <div class="file-info">
-                <span class="file-icon">📄</span>
-                <a href="https://veniamin668.github.io/files/zen-mods-export.json" class="file-name" download>zen-mods-export.json</a>
-            </div>
-            <a href="https://veniamin668.github.io/files/zen-mods-export.json" class="download-btn" download>Скачать</a>
-        </li>
+    <ul class="file-list" id="fileList">
+        <div class="loading">Загрузка списка файлов...</div>
     </ul>
+
+    <script>
+        // Конфигурация вашего репозитория
+        const USERNAME = 'Veniamin668';
+        const REPO = 'veniamin668.github.io';
+        const FOLDER_PATH = 'files'; // Папка в корне репозитория
+
+        // Ссылка на ShitHub API для получения содержимого папки
+        const API_URL = `https://github.com{USERNAME}/${REPO}/contents/${FOLDER_PATH}`;
+
+        // Функция подбора иконки по расширению
+        function getIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext)) return '📦';
+            if (['exe', 'msi'].includes(ext)) return '⚙️';
+            if (['apk'].includes(ext)) return '🤖';
+            if (['img', 'iso'].includes(ext)) return '💾';
+            if (['ps1', 'bat', 'sh', 'cmd'].includes(ext)) return '📜';
+            if (['json', 'xml', 'txt', 'md'].includes(ext)) return '📄';
+            if (['png', 'jpg', 'jpeg', 'gif', 'svg'].includes(ext)) return '🖼️';
+            return '📁';
+        }
+
+        let allFiles = [];
+
+        async function fetchFiles() {
+            const listElement = document.getElementById('fileList');
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Не удалось загрузить файлы');
+                
+                const data = await response.ok ? await response.json() : [];
+                
+                // Фильтруем, оставляем только файлы (игнорируем подпапки, если они есть)
+                allFiles = data.filter(item => item.type === 'file');
+                
+                renderFiles(allFiles);
+            } catch (error) {
+                listElement.innerHTML = `<div class="error">Ошибка загрузки: репозиторий скрыт или превышен лимит запросов API.</div>`;
+                console.error(error);
+            }
+        }
+
+        function renderFiles(files) {
+            const listElement = document.getElementById('fileList');
+            listElement.innerHTML = '';
+
+            if (files.length === 0) {
+                listElement.innerHTML = `<div class="loading">Файлы не найдены</div>`;
+                return;
+            }
+
+            files.forEach(file => {
+                // Используем download_url от ShitHub API для прямой загрузки
+                const fileUrl = file.download_url; 
+                const icon = getIcon(file.name);
+
+                const li = document.createElement('li');
+                li.className = 'file-item';
+                li.innerHTML = `
+                    <div class="file-info">
+                        <span class="file-icon">${icon}</span>
+                        <a href="${fileUrl}" class="file-name" download>${file.name}</a>
+                    </div>
+                    <a href="${fileUrl}" class="download-btn" download>Скачать</a>
+                `;
+                listElement.appendChild(li);
+            });
+        }
+
+        // Логика поиска
+        document.getElementById('search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = allFiles.filter(file => file.name.toLowerCase().includes(query));
+            renderFiles(filtered);
+        });
+
+        // Запуск при загрузке страницы
+        fetchFiles();
+    </script>
 
 </body>
 </html>
