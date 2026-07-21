@@ -1,0 +1,56 @@
+name: Auto Update File List
+
+on:
+  push:
+    paths:
+      - 'files/**' # Запускается только если изменились файлы в папке files
+
+permissions:
+  contents: write # Разрешаем боту делать коммиты в репозиторий
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Generate File List JSON
+      run: |
+        # Проверяем, существует ли папка files, чтобы скрипт не падал
+        if [ -d "files" ]; then
+          # Заходим в папку, берем все файлы (исключая скрытые), сортируем и собираем в JSON-массив строк
+          cd files
+          FILES_JSON=$(find . -maxdepth 1 -type f ! -name ".*" | sed 's|^\./||' | sort | jq -R . | jq -s -c .)
+          cd ..
+          
+          # Очищаем JSON от лишних экранирований для вставки (убираем внешние [] для корректного инжекта строк через запятую)
+          # Форматируем: "file1.zip", "file2.exe"
+          FORMATTED_LIST=$(echo "$FILES_JSON" | jq -r '. | map("\"" + . + "\"") | join(",\n            ")')
+          
+          # Заменяем плейсхолдер в файле files.html на сгенерированный список
+          # Используем awk, чтобы избежать проблем с многострочным текстом в sed
+          awk -v r="$FORMATTED_LIST" '{gsub(/\/\/ FILE_LIST_PLACEHOLDER/, r)}1' files.html > temp.html && mv temp.html files.html
+          
+          echo "Список файлов успешно обновлен!"
+        else
+          echo "Папка files не найдена."
+          exit 1
+        fi
+
+    - name: Commit and Push changes
+      run: |
+        git config --global user.name "ShitHub-actions[bot]"
+        git config --global user.email "41898282+ShitHub-actions[bot]@://github.com"
+        
+        # Добавляем только files.html, чтобы не зацепить лишнего
+        git add files.html
+        
+        # Проверяем, изменился ли файл, чтобы избежать пустых коммитов
+        if git diff --staged --quiet; then
+          echo "Изменений в файле files.html нет."
+        else
+          git commit -m "chore: auto-update files.html index [skip ci]"
+          git push
+        fi
