@@ -3,66 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кинотеатр</title>
+    <title>Билдер Кинотеатра</title>
     <style>
         body {
             font-family: system-ui, sans-serif; margin: 0; padding: 20px;
-            background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 70%) fixed;
-            color: #f1f5f9; display: flex; flex-direction: column; align-items: center;
+            background-color: #0f172a; color: #f1f5f9; display: flex; flex-direction: column; align-items: center;
         }
-        .wrap { width: 100%; max-width: 850px; }
-        h1 { text-align: center; margin: 0 0 20px; text-shadow: 0 0 20px rgba(59,130,246,.3); }
-        .bar { display: flex; gap: 10px; margin-bottom: 20px; }
-        input {
-            flex: 1; padding: 12px; background: rgba(30,41,59,.4); backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,.08); border-radius: 10px; color: #fff; outline: none;
+        .wrap { width: 100%; max-width: 500px; }
+        h1 { text-align: center; margin: 0 0 10px; font-size: 1.8rem; }
+        .subtitle { text-align: center; color: #64748b; font-size: 0.85rem; margin-bottom: 25px; }
+        .card { background: #1e293b; padding: 20px; border: 1px solid #334155; border-radius: 12px; text-align: center; }
+        img { width: 100%; max-width: 150px; border-radius: 8px; margin-bottom: 10px; }
+        .title { font-weight: 600; font-size: 1.2rem; margin-bottom: 5px; }
+        .desc { font-size: .85rem; color: #94a3b8; text-align: left; max-height: 100px; overflow-y: auto; margin-bottom: 20px; }
+        
+        /* Кнопки генерации */
+        .btn-group { display: flex; flex-direction: column; gap: 10px; }
+        .watch-btn {
+            background: #2563eb; color: #fff; text-decoration: none; padding: 12px; 
+            border-radius: 8px; font-weight: 600; font-size: 0.95rem; transition: background 0.1s;
         }
-        input:focus { border-color: #3b82f6; box-shadow: 0 0 12px rgba(59,130,246,.25); }
-        button {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; border: none;
-            padding: 0 20px; border-radius: 10px; font-weight: 600; cursor: pointer;
-        }
-        .grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 20px; }
-        @media (min-width: 600px) { .grid { grid-template-columns: 220px 1fr; } }
-        .card {
-            background: rgba(30,41,59,.4); backdrop-filter: blur(12px); padding: 15px;
-            border: 1px solid rgba(255,255,255,.08); border-radius: 12px; text-align: center;
-        }
-        img { width: 100%; max-width: 180px; border-radius: 8px; margin-bottom: 10px; }
-        .title { font-weight: 600; font-size: 1.1rem; margin-bottom: 5px; }
-        .desc { font-size: .85rem; color: #94a3b8; text-align: left; max-height: 150px; overflow-y: auto; }
-        .play {
-            position: relative; width: 100%; padding-bottom: 56.25%; height: 0;
-            background: #0f172a; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,.05);
-        }
-        .play iframe { position: absolute; top:0; left:0; width:100%; height:100%; border:0; }
-        .list { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+        .watch-btn:hover { background: #1d4ed8; }
+        .watch-btn.secondary { background: #475569; }
+        .watch-btn.secondary:hover { background: #334155; }
+
+        .list { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 25px; }
         .item {
-            background: rgba(30,41,59,.4); padding: 8px; border-radius: 8px; cursor: pointer;
+            background: #1e293b; padding: 10px; border-radius: 8px; cursor: pointer;
             text-align: center; font-size: .8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-            border: 1px solid rgba(255,255,255,.05);
+            border: 1px solid #334155;
         }
-        .item:hover { border-color: #3b82f6; color: #60a5fa; background: rgba(30,41,59,.8); }
+        .item:hover { border-color: #3b82f6; color: #60a5fa; }
     </style>
 </head>
 <body>
 
     <div class="wrap">
-        <h1>Секретный Кинотеатр</h1>
-        
-        <div class="bar">
-            <input type="text" id="url" placeholder="Вставь ссылку или ID аниме со Shikimori...">
-            <button onclick="load()">Смотреть</button>
-        </div>
+        <h1>Аниме Билдер</h1>
+        <div class="subtitle">Генерация прямых потоков в обход блокировок и TDR</div>
 
         <div class="grid">
             <div class="card">
-                <img id="img" src="https://shikimori.io/">
+                <img id="img" src="https://shikimori.io">
                 <div id="title" class="title">Загрузка...</div>
-                <div id="desc" class="desc">Выберите тайтл из списка или вставьте ссылку / ID.</div>
-            </div>
-            <div class="play">
-                <iframe id="ifr" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+                <div id="desc" class="desc">Выберите тайтл из списка ниже.</div>
+                
+                <!-- Блок сгенерированных билдером ссылок -->
+                <div class="btn-group">
+                    <a id="shikiLink" href="#" target="_blank" class="watch-btn">Запустить через Shiki Watch 🚀</a>
+                    <a id="kodikLink" href="#" target="_blank" class="watch-btn secondary">Открыть прямой плеер Kodik 📺</a>
+                </div>
             </div>
         </div>
 
@@ -70,63 +60,51 @@
     </div>
 
     <script>
-        // ТВОЙ МАССИВ ID: Пиши сюда аниме через запятую, скрипт сам свяжет их с переменной
-        const ids = [5114, 52991]
+        // ТВОЙ МАССИВ ID (Алхимик и Фрирен)
+        const ids =;
 
-        // Переменная автоматически берет ПЕРВЫЙ id из твоего массива ids сверху
-        let currentId = ids;
+        let currentId = ids[0];
 
-        // Функция сборки сайта по значению из currentId
         async function updatePage() {
-            if (!currentId) return; // Защита, если массив пустой
+            if (!currentId) return;
             try {
-                // Вуаля! Склеиваем домен с переменной через обычные плюсы
-                document.getElementById('ifr').src = 'https://shikimori.io/' + currentId + '/video_online';
+                // БИЛДЕР: Генерируем два разных метода обхода!
+                // 1. Ссылка на Шикимори для твоего расширения
+                document.getElementById('shikiLink').href = 'https://shikimori.io' + currentId + '/video_online';
                 
-                const res = await fetch('https://shikimori.io/' + currentId);
+                // 2. Прямая ссылка на зеркало Kodik, которая откроется на вечном чистом плеере без тяжелого интерфейса сайта
+                document.getElementById('kodikLink').href = 'https://vko.life' + currentId;
+                
+                // Легкий одиночный запрос за инфой
+                const res = await fetch('https://shikimori.io' + currentId);
                 const data = await res.json();
                 
-                document.getElementById('img').src = data.image ? 'https://shikimori.io/' + data.image.original : 'https://shikimori.io/';
+                document.getElementById('img').src = data.image ? 'https://shikimori.io' + data.image.original : 'https://shikimori.io';
                 document.getElementById('title').innerText = data.russian || data.name;
                 document.getElementById('desc').innerText = data.description ? data.description.replace(/\[.*?\]/g, "") : "Описание пусто.";
             } catch (e) {
-                console.error("Ошибка API Shikimori:", e);
-                document.getElementById('title').innerText = "Аниме загружено";
+                console.error(e);
             }
         }
 
-        // Кнопка «Смотреть» для ручного ввода
-        function load() {
-            const val = document.getElementById('url').value.trim();
-            const m = val.match(/\/animes\/[z]?(\d+)/);
-            
-            if (m) currentId = m;
-            else if (!isNaN(val) && val !== "") currentId = val;
-            else return;
-
+        function selectAnime(id) {
+            currentId = id;
             updatePage();
         }
 
-        // Переключалка при выборе аниме из списка снизу
-        function selectAnime(id) {
-            currentId = id; // Привязываем выбранный ID к переменной
-            updatePage();   // Обновляем плеер и карточку
-        }
-
-        // Авто-построение плиток выбора
+        // Рендерим кнопки выбора
         ids.forEach(id => {
             const div = document.createElement('div');
-            div.className = 'item'; div.innerText = 'ID: ' + id;
+            div.className = 'item'; div.innerText = 'ID: ' + id; 
             div.onclick = () => selectAnime(id);
             document.getElementById('box').appendChild(div);
             
+            // Подгружаем русские имена
             fetch('https://shikimori.io' + id)
                 .then(r => r.json())
-                .then(d => div.innerText = d.russian || d.name)
-                .catch(e => console.error(e));
+                .then(d => div.innerText = d.russian || d.name);
         });
 
-        // Запуск при открытии страницы
         updatePage();
     </script>
 
