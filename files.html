@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Архив файлов</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px auto;
+            max-width: 750px;
+            padding: 0 20px;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        h1 {
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+            font-size: 1.8rem;
+        }
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            padding: 14px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .file-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+        }
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+        .file-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+        .file-name {
+            font-weight: 500;
+            color: #334155;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        .file-name:hover {
+            color: #2563eb;
+        }
+        .download-btn {
+            background-color: #2563eb;
+            color: #fff;
+            text-decoration: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: background-color 0.1s ease;
+            white-space: nowrap;
+        }
+        .download-btn:hover {
+            background-color: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Доступные файлы для скачивания</h1>
+
+    <ul class="file-list">
+        <li class="file-item">
+            <div class="file-info">
+                <span class="file-icon">📦</span>
+                <a href="https://veniamin668.github.io/files/RadeonMod.zip" class="file-name" download>RadeonMod.zip</a>
+            </div>
+            <a href="https://veniamin668.github.io/files/RadeonMod.zip" class="download-btn" download>Скачать</a>
+        </li>
+        <li class="file-item">
+            <div class="file-info">
+                <span class="file-icon">⚙️</span>
+                <a href="https://veniamin668.github.io/files/TgWsProxy_windows.exe" class="file-name" download>TgWsProxy_windows.exe</a>
+            </div>
+            <a href="https://veniamin668.github.io/files/TgWsProxy_windows.exe" class="download-btn" download>Скачать</a>
+        </li>
+        <li class="file-item">
+            <div class="file-info">
+                <span class="file-icon">📦</span>
+                <a href="https://veniamin668.github.io/files/WinNTSetup.zip" class="file-name" download>WinNTSetup.zip</a>
+            </div>
+            <a href="https://veniamin668.github.io/files/WinNTSetup.zip" class="download-btn" download>Скачать</a>
+        </li>
+        <li class="file-item">
+            <div class="file-info">
+                <span class="file-icon">⚙️</span>
+                <a href="https://veniamin668.github.io/files/Zapret2Setup_21_1_1_2.exe" class="file-name" download>Zapret2Setup_21_1_1_2.exe</a>
+            </div>
+            <a href="https://veniamin668.github.io/files/Zapret2Setup_21_1_1_2.exe" class="download-btn" download>Скачать</a>
+        </li>
+        <li class="file-item">
+            <div class="file-info">
+                <span class="file-icon">⚙️</span>
+                <a href="https://veniamin668.github.io/files/flux-setup.exe" class="file-name" download>flux-setup.exe</a>
+            </div>
+            <a href="https://veniamin668.github.io/files/flux-setup.exe" class="download-btn" download>Скачать</a>
+        </li>
+        <li class="file-item">
+            <div class="file-info">
+                <span class="file-icon">📦</span>
+                <a href="https://veniamin668.github.io/files/kuro_ax_build_1028[EXTREME].zip" class="file-name" download>kuro_ax_build_1028[EXTREME].zip</a>
+            </div>
+            <a href="https://veniamin668.github.io/files/kuro_ax_build_1028[EXTREME].zip" class="download-btn" download>Скачать</a>
+        </li>
+        <li class="file-item">
+            <div class="file-info">
+                <span class="file-icon">💾</span>
+                <a href="https://veniamin668.github.io/files/lk-garden_Q.img" class="file-name" download>lk-garden_Q.img</a>
+            </div>
+            <a href="https://veniamin668.github.io/files/lk-garden_Q.img" class="download-btn" download>Скачать</a>
+        </li>
+        <li class="file-item">
+            <div class="file-info">
+                <span class="file-icon">📦</span>
+                <a href="https://veniamin668.github.io/files/magisk-v28.1.zip" class="file-name" download>magisk-v28.1.zip</a>
+            </div>
+            <a href="https://veniamin668.github.io/files/magisk-v28.1.zip" class="download-btn" download>Скачать</a>
+        </li>
+        <li class="file-item">
+            <div class="file-info">
+                <span class="file-icon">🤖</span>
+                <a href="https://veniamin668.github.io/files/mark.via.gp-20260410.apk" class="file-name" download>mark.via.gp-20260410.apk</a>
+            </div>
+            <a href="https://veniamin668.github.io/files/mark.via.gp-20260410.apk" class="download-btn" download>Скачать</a>
+        </li>
+        <li class="file-item">
+            <div class="file-info">
+                <span class="file-icon">📜</span>
+                <a href="https://veniamin668.github.io/files/winutil.ps1" class="file-name" download>winutil.ps1</a>
+            </div>
+            <a href="https://veniamin668.github.io/files/winutil.ps1" class="download-btn" download>Скачать</a>
+        </li>
+        <li class="file-item">
+            <div class="file-info">
+                <span class="file-icon">📦</span>
+                <a href="https://veniamin668.github.io/files/zapret_module.zip" class="file-name" download>zapret_module.zip</a>
+            </div>
+            <a href="https://veniamin668.github.io/files/zapret_module.zip" class="download-btn" download>Скачать</a>
+        </li>
+        <li class="file-item">
+            <div class="file-info">
+                <span class="file-icon">📄</span>
+                <a href="https://veniamin668.github.io/files/zen-mods-export.json" class="file-name" download>zen-mods-export.json</a>
+            </div>
+            <a href="https://veniamin668.github.io/files/zen-mods-export.json" class="download-btn" download>Скачать</a>
+        </li>
+    </ul>
+
+</body>
+</html>
