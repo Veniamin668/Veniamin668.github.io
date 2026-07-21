@@ -5,132 +5,175 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Архив файлов</title>
     <style>
+        :root {
+            --glow-color: #3b82f6;
+            --bg-gradient: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 70%);
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.6;
-            margin: 40px auto;
+            margin: 0;
+            padding: 40px 20px;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
             max-width: 750px;
-            padding: 0 20px;
-            background-color: #0f172a;
-            color: #e2e8f0;
         }
+
         h1 {
-            color: #f8fafc;
-            border-bottom: 2px solid #334155;
-            padding-bottom: 12px;
-            font-size: 1.8rem;
+            color: #ffffff;
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 30px;
+            letter-spacing: -0.025em;
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
         }
+
+        /* Поле поиска в стиле Glassmorphism */
         .search-box {
             width: 100%;
-            padding: 12px 16px;
-            margin-bottom: 20px;
-            background-color: #1e293b;
-            border: 1px solid #475569;
-            border-radius: 8px;
+            padding: 14px 20px;
+            margin-bottom: 25px;
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
             font-size: 1rem;
-            color: #fff;
+            color: #ffffff;
             box-sizing: border-box;
             outline: none;
-            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
         }
+
         .search-box:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            border-color: var(--glow-color);
+            background: rgba(30, 41, 59, 0.6);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.25), inset 0 0 10px rgba(59, 130, 246, 0.1);
         }
+
         .search-box::placeholder {
             color: #64748b;
         }
+
         .file-list {
             list-style: none;
             padding: 0;
-            margin: 20px 0;
+            margin: 0;
         }
+
+        /* Элементы списка с эффектом размытия и анимацией hover */
         .file-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #1e293b;
-            padding: 14px 20px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            border: 1px solid #334155;
-            transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 16px 24px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         .file-item:hover {
             transform: translateY(-2px);
-            border-color: #475569;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            background: rgba(30, 41, 59, 0.7);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 15px rgba(59, 130, 246, 0.1);
         }
+
         .file-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             min-width: 0;
         }
+
         .file-icon {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             flex-shrink: 0;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
         }
+
         .file-name {
             font-weight: 500;
             color: #e2e8f0;
             text-decoration: none;
             word-break: break-all;
-            transition: color 0.1s ease;
+            font-size: 0.95rem;
+            transition: color 0.15s ease;
         }
-        .file-name:hover {
+
+        .file-item:hover .file-name {
             color: #60a5fa;
         }
+
+        /* Современная минималистичная кнопка */
         .download-btn {
-            background-color: #2563eb;
-            color: #fff;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff;
             text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 6px;
+            padding: 8px 18px;
+            border-radius: 8px;
             font-size: 0.85rem;
-            font-weight: 500;
-            transition: background-color 0.1s ease;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            transition: all 0.15s ease;
             white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
+
         .download-btn:hover {
-            background-color: #3b82f6;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            transform: scale(1.03);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35), 0 0 12px rgba(59, 130, 246, 0.2);
         }
+
+        .download-btn:active {
+            transform: scale(0.98);
+        }
+
         .no-results {
             text-align: center;
-            padding: 20px;
+            padding: 30px;
             color: #64748b;
             font-style: italic;
+            background: rgba(30, 41, 59, 0.2);
+            border-radius: 12px;
+            border: 1px dashed rgba(255, 255, 255, 0.05);
         }
     </style>
 </head>
 <body>
 
-    <h1>Доступные файлы для скачивания</h1>
-    
-    <input type="text" id="search" class="search-box" placeholder="Поиск файлов...">
+    <div class="container">
+        <h1>Архив компонентов</h1>
+        
+        <input type="text" id="search" class="search-box" placeholder="Поиск файлов по названию...">
 
-    <ul class="file-list" id="fileList"></ul>
+        <ul class="file-list" id="fileList"></ul>
+    </div>
 
     <script>
         const BASE_URL = 'https://veniamin668.github.io/files/';
 
-        // Сюда автоматика будет прописывать файлы
+        // Сюда автоматика гитхаба будет прописывать файлы
         const fileNames = [
-            "BFTSetup1.7.exe",
-            "BoosterX.exe",
-            "RadeonMod.zip",
-            "TgWsProxy_windows.exe",
-            "UNISOC_GENERAL_LICENSE_V1.0-EN_US",
-            "WinNTSetup.zip",
-            "Zapret2Setup_21_1_1_2.exe",
-            "flux-setup.exe",
-            "kuro_ax_build_1028[EXTREME].zip",
-            "lk-garden_Q.img",
-            "magisk-v28.1.zip",
-            "mark.via.gp-20260410.apk",
-            "winutil.ps1",
-            "zapret_module.zip",
-            "zen-mods-export.json"
+            // FILE_LIST_PLACEHOLDER
         ];
 
         function getIcon(filename) {
@@ -150,7 +193,7 @@
             listElement.innerHTML = '';
 
             if (list.length === 0) {
-                listElement.innerHTML = `<div class="no-results">Файлы не найдены</div>`;
+                listElement.innerHTML = `<div class="no-results">Совпадений не найдено</div>`;
                 return;
             }
 
