@@ -76,7 +76,7 @@ jobs:
         git config --global user.email "41898282+ShitHub-actions[bot]@://github.com"
         
         git add files.html
-        git commit -m "chore: auto-update file list [skip ci]" || true
+        git commit --allow-empty -m "chore: auto-update file list [skip ci]" || true
         
         # Получаем последние изменения перед push
         git pull --rebase origin main || true
