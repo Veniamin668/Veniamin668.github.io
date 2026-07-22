@@ -169,7 +169,7 @@
 <body>
 
     <div class="container">
-        <h1>Архив компонентов</h1>
+        <h1>test</h1>
         
         <input type="text" id="search" class="search-box" placeholder="Поиск файлов и папок...">
 
@@ -177,10 +177,10 @@
     </div>
 
     <script>
-        const BASE_URL = 'https://veniamin668.github.io/files/';
+        const BASE_URL = 'https://veniamin668.github.io/files/test/'
 
         // Сюда автоматика гитхаба будет прописывать структурированные объекты
-        const fileData = [\n            {"name": "test", "size": "-", "type": "folder"},\n            {"name": "ARch-on-unisoc.png", "size": "126.5 КБ", "type": "file"},\n            {"name": "BFTSetup1.7.exe", "size": "31.9 МБ", "type": "file"},\n            {"name": "BoosterX.exe", "size": "37.8 МБ", "type": "file"},\n            {"name": "Explorer++.exe", "size": "3.9 МБ", "type": "file"},\n            {"name": "flux-setup.exe", "size": "673.3 КБ", "type": "file"},\n            {"name": "kuro_ax_build_1028[EXTREME].zip", "size": "9.4 МБ", "type": "file"},\n            {"name": "LAN_Atheros_1.0.0.29.zip", "size": "4.6 МБ", "type": "file"},\n            {"name": "lk-garden_Q.img", "size": "1.3 МБ", "type": "file"},\n            {"name": "magisk-v28.1.zip", "size": "11.2 МБ", "type": "file"},\n            {"name": "mark.via.gp-20260410.apk", "size": "4.0 МБ", "type": "file"},\n            {"name": "MAS_AIO.cmd", "size": "725.3 КБ", "type": "file"},\n            {"name": "MikuWallpapers.apk", "size": "25.9 МБ", "type": "file"},\n            {"name": "MIO-KITCHEN-4.1.9-win.7z", "size": "97.9 МБ", "type": "file"},\n            {"name": "mitigations-check.txt", "size": "0.1 КБ", "type": "file"},\n            {"name": "npp.8.9.6.4.Installer.x64.exe", "size": "6.6 МБ", "type": "file"},\n            {"name": "OOSU10.exe", "size": "76.1 МБ", "type": "file"},\n            {"name": "RadeonMod.zip", "size": "676.5 КБ", "type": "file"},\n            {"name": "README.md", "size": "3.7 КБ", "type": "file"},\n            {"name": "Redact-Setup.exe", "size": "65.9 МБ", "type": "file"},\n            {"name": "server.bat", "size": "0.3 КБ", "type": "file"},\n            {"name": "TgWsProxy_windows.exe", "size": "20.0 МБ", "type": "file"},\n            {"name": "ultra_opt.bat", "size": "4.7 КБ", "type": "file"},\n            {"name": "UNISOC_GENERAL_LICENSE_V1.0-EN_US", "size": "7.1 КБ", "type": "file"},\n            {"name": "unisuck-logo.txt", "size": "0.0 КБ", "type": "file"},\n            {"name": "vibranceGUI.exe", "size": "776.0 КБ", "type": "file"},\n            {"name": "WinNTSetup.zip", "size": "3.4 МБ", "type": "file"},\n            {"name": "winutil.ps1", "size": "569.0 КБ", "type": "file"},\n            {"name": "zapret_module.zip", "size": "367.8 КБ", "type": "file"},\n            {"name": "Zapret2Setup_21_1_1_2.exe", "size": "32.5 МБ", "type": "file"},\n            {"name": "Zed-x86_64.exe", "size": "81.4 МБ", "type": "file"},\n            {"name": "zen-mods-export.json", "size": "8.4 КБ", "type": "file"},\n            {"name": "zen.installer.exe", "size": "90.3 МБ", "type": "file"}\n        ];
+        const fileData = [\n            {"name": "test.txt", "size": "0.0 КБ", "type": "file"}\n        ];
 
         function getIcon(item) {
             if (item.type === 'folder') return '📂';
