@@ -178,4 +178,9 @@ jobs:
         git add files.html
         git add files/ -A
         git commit -m "chore: auto-update file lists [skip ci]"
-        git push
+        
+        # Получаем последние изменения перед push
+        git pull --rebase origin main
+        
+        # Пушим обновления
+        git push origin main
