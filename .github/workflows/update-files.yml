@@ -138,34 +138,30 @@ jobs:
         // 2. Обновляем главный files.html в корне (с папками и файлами)
         const rootFileDataJson = generateFileDataJson(rootFiles, rootFolders);
         updateHtmlFile(baseHtmlPath, rootFileDataJson, null);
-        console.log("✓ Обновлен главный files.html в корне");
+        console.log("✓ Обновлен главный /files.html с всеми файлами и папками");
 
-        // 3. Обновляем files.html внутри папки /files (копия для главной страницы)
-        const filesMainHtmlPath = path.join(folderPath, "index.html");
-        updateHtmlFile(filesMainHtmlPath, rootFileDataJson, null);
-        console.log("✓ Создан /files/index.html");
-
-        // 4. Обрабатываем каждую подпапку
+        // 3. Обрабатываем каждую подпапку
         rootFolders.forEach(folder => {
           const subFolderPath = path.join(folderPath, folder.name);
           const htmlFileName = folder.name + ".html";
           const htmlFilePath = path.join(subFolderPath, htmlFileName);
 
+          // Получаем ВСЕ файлы из подпапки
           const subFiles = getFilesInFolder(subFolderPath);
           const subFileDataJson = generateFileDataJsonFilesOnly(subFiles);
 
           // Если файл НЕ существует, СОЗДАЕМ его
           if (!fs.existsSync(htmlFilePath)) {
             updateHtmlFile(htmlFilePath, subFileDataJson, folder.name);
-            console.log(`✓ СОЗДАН новый ${htmlFileName} в /files/${folder.name}/`);
+            console.log(`✓ СОЗДАН новый ${htmlFileName} в /files/${folder.name}/ с ${subFiles.length} файлами`);
           } else {
             // Если файл существует, обновляем данные о файлах
             updateHtmlFile(htmlFilePath, subFileDataJson, folder.name);
-            console.log(`✓ Обновлен /files/${folder.name}/${htmlFileName}`);
+            console.log(`✓ Обновлен /files/${folder.name}/${htmlFileName} с ${subFiles.length} файлами`);
           }
         });
 
-        console.log("Все файлы успешно обновлены!");
+        console.log("Все файлы успешно проанализированы и обновлены!");
         '
 
     - name: Commit and Push Changes
