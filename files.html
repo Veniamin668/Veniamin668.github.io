@@ -100,6 +100,7 @@
             align-items: center;
             gap: 16px;
             min-width: 0;
+            flex: 1;
         }
 
         .file-icon {
@@ -141,6 +142,7 @@
             white-space: nowrap;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
         }
 
         .download-btn:hover {
@@ -169,7 +171,7 @@
     <div class="container">
         <h1>Архив компонентов</h1>
         
-        <input type="text" id="search" class="search-box" placeholder="Поиск файлов по названию...">
+        <input type="text" id="search" class="search-box" placeholder="Поиск файлов и папок...">
 
         <ul class="file-list" id="fileList"></ul>
     </div>
@@ -179,41 +181,44 @@
 
         // Сюда автоматика гитхаба будет прописывать структурированные объекты
         const fileData = [
-            {"name": "ARch-on-unisoc.png", "size": "126.5 КБ"},
-            {"name": "BFTSetup1.7.exe", "size": "31.9 МБ"},
-            {"name": "BoosterX.exe", "size": "37.8 МБ"},
-            {"name": "Explorer++.exe", "size": "3.9 МБ"},
-            {"name": "flux-setup.exe", "size": "673.3 КБ"},
-            {"name": "kuro_ax_build_1028[EXTREME].zip", "size": "9.4 МБ"},
-            {"name": "LAN_Atheros_1.0.0.29.zip", "size": "4.6 МБ"},
-            {"name": "lk-garden_Q.img", "size": "1.3 МБ"},
-            {"name": "magisk-v28.1.zip", "size": "11.2 МБ"},
-            {"name": "mark.via.gp-20260410.apk", "size": "4.0 МБ"},
-            {"name": "MAS_AIO.cmd", "size": "725.3 КБ"},
-            {"name": "MikuWallpapers.apk", "size": "25.9 МБ"},
-            {"name": "MIO-KITCHEN-4.1.9-win.7z", "size": "97.9 МБ"},
-            {"name": "mitigations-check.txt", "size": "0.1 КБ"},
-            {"name": "npp.8.9.6.4.Installer.x64.exe", "size": "6.6 МБ"},
-            {"name": "OOSU10.exe", "size": "76.1 МБ"},
-            {"name": "RadeonMod.zip", "size": "676.5 КБ"},
-            {"name": "README.md", "size": "3.7 КБ"},
-            {"name": "Redact-Setup.exe", "size": "65.9 МБ"},
-            {"name": "server.bat", "size": "0.3 КБ"},
-            {"name": "TgWsProxy_windows.exe", "size": "20.0 МБ"},
-            {"name": "ultra_opt.bat", "size": "4.7 КБ"},
-            {"name": "UNISOC_GENERAL_LICENSE_V1.0-EN_US", "size": "7.1 КБ"},
-            {"name": "unisuck-logo.txt", "size": "0.0 КБ"},
-            {"name": "vibranceGUI.exe", "size": "776.0 КБ"},
-            {"name": "WinNTSetup.zip", "size": "3.4 МБ"},
-            {"name": "winutil.ps1", "size": "569.0 КБ"},
-            {"name": "zapret_module.zip", "size": "367.8 КБ"},
-            {"name": "Zapret2Setup_21_1_1_2.exe", "size": "32.5 МБ"},
-            {"name": "Zed-x86_64.exe", "size": "81.4 МБ"},
-            {"name": "zen-mods-export.json", "size": "8.4 КБ"},
-            {"name": "zen.installer.exe", "size": "90.3 МБ"}
+            {"name": "ARch-on-unisoc.png", "size": "126.5 КБ", "type": "file"},
+            {"name": "BFTSetup1.7.exe", "size": "31.9 МБ", "type": "file"},
+            {"name": "BoosterX.exe", "size": "37.8 МБ", "type": "file"},
+            {"name": "Explorer++.exe", "size": "3.9 МБ", "type": "file"},
+            {"name": "flux-setup.exe", "size": "673.3 КБ", "type": "file"},
+            {"name": "kuro_ax_build_1028[EXTREME].zip", "size": "9.4 МБ", "type": "file"},
+            {"name": "LAN_Atheros_1.0.0.29.zip", "size": "4.6 МБ", "type": "file"},
+            {"name": "lk-garden_Q.img", "size": "1.3 МБ", "type": "file"},
+            {"name": "magisk-v28.1.zip", "size": "11.2 МБ", "type": "file"},
+            {"name": "mark.via.gp-20260410.apk", "size": "4.0 МБ", "type": "file"},
+            {"name": "MAS_AIO.cmd", "size": "725.3 КБ", "type": "file"},
+            {"name": "MikuWallpapers.apk", "size": "25.9 МБ", "type": "file"},
+            {"name": "MIO-KITCHEN-4.1.9-win.7z", "size": "97.9 МБ", "type": "file"},
+            {"name": "mitigations-check.txt", "size": "0.1 КБ", "type": "file"},
+            {"name": "npp.8.9.6.4.Installer.x64.exe", "size": "6.6 МБ", "type": "file"},
+            {"name": "OOSU10.exe", "size": "76.1 МБ", "type": "file"},
+            {"name": "RadeonMod.zip", "size": "676.5 КБ", "type": "file"},
+            {"name": "README.md", "size": "3.7 КБ", "type": "file"},
+            {"name": "Redact-Setup.exe", "size": "65.9 МБ", "type": "file"},
+            {"name": "server.bat", "size": "0.3 КБ", "type": "file"},
+            {"name": "TgWsProxy_windows.exe", "size": "20.0 МБ", "type": "file"},
+            {"name": "ultra_opt.bat", "size": "4.7 КБ", "type": "file"},
+            {"name": "UNISOC_GENERAL_LICENSE_V1.0-EN_US", "size": "7.1 КБ", "type": "file"},
+            {"name": "unisuck-logo.txt", "size": "0.0 КБ", "type": "file"},
+            {"name": "vibranceGUI.exe", "size": "776.0 КБ", "type": "file"},
+            {"name": "WinNTSetup.zip", "size": "3.4 МБ", "type": "file"},
+            {"name": "winutil.ps1", "size": "569.0 КБ", "type": "file"},
+            {"name": "zapret_module.zip", "size": "367.8 КБ", "type": "file"},
+            {"name": "Zapret2Setup_21_1_1_2.exe", "size": "32.5 МБ", "type": "file"},
+            {"name": "Zed-x86_64.exe", "size": "81.4 МБ", "type": "file"},
+            {"name": "zen-mods-export.json", "size": "8.4 КБ", "type": "file"},
+            {"name": "zen.installer.exe", "size": "90.3 МБ", "type": "file"}
         ];
 
-        function getIcon(filename) {
+        function getIcon(item) {
+            if (item.type === 'folder') return '📂';
+            
+            const filename = item.name;
             const ext = filename.split('.').pop().toLowerCase();
             if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext)) return '📦';
             if (['exe', 'msi'].includes(ext)) return '⚙️';
@@ -234,29 +239,43 @@
                 return;
             }
 
-            list.forEach(file => {
-                const fileUrl = BASE_URL + file.name;
-                const icon = getIcon(file.name);
-
+            list.forEach(item => {
+                const icon = getIcon(item);
                 const li = document.createElement('li');
                 li.className = 'file-item';
-                li.innerHTML = `
-                    <div class="file-info">
-                        <span class="file-icon">${icon}</span>
-                        <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
-                            <a href="${fileUrl}" class="file-name" download>${file.name}</a>
-                            <span class="file-size">Размер: ${file.size}</span>
+
+                if (item.type === 'folder') {
+                    const folderUrl = BASE_URL + item.name + '/' + item.name + '.html';
+                    li.innerHTML = `
+                        <div class="file-info">
+                            <span class="file-icon">${icon}</span>
+                            <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                                <a href="${folderUrl}" class="file-name">${item.name}</a>
+                                <span class="file-size">Папка</span>
+                            </div>
                         </div>
-                    </div>
-                    <a href="${fileUrl}" class="download-btn" download>Скачать</a>
-                `;
+                        <a href="${folderUrl}" class="download-btn">Открыть →</a>
+                    `;
+                } else {
+                    const fileUrl = BASE_URL + item.name;
+                    li.innerHTML = `
+                        <div class="file-info">
+                            <span class="file-icon">${icon}</span>
+                            <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                                <a href="${fileUrl}" class="file-name" download>${item.name}</a>
+                                <span class="file-size">Размер: ${item.size}</span>
+                            </div>
+                        </div>
+                        <a href="${fileUrl}" class="download-btn" download>Скачать</a>
+                    `;
+                }
                 listElement.appendChild(li);
             });
         }
 
         document.getElementById('search').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
-            const filtered = fileData.filter(file => file.name.toLowerCase().includes(query));
+            const filtered = fileData.filter(item => item.name.toLowerCase().includes(query));
             renderFiles(filtered);
         });
 
