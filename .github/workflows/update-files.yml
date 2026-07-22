@@ -172,6 +172,7 @@ jobs:
           exit 0
         fi
         
-        git add files.html files/**/*.html
+        git add files.html
+        git add files/ -A
         git commit -m "chore: auto-update file lists [skip ci]"
         git push
