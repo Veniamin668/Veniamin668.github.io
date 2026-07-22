@@ -118,8 +118,8 @@ jobs:
               `<h1>${folderName}</h1>`
             );
             htmlContent = htmlContent.replace(
-              /const BASE_URL = .*/,
-              `const BASE_URL = '\''https://veniamin668.github.io/files/${folderName}/'\''`
+              /const BASE_URL = '\''https:\/\/veniamin668\.github\.io\/files\/'\''(;)?/,
+              `const BASE_URL = '\''https://veniamin668.github.io/files/${folderName}/'\''$1`
             );
           }
 
@@ -131,14 +131,21 @@ jobs:
           fs.writeFileSync(htmlPath, htmlContent, "utf8");
         }
 
-        // 1. Обновляем главный files.html (с папками и файлами)
+        // 1. Получаем файлы и папки из /files
         const rootFiles = getFilesInFolder(folderPath);
         const rootFolders = getFoldersInFolder(folderPath);
+        
+        // 2. Обновляем главный files.html в корне (с папками и файлами)
         const rootFileDataJson = generateFileDataJson(rootFiles, rootFolders);
         updateHtmlFile(baseHtmlPath, rootFileDataJson, null);
-        console.log("✓ Обновлен главный files.html");
+        console.log("✓ Обновлен главный files.html в корне");
 
-        // 2. Обрабатываем каждую подпапку
+        // 3. Обновляем files.html внутри папки /files (копия для главной страницы)
+        const filesMainHtmlPath = path.join(folderPath, "index.html");
+        updateHtmlFile(filesMainHtmlPath, rootFileDataJson, null);
+        console.log("✓ Создан /files/index.html");
+
+        // 4. Обрабатываем каждую подпапку
         rootFolders.forEach(folder => {
           const subFolderPath = path.join(folderPath, folder.name);
           const htmlFileName = folder.name + ".html";
@@ -150,11 +157,11 @@ jobs:
           // Если файл НЕ существует, СОЗДАЕМ его
           if (!fs.existsSync(htmlFilePath)) {
             updateHtmlFile(htmlFilePath, subFileDataJson, folder.name);
-            console.log(`✓ СОЗДАН новый ${htmlFileName}`);
+            console.log(`✓ СОЗДАН новый ${htmlFileName} в /files/${folder.name}/`);
           } else {
             // Если файл существует, обновляем данные о файлах
             updateHtmlFile(htmlFilePath, subFileDataJson, folder.name);
-            console.log(`✓ Обновлен ${htmlFileName}`);
+            console.log(`✓ Обновлен /files/${folder.name}/${htmlFileName}`);
           }
         });
 
