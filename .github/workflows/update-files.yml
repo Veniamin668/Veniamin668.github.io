@@ -23,66 +23,155 @@ jobs:
       with:
         node-version: '20'
 
-    - name: Generate File List JSON with Sizes (Node.js)
+    - name: Generate File List and Manage Folders
       run: |
         node -e '
         const fs = require("fs");
         const path = require("path");
 
         const folderPath = path.join(process.cwd(), "files");
+        const baseHtmlPath = path.join(process.cwd(), "files.html");
+        const baseHtmlContent = fs.readFileSync(baseHtmlPath, "utf8");
+
         if (!fs.existsSync(folderPath)) {
           console.error("Папка files не найдена");
           process.exit(1);
         }
 
-        const files = fs.readdirSync(folderPath).filter(f => !f.startsWith("."));
-        files.sort((a, b) => a.localeCompare(b));
-
-        const result = files.map(file => {
-          const filePath = path.join(folderPath, file);
-          const stats = fs.statSync(filePath);
-          const bytes = stats.size;
-          
-          let sizeStr = "";
+        // Функция для форматирования размера
+        function formatSize(bytes) {
           if (bytes >= 1048576) {
-            sizeStr = (bytes / 1048576).toFixed(1) + " МБ";
+            return (bytes / 1048576).toFixed(1) + " МБ";
           } else {
-            sizeStr = (bytes / 1024).toFixed(1) + " КБ";
+            return (bytes / 1024).toFixed(1) + " КБ";
           }
+        }
+
+        // Функция для получения только файлов (не папок)
+        function getFilesInFolder(folderPath) {
+          const items = fs.readdirSync(folderPath).filter(f => !f.startsWith("."));
+          items.sort((a, b) => a.localeCompare(b));
           
-          return { name: file, size: sizeStr };
+          const files = [];
+          items.forEach(item => {
+            const itemPath = path.join(folderPath, item);
+            const stats = fs.statSync(itemPath);
+            
+            if (!stats.isDirectory()) {
+              files.push({
+                name: item,
+                size: formatSize(stats.size),
+                type: "file"
+              });
+            }
+          });
+          return files;
+        }
+
+        // Функция для получения папок
+        function getFoldersInFolder(folderPath) {
+          const items = fs.readdirSync(folderPath).filter(f => !f.startsWith("."));
+          items.sort((a, b) => a.localeCompare(b));
+          
+          const folders = [];
+          items.forEach(item => {
+            const itemPath = path.join(folderPath, item);
+            const stats = fs.statSync(itemPath);
+            
+            if (stats.isDirectory()) {
+              folders.push({
+                name: item,
+                type: "folder"
+              });
+            }
+          });
+          return folders;
+        }
+
+        // Функция для генерации JSON строки с файлами и папками
+        function generateFileDataJson(files, folders) {
+          const all = [...folders, ...files];
+          return all.map(item => {
+            if (item.type === "folder") {
+              return `{"name": "${item.name}", "size": "-", "type": "folder"}`;
+            } else {
+              return `{"name": "${item.name}", "size": "${item.size}", "type": "file"}`;
+            }
+          }).join(",\\n            ");
+        }
+
+        // Функция для генерации JSON строки только с файлами (для подпапок)
+        function generateFileDataJsonFilesOnly(files) {
+          return files.map(item => {
+            return `{"name": "${item.name}", "size": "${item.size}", "type": "file"}`;
+          }).join(",\\n            ");
+        }
+
+        // Функция для обновления HTML файла
+        function updateHtmlFile(htmlPath, fileDataJson, folderName = null) {
+          let htmlContent = baseHtmlContent;
+          
+          // Если это подпапка, обновляем заголовок и URL
+          if (folderName) {
+            htmlContent = htmlContent.replace(
+              /<h1>Архив компонентов<\/h1>/,
+              `<h1>${folderName}</h1>`
+            );
+            htmlContent = htmlContent.replace(
+              /const BASE_URL = .*/,
+              `const BASE_URL = '\''https://veniamin668.github.io/files/${folderName}/'\''`
+            );
+          }
+
+          htmlContent = htmlContent.replace(
+            /const fileData = \[([\s\S]*?)\];/,
+            `const fileData = [\\n            ${fileDataJson}\\n        ];`
+          );
+
+          fs.writeFileSync(htmlPath, htmlContent, "utf8");
+        }
+
+        // 1. Обновляем главный files.html (с папками и файлами)
+        const rootFiles = getFilesInFolder(folderPath);
+        const rootFolders = getFoldersInFolder(folderPath);
+        const rootFileDataJson = generateFileDataJson(rootFiles, rootFolders);
+        updateHtmlFile(baseHtmlPath, rootFileDataJson, null);
+        console.log("✓ Обновлен главный files.html с папками и файлами");
+
+        // 2. Обрабатываем каждую подпапку
+        rootFolders.forEach(folder => {
+          const subFolderPath = path.join(folderPath, folder.name);
+          const htmlFileName = folder.name + ".html";
+          const htmlFilePath = path.join(subFolderPath, htmlFileName);
+
+          const subFiles = getFilesInFolder(subFolderPath);
+          const subFileDataJson = generateFileDataJsonFilesOnly(subFiles);
+
+          // Если файл не существует, создаем его
+          if (!fs.existsSync(htmlFilePath)) {
+            updateHtmlFile(htmlFilePath, subFileDataJson, folder.name);
+            console.log(`✓ Создан новый ${htmlFileName}`);
+          } else {
+            // Если файл существует, обновляем данные о файлах
+            updateHtmlFile(htmlFilePath, subFileDataJson, folder.name);
+            console.log(`✓ Обновлен ${htmlFileName}`);
+          }
         });
 
-        const formattedList = result.map(item => {
-          return `{"name": "${item.name}", "size": "${item.size}"}`;
-        }).join(",\n            ");
-
-        const htmlPath = path.join(process.cwd(), "files.html");
-        let htmlContent = fs.readFileSync(htmlPath, "utf8");
-        
-        // Очищаем старый массив, если он уже был заполнен, возвращая метку на место
-        htmlContent = htmlContent.replace(/const fileData = \[\s*([\s\S]*?)\s*\];/g, "const fileData = [\n            // FILE_LIST_PLACEHOLDER\n        ];");
-        
-        // Вставляем свежий список файлов
-        htmlContent = htmlContent.replace(/\/\/ FILE_LIST_PLACEHOLDER/, formattedList);
-        
-        fs.writeFileSync(htmlPath, htmlContent, "utf8");
-        console.log("Файл files.html успешно перезаписан!");
+        console.log("Все файлы успешно обновлены!");
         '
 
-    - name: Force Commit and Push via Trash File
+    - name: Commit and Push Changes
       run: |
         git config --global user.name "ShitHub-actions[bot]"
         git config --global user.email "41898282+ShitHub-actions[bot]@://github.com"
         
-        # Создаем мусорный файл, чтобы Git точно зафиксировал активность
-        echo "trash" > trigger.txt
-        git add files.html trigger.txt
-        git commit -m "chore: force update index cache [skip ci]"
+        # Проверяем, есть ли изменения
+        if [ -z "$(git status --porcelain)" ]; then
+          echo "Нет изменений для коммита"
+          exit 0
+        fi
         
-        # Сразу же удаляем мусорный файл во втором коммите, чтобы не засорять репу
-        git rm trigger.txt
-        git commit -m "chore: clean up trigger file [skip ci]"
-        
-        # Выталкиваем оба коммита на сервер
+        git add files.html files/**/*.html
+        git commit -m "chore: auto-update file lists [skip ci]"
         git push
