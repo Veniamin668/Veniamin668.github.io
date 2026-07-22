@@ -70,19 +70,22 @@ jobs:
         console.log("Файл files.html успешно перезаписан!");
         '
 
-    - name: Force Commit and Push via Trash File
+    - name: Commit and Push Changes
       run: |
         git config --global user.name "ShitHub-actions[bot]"
         git config --global user.email "41898282+ShitHub-actions[bot]@://github.com"
         
-        # Создаем мусорный файл, чтобы Git точно зафиксировал активность
-        echo "trash" > trigger.txt
-        git add files.html trigger.txt
-        git commit -m "chore: force update index cache [skip ci]"
+        # Проверяем, есть ли изменения
+        if [ -z "$(git status --porcelain)" ]; then
+          echo "Нет изменений для коммита"
+          exit 0
+        fi
         
-        # Сразу же удаляем мусорный файл во втором коммите, чтобы не засорять репу
-        git rm trigger.txt
-        git commit -m "chore: clean up trigger file [skip ci]"
+        git add files.html
+        git commit -m "chore: auto-update file list [skip ci]"
         
-        # Выталкиваем оба коммита на сервер
-        git push
+        # Получаем последние изменения перед push
+        git pull --rebase origin main
+        
+        # Пушим обновления
+        git push origin main
