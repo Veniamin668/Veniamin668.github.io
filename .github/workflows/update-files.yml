@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'files/**'
+        '.github/workflows/update-files.yml'
       - 'files.html'
   workflow_dispatch:
 
