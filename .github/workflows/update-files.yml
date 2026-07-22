@@ -138,23 +138,20 @@ jobs:
         updateHtmlFile(baseHtmlPath, rootFileDataJson, null);
         console.log("✓ Обновлен главный files.html с папками и файлами");
 
-        // 2. Обрабатываем каждую подпапку
+        // 2. Обрабатываем каждую подпапку (ТОЛЬКО если она уже существует)
         rootFolders.forEach(folder => {
           const subFolderPath = path.join(folderPath, folder.name);
           const htmlFileName = folder.name + ".html";
           const htmlFilePath = path.join(subFolderPath, htmlFileName);
 
-          const subFiles = getFilesInFolder(subFolderPath);
-          const subFileDataJson = generateFileDataJsonFilesOnly(subFiles);
-
-          // Если файл не существует, создаем его
-          if (!fs.existsSync(htmlFilePath)) {
-            updateHtmlFile(htmlFilePath, subFileDataJson, folder.name);
-            console.log(`✓ Создан новый ${htmlFileName}`);
-          } else {
-            // Если файл существует, обновляем данные о файлах
+          // Проверяем, существует ли HTML файл уже
+          if (fs.existsSync(htmlFilePath)) {
+            const subFiles = getFilesInFolder(subFolderPath);
+            const subFileDataJson = generateFileDataJsonFilesOnly(subFiles);
             updateHtmlFile(htmlFilePath, subFileDataJson, folder.name);
             console.log(`✓ Обновлен ${htmlFileName}`);
+          } else {
+            console.log(`⊘ Пропущена папка ${folder.name} (HTML файл не создан)`);
           }
         });
 
