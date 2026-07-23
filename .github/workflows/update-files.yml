@@ -72,8 +72,8 @@ jobs:
 
     - name: Commit and Push Changes
       run: |
-        git config --global user.name "ShitHub-actions[bot]"
-        git config --global user.email "41898282+ShitHub-actions[bot]@://github.com"
+        git config --global user.name "GitHub-actions[bot]"
+        git config --global user.email "41898282+GitHub-actions[bot]@://github.com"
         
         git add files.html
         git commit --allow-empty -m "chore: auto-update file list [skip ci]" || true
