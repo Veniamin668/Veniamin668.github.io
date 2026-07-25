@@ -1,4 +1,4 @@
-name: Auto Update File List
+name: Auto Update File List with Metadata
 
 on:
   push:
@@ -18,16 +18,23 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    # Устанавливаем ffmpeg (включает ffprobe) и exiftool
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg exiftool
+
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
 
-    - name: Generate File List JSON with Sizes (Node.js)
+    - name: Generate File List with Metadata (Node.js)
       run: |
         node -e '
         const fs = require("fs");
         const path = require("path");
+        const { execSync } = require("child_process");
 
         const folderPath = path.join(process.cwd(), "files");
         if (!fs.existsSync(folderPath)) {
@@ -35,6 +42,72 @@ jobs:
           process.exit(1);
         }
 
+        // Определение типа по расширению
+        function getFileType(ext) {
+          const imageExts = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp"];
+          const videoExts = [".mp4", ".avi", ".mov", ".mkv", ".webm", ".flv", ".wmv"];
+          const audioExts = [".mp3", ".wav", ".flac", ".aac", ".ogg", ".m4a"];
+          const lower = ext.toLowerCase();
+          if (imageExts.includes(lower)) return "image";
+          if (videoExts.includes(lower)) return "video";
+          if (audioExts.includes(lower)) return "audio";
+          return "other";
+        }
+
+        // Извлечение метаданных для изображений (exiftool)
+        function getImageMetadata(filePath) {
+          try {
+            const output = execSync(`exiftool -CreateDate -ImageWidth -ImageHeight -j "${filePath}"`, { encoding: "utf8" });
+            const data = JSON.parse(output)[0];
+            return {
+              width: data.ImageWidth || null,
+              height: data.ImageHeight || null,
+              date: data.CreateDate || null
+            };
+          } catch (e) {
+            return { width: null, height: null, date: null };
+          }
+        }
+
+        // Извлечение метаданных для видео/аудио (ffprobe)
+        function getMediaMetadata(filePath) {
+          try {
+            const output = execSync(`ffprobe -v quiet -print_format json -show_format -show_streams "${filePath}"`, { encoding: "utf8" });
+            const data = JSON.parse(output);
+            const format = data.format;
+            const streams = data.streams;
+
+            let duration = format.duration ? parseFloat(format.duration) : null;
+            let bitrate = format.bit_rate ? parseInt(format.bit_rate) : null;
+            let sampleRate = null;
+            let width = null, height = null;
+            let codec = null;
+
+            for (const stream of streams) {
+              if (stream.codec_type === "video") {
+                width = stream.width || null;
+                height = stream.height || null;
+                codec = stream.codec_name || null;
+              } else if (stream.codec_type === "audio") {
+                sampleRate = stream.sample_rate ? parseInt(stream.sample_rate) : null;
+                if (!codec) codec = stream.codec_name || null;
+              }
+            }
+
+            return {
+              duration: duration,
+              bitrate: bitrate,
+              sampleRate: sampleRate,
+              width: width,
+              height: height,
+              codec: codec
+            };
+          } catch (e) {
+            return { duration: null, bitrate: null, sampleRate: null, width: null, height: null, codec: null };
+          }
+        }
+
+        // Чтение файлов
         const files = fs.readdirSync(folderPath).filter(f => !f.startsWith("."));
         files.sort((a, b) => a.localeCompare(b));
 
@@ -42,44 +115,54 @@ jobs:
           const filePath = path.join(folderPath, file);
           const stats = fs.statSync(filePath);
           const bytes = stats.size;
-          
+          const ext = path.extname(file);
+          const type = getFileType(ext);
+
           let sizeStr = "";
           if (bytes >= 1048576) {
             sizeStr = (bytes / 1048576).toFixed(1) + " МБ";
           } else {
             sizeStr = (bytes / 1024).toFixed(1) + " КБ";
           }
-          
-          return { name: file, size: sizeStr };
+
+          let metadata = {};
+          if (type === "image") {
+            metadata = getImageMetadata(filePath);
+          } else if (type === "video" || type === "audio") {
+            metadata = getMediaMetadata(filePath);
+          }
+
+          return {
+            name: file,
+            size: sizeStr,
+            type: type,
+            metadata: metadata,
+            modified: stats.mtime.toISOString()
+          };
         });
 
-        const formattedList = result.map(item => {
-          return `{"name": "${item.name}", "size": "${item.size}"}`;
-        }).join(",\n            ");
+        // Формируем JSON-строку для вставки
+        const jsonStr = JSON.stringify(result, null, 2);
 
+        // Заменяем содержимое fileData в HTML
         const htmlPath = path.join(process.cwd(), "files.html");
         let htmlContent = fs.readFileSync(htmlPath, "utf8");
-        
-        // Очищаем старый массив, если он уже был заполнен, возвращая метку на место
-        htmlContent = htmlContent.replace(/const fileData = \[\s*([\s\S]*?)\s*\];/g, "const fileData = [\n            // FILE_LIST_PLACEHOLDER\n        ];");
-        
-        // Вставляем свежий список файлов
-        htmlContent = htmlContent.replace(/\/\/ FILE_LIST_PLACEHOLDER/, formattedList);
-        
+
+        htmlContent = htmlContent.replace(
+          /const fileData = \[\s*([\s\S]*?)\s*\];/,
+          `const fileData = ${jsonStr};`
+        );
+
         fs.writeFileSync(htmlPath, htmlContent, "utf8");
-        console.log("Файл files.html успешно перезаписан!");
+        console.log("✅ files.html обновлён с метаданными!");
         '
 
     - name: Commit and Push Changes
       run: |
         git config --global user.name "github-actions[bot]"
-        git config --global user.email "41898282+github-actions[bot]@://github.com"
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
         
         git add files.html
-        git commit --allow-empty -m "chore: auto-update file list [skip ci]" || true
-        
-        # Получаем последние изменения перед push
+        git commit --allow-empty -m "chore: auto-update file list with metadata [skip ci]" || true
         git pull --rebase origin main || true
-        
-        # Пушим обновления
         git push origin main || true
