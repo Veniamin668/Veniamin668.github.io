@@ -39,7 +39,6 @@
             text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
         }
 
-        /* Поле поиска в стиле Glassmorphism */
         .search-box {
             width: 100%;
             padding: 14px 20px;
@@ -73,7 +72,6 @@
             margin: 0;
         }
 
-        /* Элементы списка с эффектом размытия и анимацией hover */
         .file-item {
             display: flex;
             align-items: center;
@@ -86,6 +84,8 @@
             border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.05);
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .file-item:hover {
@@ -97,15 +97,24 @@
 
         .file-info {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 16px;
             min-width: 0;
+            flex: 1;
         }
 
         .file-icon {
             font-size: 1.6rem;
             flex-shrink: 0;
             filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+            margin-top: 2px;
+        }
+
+        .file-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
         }
 
         .file-name {
@@ -121,13 +130,27 @@
             color: #60a5fa;
         }
 
+        .file-meta {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 16px;
+        }
+
+        .file-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
         .file-size {
             font-size: 0.78rem;
             color: #64748b;
             font-weight: 500;
+            margin-left: 4px;
         }
 
-        /* Современная минималистичная кнопка */
         .download-btn {
             background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             color: #ffffff;
@@ -141,6 +164,8 @@
             white-space: nowrap;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+            align-self: center;
         }
 
         .download-btn:hover {
@@ -167,9 +192,9 @@
 <body>
 
     <div class="container">
-        <h1>Архив компонентов</h1>
+        <h1>📁 Архив компонентов</h1>
         
-        <input type="text" id="search" class="search-box" placeholder="Поиск файлов по названию...">
+        <input type="text" id="search" class="search-box" placeholder="🔍 Поиск файлов по названию...">
 
         <ul class="file-list" id="fileList"></ul>
     </div>
@@ -177,57 +202,79 @@
     <script>
         const BASE_URL = 'https://veniamin668.github.io/files/';
 
-        // Сюда автоматика гитхаба будет прописывать структурированные объекты
+        // ⬇️ Сюда workflow будет вставлять расширенный массив с метаданными
         const fileData = [
-            {"name": "ARch-on-unisoc.png", "size": "126.5 КБ"},
-            {"name": "BFTSetup1.7.exe", "size": "31.9 МБ"},
-            {"name": "BoosterX.exe", "size": "37.8 МБ"},
-            {"name": "CrystalDiskInfo9_9_1Aoi.exe", "size": "61.9 МБ"},
-            {"name": "devka_10min.jpg", "size": "101.1 КБ"},
-            {"name": "Explorer++.exe", "size": "3.9 МБ"},
-            {"name": "flux-setup.exe", "size": "673.3 КБ"},
-            {"name": "huy_dovolen.jpg", "size": "201.1 КБ"},
-            {"name": "kuro_ax_build_1028[EXTREME].zip", "size": "9.4 МБ"},
-            {"name": "LAN_Atheros_1.0.0.29.zip", "size": "4.6 МБ"},
-            {"name": "lk-garden_Q.img", "size": "1.3 МБ"},
-            {"name": "magisk-v28.1.zip", "size": "11.2 МБ"},
-            {"name": "mark.via.gp-20260410.apk", "size": "4.0 МБ"},
-            {"name": "MAS_AIO.cmd", "size": "725.3 КБ"},
-            {"name": "MikuWallpapers.apk", "size": "25.9 МБ"},
-            {"name": "MIO-KITCHEN-4.1.9-win.7z", "size": "97.9 МБ"},
-            {"name": "mitigations-check.txt", "size": "0.1 КБ"},
-            {"name": "npp.8.9.6.4.Installer.x64.exe", "size": "6.6 МБ"},
-            {"name": "OOSU10.exe", "size": "76.1 МБ"},
-            {"name": "RadeonMod.zip", "size": "676.5 КБ"},
-            {"name": "README.md", "size": "3.7 КБ"},
-            {"name": "Redact-Setup.exe", "size": "65.9 МБ"},
-            {"name": "rewriting_rust.jpg", "size": "128.0 КБ"},
-            {"name": "server.bat", "size": "0.3 КБ"},
-            {"name": "sosal1.mp4", "size": "6.6 МБ"},
-            {"name": "TgWsProxy_windows.exe", "size": "20.0 МБ"},
-            {"name": "ultra_opt.bat", "size": "4.7 КБ"},
-            {"name": "UNISOC_GENERAL_LICENSE_V1.0-EN_US", "size": "7.1 КБ"},
-            {"name": "unisuck-logo.txt", "size": "0.0 КБ"},
-            {"name": "vibranceGUI.exe", "size": "776.0 КБ"},
-            {"name": "WinNTSetup.zip", "size": "3.4 МБ"},
-            {"name": "winutil.ps1", "size": "569.0 КБ"},
-            {"name": "zapret_module.zip", "size": "367.8 КБ"},
-            {"name": "Zapret2Setup_21_1_1_2.exe", "size": "32.5 МБ"},
-            {"name": "Zed-x86_64.exe", "size": "81.4 МБ"},
-            {"name": "zen-mods-export.json", "size": "8.4 КБ"},
-            {"name": "zen.installer.exe", "size": "90.3 МБ"}
+            // FILE_DATA_PLACEHOLDER
         ];
 
-        function getIcon(filename) {
-            const ext = filename.split('.').pop().toLowerCase();
+        // Функция для получения иконки в зависимости от типа и расширения
+        function getIcon(file) {
+            const type = file.type || 'other';
+            const name = file.name;
+            const ext = name.split('.').pop().toLowerCase();
+
+            if (type === 'image') return '🖼️';
+            if (type === 'video') return '🎬';
+            if (type === 'audio') return '🎵';
+            // fallback по расширению
             if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext)) return '📦';
             if (['exe', 'msi'].includes(ext)) return '⚙️';
             if (['apk'].includes(ext)) return '🤖';
             if (['img', 'iso'].includes(ext)) return '💾';
             if (['ps1', 'bat', 'sh', 'cmd'].includes(ext)) return '📜';
             if (['json', 'xml', 'txt', 'md'].includes(ext)) return '📄';
-            if (['png', 'jpg', 'jpeg', 'gif', 'svg'].includes(ext)) return '🖼️';
             return '📁';
+        }
+
+        // Форматирование длительности (секунды → MM:SS или ЧЧ:ММ:СС)
+        function formatDuration(sec) {
+            if (!sec) return '—';
+            const h = Math.floor(sec / 3600);
+            const m = Math.floor((sec % 3600) / 60);
+            const s = Math.floor(sec % 60);
+            if (h > 0) return `${h}ч ${m}м ${s}с`;
+            if (m > 0) return `${m}м ${s}с`;
+            return `${s}с`;
+        }
+
+        // Генерация HTML-строки с метаданными
+        function renderMetadata(file) {
+            const m = file.metadata || {};
+            const type = file.type;
+
+            if (type === 'image') {
+                const dim = (m.width && m.height) ? `${m.width}×${m.height}` : '—';
+                const date = m.date ? new Date(m.date).toLocaleDateString() : (file.modified ? new Date(file.modified).toLocaleDateString() : '—');
+                return `
+                    <span>📐 ${dim}</span>
+                    <span>📅 ${date}</span>
+                `;
+            }
+
+            if (type === 'video') {
+                const dur = formatDuration(m.duration);
+                const res = (m.width && m.height) ? `${m.width}×${m.height}` : '—';
+                const codec = m.codec || '—';
+                return `
+                    <span>⏱ ${dur}</span>
+                    <span>📐 ${res}</span>
+                    <span>🎞 ${codec}</span>
+                `;
+            }
+
+            if (type === 'audio') {
+                const dur = formatDuration(m.duration);
+                const sr = m.sampleRate ? (m.sampleRate / 1000).toFixed(1) + ' кГц' : '—';
+                const br = m.bitrate ? (m.bitrate / 1000).toFixed(0) + ' кбит/с' : '—';
+                return `
+                    <span>⏱ ${dur}</span>
+                    <span>🎵 ${sr}</span>
+                    <span>📊 ${br}</span>
+                `;
+            }
+
+            // Для остальных – только размер (уже есть, но можно ничего не выводить)
+            return '';
         }
 
         function renderFiles(list) {
@@ -241,16 +288,20 @@
 
             list.forEach(file => {
                 const fileUrl = BASE_URL + file.name;
-                const icon = getIcon(file.name);
+                const icon = getIcon(file);
+                const metaHtml = renderMetadata(file);
 
                 const li = document.createElement('li');
                 li.className = 'file-item';
                 li.innerHTML = `
                     <div class="file-info">
                         <span class="file-icon">${icon}</span>
-                        <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+                        <div class="file-details">
                             <a href="${fileUrl}" class="file-name" download>${file.name}</a>
-                            <span class="file-size">Размер: ${file.size}</span>
+                            <div class="file-meta">
+                                <span>📦 ${file.size}</span>
+                                ${metaHtml}
+                            </div>
                         </div>
                     </div>
                     <a href="${fileUrl}" class="download-btn" download>Скачать</a>
