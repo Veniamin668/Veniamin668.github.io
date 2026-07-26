@@ -79,6 +79,7 @@
             --neon-color: #a78bfa;
             --neon-glow: rgba(167,139,250,0.3);
         }
+
         * { box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -96,7 +97,7 @@
         }
         .container { width:100%; max-width:900px; }
 
-        /* ШАПКА */
+        /* ===== ШАПКА ===== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -229,7 +230,7 @@
         .theme-preset-btn:hover { transform:scale(1.15); }
         .theme-preset-btn.active { border-color:#fff; box-shadow:0 0 12px var(--neon-glow); }
 
-        /* СТАТИСТИКА ВЕРХНЯЯ */
+        /* ===== СТАТИСТИКА, ВКЛАДКИ, ФИЛЬТРЫ, ПОИСК ===== */
         .stats-bar {
             display: flex;
             flex-wrap: wrap;
@@ -277,7 +278,6 @@
         .bar-btn.accent { background: var(--accent); color:#fff; border-color:var(--accent); }
         .bar-btn.accent:hover { background: var(--accent-hover); }
 
-        /* ВКЛАДКИ */
         .tabs {
             display: flex;
             gap: 4px;
@@ -298,7 +298,6 @@
         .tab-content.active { display:block; }
         @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 
-        /* СТАТИСТИКА (вкладка) упрощённая */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -315,7 +314,7 @@
         .stats-card h3 {
             margin:0 0 12px; color:var(--text-secondary); font-size:1rem; display:flex; align-items:center; gap:8px;
         }
-        .stats-card canvas { max-height:200px; max-width:100%; }
+        .stats-card canvas { max-height:250px; max-width:100%; }
         .stats-summary {
             display: flex;
             gap: 20px;
@@ -334,7 +333,6 @@
         }
         .stats-summary .stat-item .label { font-size:0.8rem; color:var(--text-muted); }
 
-        /* СОРТИРОВКА, ФИЛЬТРЫ, ПОИСК */
         .sort-controls {
             display: flex;
             gap: 6px;
@@ -393,7 +391,7 @@
         .search-box:focus { border-color:var(--accent); box-shadow:0 0 15px var(--accent-glow); }
         .search-box::placeholder { color:var(--text-dim); }
 
-        /* СПИСОК ФАЙЛОВ */
+        /* ===== СПИСОК ФАЙЛОВ ===== */
         .file-list { list-style:none; padding:0; margin:0; }
         .file-item {
             display: flex;
@@ -491,142 +489,250 @@
             text-align:center; padding:30px; color:var(--text-dim); font-style:italic; background:var(--bg-item); border-radius:12px; border:1px dashed var(--border-color);
         }
 
-        /* ===== МОДАЛЬНОЕ ОКНО ===== */
+        /* ===== МОДАЛЬНОЕ ОКНО (упрощённое для стабильности) ===== */
         .modal-overlay {
-            display:none; position:fixed; inset:0; background:var(--modal-overlay); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); z-index:1000; align-items:center; justify-content:center; padding:20px; opacity:0; transition:opacity 0.3s ease;
+            display:none;
+            position:fixed;
+            inset:0;
+            background:var(--modal-overlay);
+            backdrop-filter:blur(20px);
+            -webkit-backdrop-filter:blur(20px);
+            z-index:1000;
+            align-items:center;
+            justify-content:center;
+            padding:20px;
+            opacity:0;
+            transition:opacity 0.3s ease;
         }
         .modal-overlay.active { display:flex; opacity:1; }
         .modal-content {
-            background:var(--bg-modal); backdrop-filter:blur(16px); border-radius:20px; max-width:95vw; max-height:95vh; padding:20px; position:relative; border:1px solid var(--border-color); box-shadow:0 30px 80px var(--shadow-color); transform:scale(0.95); transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease; opacity:0; display:flex; flex-direction:column; align-items:center; overflow:hidden;
+            background:var(--bg-modal);
+            backdrop-filter:blur(16px);
+            border-radius:20px;
+            max-width:95vw;
+            max-height:95vh;
+            padding:20px;
+            position:relative;
+            border:1px solid var(--border-color);
+            box-shadow:0 30px 80px var(--shadow-color);
+            transform:scale(0.95);
+            transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+            opacity:0;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            overflow:hidden;
         }
         .modal-overlay.active .modal-content { transform:scale(1); opacity:1; }
         .modal-content.closing { transform:scale(0.95); opacity:0; transition:all 0.2s ease; }
 
         .modal-close {
-            position:absolute; top:16px; right:20px; width:44px; height:44px; border-radius:50%; border:none; background:var(--btn-preview-bg); color:var(--text-secondary); font-size:1.4rem; cursor:pointer; transition:0.2s; display:flex; align-items:center; justify-content:center; z-index:10; backdrop-filter:blur(4px);
+            position:absolute;
+            top:16px;
+            right:20px;
+            width:44px;
+            height:44px;
+            border-radius:50%;
+            border:none;
+            background:var(--btn-preview-bg);
+            color:var(--text-secondary);
+            font-size:1.4rem;
+            cursor:pointer;
+            transition:0.2s;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            z-index:10;
+            backdrop-filter:blur(4px);
         }
         .modal-close:hover { transform:rotate(90deg) scale(1.1); }
         .modal-filename {
-            margin:12px 0 4px; font-size:0.95rem; color:var(--text-muted); text-align:center; max-width:100%; word-break:break-all;
+            margin:12px 0 4px;
+            font-size:0.95rem;
+            color:var(--text-muted);
+            text-align:center;
+            max-width:100%;
+            word-break:break-all;
         }
-        .modal-download-btn {
-            position:absolute; bottom:20px; right:20px; z-index:10; background:var(--accent); border:none; border-radius:30px; padding:8px 16px; color:#fff; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; gap:8px; box-shadow:0 4px 12px var(--accent-glow); transition:0.2s;
-        }
-        .modal-download-btn:hover { transform:scale(1.05); background:var(--accent-hover); }
 
-        /* ===== ПЛЕЕР (БАЗОВЫЙ) ===== */
+        /* ===== ПЛЕЕР (базовый) ===== */
         .player-wrapper {
-            position:relative; width:100%; max-width:900px; background:#000; border-radius:12px; overflow:hidden; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+            position:relative;
+            width:100%;
+            max-width:900px;
+            background:#000;
+            border-radius:12px;
+            overflow:hidden;
+            aspect-ratio:16/9;
+            display:flex;
+            align-items:center;
+            justify-content:center;
         }
         .player-wrapper video, .player-wrapper audio {
-            width:100%; height:100%; object-fit:contain; background:#000; display:block;
+            width:100%;
+            height:100%;
+            object-fit:contain;
+            background:#000;
+            display:block;
         }
         .player-wrapper video::-webkit-media-controls,
         .player-wrapper audio::-webkit-media-controls { display:none!important; }
 
         .custom-controls {
-            position:absolute; bottom:0; left:0; right:0; padding:16px 20px 12px; background:linear-gradient(transparent, rgba(0,0,0,0.8) 70%); backdrop-filter:blur(8px); display:flex; flex-direction:column; gap:8px; opacity:0; transition:opacity 0.3s; pointer-events:none;
+            position:absolute;
+            bottom:0;
+            left:0;
+            right:0;
+            padding:16px 20px 12px;
+            background:linear-gradient(transparent, rgba(0,0,0,0.8) 70%);
+            backdrop-filter:blur(8px);
+            display:flex;
+            flex-direction:column;
+            gap:8px;
+            opacity:0;
+            transition:opacity 0.3s;
+            pointer-events:none;
         }
         .player-wrapper:hover .custom-controls,
         .custom-controls.show { opacity:1; pointer-events:auto; }
         .controls-row {
-            display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+            display:flex;
+            align-items:center;
+            gap:12px;
+            flex-wrap:wrap;
         }
         .controls-row .btn-ctrl {
-            background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer; padding:4px 6px; transition:0.15s; border-radius:6px; display:flex; align-items:center; justify-content:center; width:32px; height:32px; background:rgba(255,255,255,0.05); backdrop-filter:blur(4px);
+            background:none;
+            border:none;
+            color:#fff;
+            font-size:1.2rem;
+            cursor:pointer;
+            padding:4px 6px;
+            transition:0.15s;
+            border-radius:6px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            width:32px;
+            height:32px;
+            background:rgba(255,255,255,0.05);
+            backdrop-filter:blur(4px);
         }
         .controls-row .btn-ctrl:hover { background:rgba(255,255,255,0.15); transform:scale(1.05); }
         .progress-container {
-            flex:1; display:flex; align-items:center; gap:10px; min-width:100px;
+            flex:1;
+            display:flex;
+            align-items:center;
+            gap:10px;
+            min-width:100px;
         }
         .progress-bar {
-            flex:1; height:4px; background:rgba(255,255,255,0.2); border-radius:2px; cursor:pointer; position:relative; transition:height 0.15s;
+            flex:1;
+            height:4px;
+            background:rgba(255,255,255,0.2);
+            border-radius:2px;
+            cursor:pointer;
+            position:relative;
+            transition:height 0.15s;
         }
         .progress-bar:hover { height:6px; }
         .progress-fill {
-            height:100%; background:var(--accent); border-radius:2px; width:0%; transition:width 0.05s linear; box-shadow:0 0 10px var(--accent-glow);
+            height:100%;
+            background:var(--accent);
+            border-radius:2px;
+            width:0%;
+            transition:width 0.05s linear;
+            box-shadow:0 0 10px var(--accent-glow);
         }
         .progress-time {
-            font-size:0.8rem; color:#ccc; font-variant-numeric:tabular-nums; min-width:70px; text-align:center; letter-spacing:0.3px;
+            font-size:0.8rem;
+            color:#ccc;
+            font-variant-numeric:tabular-nums;
+            min-width:70px;
+            text-align:center;
+            letter-spacing:0.3px;
         }
 
         .volume-control {
-            display:flex; align-items:center; gap:6px;
+            display:flex;
+            align-items:center;
+            gap:6px;
         }
         .volume-control input[type="range"] {
-            width:50px; height:4px; -webkit-appearance:none; background:rgba(255,255,255,0.2); border-radius:2px; outline:none; cursor:pointer;
+            width:50px;
+            height:4px;
+            -webkit-appearance:none;
+            background:rgba(255,255,255,0.2);
+            border-radius:2px;
+            outline:none;
+            cursor:pointer;
         }
         .volume-control input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance:none; width:12px; height:12px; border-radius:50%; background:var(--accent); border:none; cursor:pointer;
+            -webkit-appearance:none;
+            width:12px;
+            height:12px;
+            border-radius:50%;
+            background:var(--accent);
+            border:none;
+            cursor:pointer;
         }
         .volume-control .vol-icon {
-            color:#fff; font-size:1rem; width:24px; text-align:center; cursor:pointer;
+            color:#fff;
+            font-size:1rem;
+            width:24px;
+            text-align:center;
+            cursor:pointer;
         }
-
         .fullscreen-btn {
-            background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer; padding:4px 6px; border-radius:6px; transition:0.15s; background:rgba(255,255,255,0.05); backdrop-filter:blur(4px); width:32px; height:32px; display:flex; align-items:center; justify-content:center;
+            background:none;
+            border:none;
+            color:#fff;
+            font-size:1.2rem;
+            cursor:pointer;
+            padding:4px 6px;
+            border-radius:6px;
+            transition:0.15s;
+            background:rgba(255,255,255,0.05);
+            backdrop-filter:blur(4px);
+            width:32px;
+            height:32px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
         }
         .fullscreen-btn:hover { background:rgba(255,255,255,0.15); transform:scale(1.05); }
 
         .pizza-spinner {
-            position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:4rem; animation:spin 1.5s linear infinite; z-index:5; opacity:0; transition:opacity 0.3s; filter:drop-shadow(0 0 20px rgba(255,200,0,0.3)); pointer-events:none;
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+            font-size:4rem;
+            animation:spin 1.5s linear infinite;
+            z-index:5;
+            opacity:0;
+            transition:opacity 0.3s;
+            filter:drop-shadow(0 0 20px rgba(255,200,0,0.3));
+            pointer-events:none;
         }
         .pizza-spinner.show { opacity:1; }
         @keyframes spin { from { transform:translate(-50%,-50%) rotate(0deg) scale(1); } to { transform:translate(-50%,-50%) rotate(360deg) scale(1.1); } }
 
         .buffering-indicator {
-            position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:40px; height:40px; border:4px solid rgba(255,255,255,0.2); border-top-color:var(--accent); border-radius:50%; animation:spin 1s linear infinite; display:none; z-index:5;
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+            width:40px;
+            height:40px;
+            border:4px solid rgba(255,255,255,0.2);
+            border-top-color:var(--accent);
+            border-radius:50%;
+            animation:spin 1s linear infinite;
+            display:none;
+            z-index:5;
         }
         .buffering-indicator.show { display:block; }
-
-        /* ===== ФОТО СЛАЙД-ШОУ ===== */
-        .photo-slide {
-            position:absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.5s ease;
-        }
-        .photo-slide.active { opacity:1; }
-        .photo-slide img {
-            max-width:100%; max-height:100%; object-fit:contain; user-select:none;
-        }
-
-        .slide-nav {
-            position:absolute; top:50%; transform:translateY(-50%); z-index:5; background:rgba(0,0,0,0.5); border:none; border-radius:50%; width:44px; height:44px; color:#fff; font-size:1.6rem; cursor:pointer; backdrop-filter:blur(4px); transition:0.2s; display:flex; align-items:center; justify-content:center;
-        }
-        .slide-nav:hover { background:rgba(255,255,255,0.2); transform:scale(1.1); }
-        .slide-nav.prev { left:12px; }
-        .slide-nav.next { right:12px; }
-
-        .slide-counter {
-            position:absolute; bottom:12px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.5); padding:4px 12px; border-radius:20px; color:#fff; font-size:0.8rem; backdrop-filter:blur(4px); z-index:5; pointer-events:none;
-        }
-
-        .slide-auto-btn {
-            position:absolute; bottom:12px; right:12px; background:rgba(0,0,0,0.5); border:none; border-radius:50%; width:36px; height:36px; color:#fff; font-size:1rem; cursor:pointer; backdrop-filter:blur(4px); transition:0.2s; z-index:5; display:flex; align-items:center; justify-content:center;
-        }
-        .slide-auto-btn:hover { background:rgba(255,255,255,0.2); }
-
-        /* ===== ЗУМ И ПАН (для одиночного фото) ===== */
-        .photo-container {
-            width:100%; height:100%; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative;
-        }
-        .photo-container img {
-            max-width:100%; max-height:100%; object-fit:contain; transition:transform 0.2s ease; cursor:grab;
-        }
-        .photo-container img:active { cursor:grabbing; }
-        .photo-controls {
-            position:absolute; bottom:20px; left:50%; transform:translateX(-50%); display:flex; gap:12px; background:rgba(0,0,0,0.5); backdrop-filter:blur(8px); padding:8px 16px; border-radius:40px; border:1px solid rgba(255,255,255,0.1); opacity:0; transition:opacity 0.3s; z-index:6;
-        }
-        .player-wrapper:hover .photo-controls,
-        .photo-controls.show { opacity:1; }
-        .photo-controls button {
-            background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer; padding:4px 8px; transition:0.2s;
-        }
-        .photo-controls button:hover { transform:scale(1.2); color:var(--accent); }
-
-        /* ===== РЕДАКТОР ===== */
-        .editor-textarea {
-            width:100%; min-height:300px; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary); font-family:'Fira Code', monospace; font-size:0.9rem; padding:16px; resize:vertical; outline:none;
-        }
-        .editor-textarea:focus { border-color:var(--accent); }
 
         /* ===== АДАПТИВ ===== */
         @media (max-width:600px) {
@@ -648,13 +754,12 @@
             .volume-control input[type="range"] { width:40px; }
             .fullscreen-btn { width:28px; height:28px; font-size:1rem; }
             .stats-grid { grid-template-columns:1fr; }
-            .slide-nav { width:32px; height:32px; font-size:1.2rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- ШАПКА -->
+        <!-- ===== ШАПКА ===== -->
         <div class="header">
             <h1 class="glow-title">📁 Архив файлов</h1>
             <div class="top-controls">
@@ -695,11 +800,11 @@
             </div>
         </div>
 
-        <!-- СТАТИСТИКА ВЕРХНЯЯ -->
+        <!-- ===== СТАТИСТИКА ===== -->
         <div class="stats-bar">
             <div class="stats" id="stats">
-                <span><i class="fas fa-file"></i> Всего: <strong id="totalFiles">0</strong></span>
-                <span><i class="fas fa-hdd"></i> Общий размер: <strong id="totalSize">0</strong></span>
+                <span><i class="fas fa-file"></i> <span id="totalLabel">Всего</span>: <strong id="totalFiles">0</strong></span>
+                <span><i class="fas fa-hdd"></i> <span id="sizeLabel">Общий размер</span>: <strong id="totalSize">0</strong></span>
             </div>
             <div class="bar-actions">
                 <a href="https://github.com/veniamin668/veniamin668.github.io/archive/refs/heads/main.zip" class="bar-btn accent" target="_blank"><i class="fas fa-file-archive"></i> ZIP (весь репо)</a>
@@ -708,13 +813,13 @@
             </div>
         </div>
 
-        <!-- ВКЛАДКИ -->
+        <!-- ===== ВКЛАДКИ ===== -->
         <div class="tabs" id="tabs">
             <button class="tab-btn active" data-tab="files"><i class="fas fa-list"></i> Файлы</button>
             <button class="tab-btn" data-tab="stats"><i class="fas fa-chart-pie"></i> Статистика</button>
         </div>
 
-        <!-- ВКЛАДКА "ФАЙЛЫ" -->
+        <!-- ===== ВКЛАДКА "ФАЙЛЫ" ===== -->
         <div class="tab-content active" id="tab-files">
             <div class="sort-controls">
                 <span class="sort-label"><i class="fas fa-arrow-up-wide-short"></i> Сортировка:</span>
@@ -722,6 +827,7 @@
                 <button class="sort-btn" data-sort="size">По размеру</button>
                 <button class="sort-btn" data-sort="date">По дате</button>
             </div>
+
             <div class="filters" id="filters">
                 <button class="filter-btn active" data-filter="all">Все</button>
                 <button class="filter-btn" data-filter="image"><i class="fas fa-image"></i> Фото</button>
@@ -729,11 +835,13 @@
                 <button class="filter-btn" data-filter="audio"><i class="fas fa-music"></i> Аудио</button>
                 <button class="filter-btn" data-filter="other"><i class="fas fa-file"></i> Прочее</button>
             </div>
+
             <input type="text" id="search" class="search-box" placeholder="🔍 Поиск файлов по названию...">
+
             <ul class="file-list" id="fileList"></ul>
         </div>
 
-        <!-- ВКЛАДКА "СТАТИСТИКА" (упрощённая) -->
+        <!-- ===== ВКЛАДКА "СТАТИСТИКА" ===== -->
         <div class="tab-content" id="tab-stats">
             <div class="stats-summary" id="statsSummary">
                 <div class="stat-item">
@@ -766,298 +874,17 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО -->
+    <!-- ===== МОДАЛЬНОЕ ОКНО ===== -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-content" id="modalContent"></div>
     </div>
 
     <script>
-        // ===== ДАННЫЕ =====
+        // ===== ДАННЫЕ (ВСТАВЛЯЮТСЯ WORKFLOW) =====
         const BASE_URL = 'https://veniamin668.github.io/files/';
         const fileData = [
-  {
-    "name": "ARch-on-unisoc.png",
-    "size": "126.5 КБ",
-    "type": "image",
-    "metadata": {
-      "width": 1279,
-      "height": 1023,
-      "date": null
-    },
-    "modified": "2026-07-26T09:05:11.806Z"
-  },
-  {
-    "name": "BFTSetup1.7.exe",
-    "size": "31.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:11.839Z"
-  },
-  {
-    "name": "BoosterX.exe",
-    "size": "37.8 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:11.886Z"
-  },
-  {
-    "name": "CrystalDiskInfo9_9_1Aoi.exe",
-    "size": "61.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:11.963Z"
-  },
-  {
-    "name": "devka_10min.jpg",
-    "size": "101.1 КБ",
-    "type": "image",
-    "metadata": {
-      "width": 1280,
-      "height": 591,
-      "date": null
-    },
-    "modified": "2026-07-26T09:05:12.620Z"
-  },
-  {
-    "name": "Explorer++.exe",
-    "size": "3.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:11.986Z"
-  },
-  {
-    "name": "flux-setup.exe",
-    "size": "673.3 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.621Z"
-  },
-  {
-    "name": "huy_dovolen.jpg",
-    "size": "201.1 КБ",
-    "type": "image",
-    "metadata": {
-      "width": 1080,
-      "height": 2376,
-      "date": null
-    },
-    "modified": "2026-07-26T09:05:12.621Z"
-  },
-  {
-    "name": "kuro_ax_build_1028[EXTREME].zip",
-    "size": "9.4 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.631Z"
-  },
-  {
-    "name": "LAN_Atheros_1.0.0.29.zip",
-    "size": "4.6 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:11.993Z"
-  },
-  {
-    "name": "lk-garden_Q.img",
-    "size": "1.3 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.636Z"
-  },
-  {
-    "name": "magisk-v28.1.zip",
-    "size": "11.2 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.657Z"
-  },
-  {
-    "name": "mark.via.gp-20260410.apk",
-    "size": "4.0 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.668Z"
-  },
-  {
-    "name": "MAS_AIO.cmd",
-    "size": "725.3 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:11.996Z"
-  },
-  {
-    "name": "MikuWallpapers.apk",
-    "size": "25.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.207Z"
-  },
-  {
-    "name": "MIO-KITCHEN-4.1.9-win.7z",
-    "size": "97.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.095Z"
-  },
-  {
-    "name": "mitigations-check.txt",
-    "size": "0.1 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.668Z"
-  },
-  {
-    "name": "npp.8.9.6.4.Installer.x64.exe",
-    "size": "6.6 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.675Z"
-  },
-  {
-    "name": "OOSU10.exe",
-    "size": "76.1 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.395Z"
-  },
-  {
-    "name": "RadeonMod.zip",
-    "size": "676.5 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.399Z"
-  },
-  {
-    "name": "README.md",
-    "size": "3.7 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.398Z"
-  },
-  {
-    "name": "Redact-Setup.exe",
-    "size": "65.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.463Z"
-  },
-  {
-    "name": "rewriting_rust.jpg",
-    "size": "128.0 КБ",
-    "type": "image",
-    "metadata": {
-      "width": 1280,
-      "height": 1046,
-      "date": null
-    },
-    "modified": "2026-07-26T09:05:12.676Z"
-  },
-  {
-    "name": "server.bat",
-    "size": "0.3 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.676Z"
-  },
-  {
-    "name": "sosal1.mp4",
-    "size": "6.6 МБ",
-    "type": "video",
-    "metadata": {
-      "duration": 125.016213,
-      "bitrate": 444069,
-      "sampleRate": 44100,
-      "width": 564,
-      "height": 406,
-      "codec": "h264"
-    },
-    "modified": "2026-07-26T09:05:12.703Z"
-  },
-  {
-    "name": "TgWsProxy_windows.exe",
-    "size": "20.0 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.500Z"
-  },
-  {
-    "name": "ultra_opt.bat",
-    "size": "4.7 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.703Z"
-  },
-  {
-    "name": "UNISOC_GENERAL_LICENSE_V1.0-EN_US",
-    "size": "7.1 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.500Z"
-  },
-  {
-    "name": "unisuck-logo.txt",
-    "size": "0.0 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.703Z"
-  },
-  {
-    "name": "vibranceGUI.exe",
-    "size": "776.0 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.706Z"
-  },
-  {
-    "name": "WinNTSetup.zip",
-    "size": "3.4 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.505Z"
-  },
-  {
-    "name": "winutil.ps1",
-    "size": "569.0 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.708Z"
-  },
-  {
-    "name": "zapret_module.zip",
-    "size": "367.8 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.709Z"
-  },
-  {
-    "name": "Zapret2Setup_21_1_1_2.exe",
-    "size": "32.5 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.539Z"
-  },
-  {
-    "name": "Zed-x86_64.exe",
-    "size": "81.4 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.616Z"
-  },
-  {
-    "name": "zen-mods-export.json",
-    "size": "8.4 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.709Z"
-  },
-  {
-    "name": "zen.installer.exe",
-    "size": "90.3 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T09:05:12.791Z"
-  }
-];
+            // FILE_DATA_PLACEHOLDER
+        ];
 
         // ===== СОСТОЯНИЕ =====
         let currentFilter = 'all';
@@ -1066,7 +893,6 @@
         let currentSort = 'name';
         let sortAsc = true;
         let currentPlayer = null;
-        let chartsInitialized = false;
 
         // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
         function getIcon(file) {
@@ -1165,7 +991,7 @@
             document.getElementById('totalSize').textContent = formatSize(totalBytes);
         }
 
-        // ===== РЕНДЕР СПИСКА =====
+        // ===== РЕНДЕР =====
         function renderFiles() {
             const list = getFilteredData();
             const container = document.getElementById('fileList');
@@ -1222,15 +1048,14 @@
             updateStats(list);
         }
 
-        // ===== ПРОСМОТР (ФОТО + ПЛЕЕР) ИСПРАВЛЕННЫЙ =====
+        // ===== ПРОСМОТР (УПРОЩЁННЫЙ) =====
         function openPreview(url, name, type) {
             const overlay = document.getElementById('modalOverlay');
             const content = document.getElementById('modalContent');
             content.innerHTML = `
                 <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
-                <button class="modal-download-btn" id="modalDownloadBtn"><i class="fas fa-download"></i> Скачать</button>
                 <div class="player-wrapper" id="playerWrapper">
-                    <div id="playerContainer" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;"></div>
+                    <div id="playerContainer" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"></div>
                     <div class="custom-controls" id="customControls">
                         <div class="controls-row">
                             <button class="btn-ctrl" id="playBtn"><i class="fas fa-play"></i></button>
@@ -1246,8 +1071,8 @@
                             <button class="fullscreen-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
                         </div>
                     </div>
-                    <div class="buffering-indicator" id="bufferingIndicator"></div>
                     <div class="pizza-spinner" id="pizzaSpinner">🍕</div>
+                    <div class="buffering-indicator" id="bufferingIndicator"></div>
                 </div>
                 <div class="modal-filename">${name}</div>
             `;
@@ -1264,158 +1089,20 @@
             overlay.addEventListener('click', (e) => { if (e.target === overlay) closeHandler(); });
             document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeHandler(); });
 
-            document.getElementById('modalDownloadBtn').addEventListener('click', () => {
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = name;
-                a.click();
-            });
-
-            // Получаем список файлов того же типа для слайд-шоу
-            const allFiles = getFilteredData();
-            const sameTypeFiles = allFiles.filter(f => f.type === type);
-            const currentIndex = sameTypeFiles.findIndex(f => f.name === name);
-
             if (type === 'image') {
-                // === ФОТО С ЗУМОМ И СЛАЙД-ШОУ ===
                 wrapper.style.aspectRatio = 'auto';
                 document.querySelector('.custom-controls').style.display = 'none';
                 spinner.style.display = 'none';
-                // Настройка контейнера для фото
-                container.style.position = 'relative';
-                container.style.width = '100%';
-                container.style.height = '100%';
-                container.style.overflow = 'hidden';
-                container.style.display = 'block';
-
-                let currentSlide = currentIndex;
-                let slides = sameTypeFiles;
-                let slideInterval = null;
-                let autoPlay = false;
-
-                function showSlide(index) {
-                    // Удаляем старые слайды и элементы управления
-                    container.querySelectorAll('.photo-slide').forEach(el => el.remove());
-                    document.querySelectorAll('.slide-nav, .slide-counter, .slide-auto-btn').forEach(el => el.remove());
-                    if (slides.length === 0) return;
-
-                    const slide = document.createElement('div');
-                    slide.className = 'photo-slide active';
-                    const img = document.createElement('img');
-                    img.src = BASE_URL + slides[index].name;
-                    img.alt = slides[index].name;
-                    img.style.maxWidth = '100%';
-                    img.style.maxHeight = '100%';
-                    img.style.objectFit = 'contain';
-                    img.style.cursor = 'grab';
-                    // Зум и панорамирование
-                    let zoom = 1;
-                    let panX = 0, panY = 0;
-                    let isDragging = false;
-                    let startX, startY, startPanX, startPanY;
-
-                    img.addEventListener('mousedown', (e) => {
-                        if (zoom === 1) return;
-                        isDragging = true;
-                        startX = e.clientX;
-                        startY = e.clientY;
-                        startPanX = panX;
-                        startPanY = panY;
-                        img.style.cursor = 'grabbing';
-                    });
-                    document.addEventListener('mousemove', (e) => {
-                        if (!isDragging) return;
-                        const dx = e.clientX - startX;
-                        const dy = e.clientY - startY;
-                        panX = startPanX + dx;
-                        panY = startPanY + dy;
-                        updateTransform();
-                    });
-                    document.addEventListener('mouseup', () => {
-                        if (isDragging) {
-                            isDragging = false;
-                            img.style.cursor = 'grab';
-                        }
-                    });
-                    img.addEventListener('wheel', (e) => {
-                        e.preventDefault();
-                        const delta = e.deltaY > 0 ? -0.1 : 0.1;
-                        zoom = Math.min(Math.max(zoom + delta, 0.5), 4);
-                        panX = 0; panY = 0; // сброс пана
-                        updateTransform();
-                    }, { passive: false });
-
-                    function updateTransform() {
-                        img.style.transform = `scale(${zoom}) translate(${panX/zoom}px, ${panY/zoom}px)`;
-                    }
-
-                    slide.appendChild(img);
-                    container.appendChild(slide);
-
-                    // Счётчик
-                    const counter = document.createElement('div');
-                    counter.className = 'slide-counter';
-                    counter.textContent = `${index+1} / ${slides.length}`;
-                    container.appendChild(counter);
-
-                    // Кнопка авто-слайд-шоу
-                    const autoBtn = document.createElement('button');
-                    autoBtn.className = 'slide-auto-btn';
-                    autoBtn.innerHTML = '<i class="fas fa-play"></i>';
-                    autoBtn.title = 'Слайд-шоу';
-                    autoBtn.addEventListener('click', () => {
-                        autoPlay = !autoPlay;
-                        autoBtn.innerHTML = autoPlay ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
-                        if (autoPlay) {
-                            slideInterval = setInterval(() => {
-                                if (slides.length === 0) return;
-                                currentSlide = (currentSlide + 1) % slides.length;
-                                showSlide(currentSlide);
-                            }, 3000);
-                        } else {
-                            clearInterval(slideInterval);
-                        }
-                    });
-                    container.appendChild(autoBtn);
-
-                    // Навигационные кнопки
-                    const prevBtn = document.createElement('button');
-                    prevBtn.className = 'slide-nav prev';
-                    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-                    prevBtn.addEventListener('click', () => {
-                        if (slides.length === 0) return;
-                        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-                        showSlide(currentSlide);
-                    });
-                    container.appendChild(prevBtn);
-
-                    const nextBtn = document.createElement('button');
-                    nextBtn.className = 'slide-nav next';
-                    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-                    nextBtn.addEventListener('click', () => {
-                        if (slides.length === 0) return;
-                        currentSlide = (currentSlide + 1) % slides.length;
-                        showSlide(currentSlide);
-                    });
-                    container.appendChild(nextBtn);
-
-                    // Обновляем имя файла и ссылку
-                    document.querySelector('.modal-filename').textContent = slides[index].name;
-                    document.getElementById('modalDownloadBtn').onclick = () => {
-                        const a = document.createElement('a');
-                        a.href = BASE_URL + slides[index].name;
-                        a.download = slides[index].name;
-                        a.click();
-                    };
-                }
-
-                if (slides.length > 0) {
-                    showSlide(currentSlide);
-                }
+                const img = document.createElement('img');
+                img.src = url;
+                img.style.maxWidth = '90vw';
+                img.style.maxHeight = '80vh';
+                img.style.objectFit = 'contain';
+                img.style.borderRadius = '12px';
+                container.appendChild(img);
                 return;
             }
 
-            // === ВИДЕО / АУДИО (БАЗОВЫЙ ПЛЕЕР) ===
             let media;
             if (type === 'video') {
                 media = document.createElement('video');
@@ -1512,7 +1199,6 @@
                 else document.exitFullscreen?.() || document.webkitExitFullscreen?.();
             });
 
-            // Горячие клавиши
             const keyHandler = (e) => {
                 if (!overlay.classList.contains('active')) return;
                 if (e.target.tagName === 'INPUT') return;
@@ -1541,7 +1227,7 @@
                     content.innerHTML = `
                         <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
                         <h3 style="margin:0 0 12px;color:var(--text-secondary);">Редактирование: ${name}</h3>
-                        <textarea class="editor-textarea" id="editorText">${text}</textarea>
+                        <textarea class="editor-textarea" id="editorText" style="width:100%;min-height:300px;background:rgba(0,0,0,0.3);border:1px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-family:monospace;font-size:0.9rem;padding:16px;resize:vertical;outline:none;">${text}</textarea>
                         <div style="display:flex;gap:10px;margin-top:12px;">
                             <button class="btn btn-download" id="editorDownload"><i class="fas fa-download"></i> Скачать изменённый</button>
                             <button class="btn btn-preview" id="editorClose"><i class="fas fa-times"></i> Закрыть</button>
@@ -1582,7 +1268,8 @@
             }, 200);
         }
 
-        // ===== СТАТИСТИКА (упрощённая) =====
+        // ===== СТАТИСТИКА (ВКЛАДКА) =====
+        let chartsInitialized = false;
         function initStats() {
             if (chartsInitialized) return;
             const list = fileData;
@@ -1622,7 +1309,6 @@
                     }
                 }
             });
-
             const ctxBar = document.getElementById('barChart').getContext('2d');
             const sortedExts = Object.entries(extCount).sort((a,b) => b[1] - a[1]).slice(0,10);
             const barLabels = sortedExts.map(e => e[0]);
@@ -1642,7 +1328,6 @@
                     }
                 }
             });
-
             chartsInitialized = true;
         }
 
@@ -1653,29 +1338,30 @@
                 btn.classList.add('active');
                 document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
                 document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-                if (btn.dataset.tab === 'stats' && !chartsInitialized) initStats();
+                if (btn.dataset.tab === 'stats') initStats();
             });
         });
 
-        // ===== ИНИЦИАЛИЗАЦИЯ НАСТРОЕК =====
-        (function initSettings() {
+        // ===== ИНИЦИАЛИЗАЦИЯ =====
+        (function init() {
             // Восстановление темы
             const savedTheme = localStorage.getItem('theme') || 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
-            document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.theme === savedTheme));
-
-            // Неон интенсивность
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.theme === savedTheme);
+            });
+            // Неон
             const savedIntensity = parseInt(localStorage.getItem('neonIntensity')) || 100;
-            document.getElementById('neonIntensity').value = savedIntensity;
+            const neonRange = document.getElementById('neonIntensity');
+            neonRange.value = savedIntensity;
             document.getElementById('neonValue').textContent = savedIntensity + '%';
             document.documentElement.style.setProperty('--neon-intensity', savedIntensity / 100);
-            document.getElementById('neonIntensity').addEventListener('input', function() {
-                const val = parseInt(this.value);
+            neonRange.addEventListener('input', (e) => {
+                const val = parseInt(e.target.value);
                 document.documentElement.style.setProperty('--neon-intensity', val / 100);
                 document.getElementById('neonValue').textContent = val + '%';
                 localStorage.setItem('neonIntensity', val);
             });
-
             // Неон цвет
             const savedNeonColor = localStorage.getItem('neonColor') || '#a78bfa';
             document.documentElement.style.setProperty('--neon-color', savedNeonColor);
@@ -1683,33 +1369,17 @@
             document.documentElement.style.setProperty('--neon-glow', `rgba(${r},${g},${b},0.3)`);
             document.querySelectorAll('.preset-dot').forEach(dot => dot.classList.toggle('active', dot.dataset.color === savedNeonColor));
             document.getElementById('neonColorPicker').value = savedNeonColor;
-
             // Акцент
             const savedAccent = localStorage.getItem('accentColor') || '#2563eb';
             document.documentElement.style.setProperty('--accent', savedAccent);
             document.documentElement.style.setProperty('--accent-hover', savedAccent + 'cc');
             document.documentElement.style.setProperty('--accent-glow', savedAccent + '66');
             document.getElementById('accentColor').value = savedAccent;
-
             // Пресет темы
             const savedPreset = localStorage.getItem('themePreset');
-            if (savedPreset) {
-                const p = {
-                    matrix: { bg: '#0a0f0a', text: '#00ff41', neon: '#00ff41', accent: '#00ff41' },
-                    sunset: { bg: '#1a0f0a', text: '#ff6b35', neon: '#ff6b35', accent: '#ff6b35' },
-                    ice: { bg: '#0a0f1a', text: '#00b4d8', neon: '#00b4d8', accent: '#00b4d8' },
-                    lavender: { bg: '#1a0f2a', text: '#b388ff', neon: '#b388ff', accent: '#b388ff' }
-                }[savedPreset];
-                if (p) {
-                    document.documentElement.style.setProperty('--bg-gradient', `radial-gradient(circle at 50% 0%, ${p.bg} 0%, #000 70%)`);
-                    document.documentElement.style.setProperty('--text-primary', p.text);
-                    document.documentElement.style.setProperty('--accent', p.accent);
-                    document.documentElement.style.setProperty('--neon-color', p.neon);
-                    document.querySelectorAll('.theme-preset-btn').forEach(b => b.classList.toggle('active', b.dataset.themePreset === savedPreset));
-                }
-            }
+            if (savedPreset) applyThemePreset(savedPreset);
 
-            // Обработчики
+            // Обработчики на кнопки
             document.querySelectorAll('.theme-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const theme = btn.dataset.theme;
@@ -1729,8 +1399,8 @@
                     document.getElementById('neonColorPicker').value = color;
                 });
             });
-            document.getElementById('neonColorPicker').addEventListener('input', function() {
-                const color = this.value;
+            document.getElementById('neonColorPicker').addEventListener('input', (e) => {
+                const color = e.target.value;
                 document.documentElement.style.setProperty('--neon-color', color);
                 const r2 = parseInt(color.slice(1,3),16), g2 = parseInt(color.slice(3,5),16), b2 = parseInt(color.slice(5,7),16);
                 document.documentElement.style.setProperty('--neon-glow', `rgba(${r2},${g2},${b2},0.3)`);
@@ -1740,69 +1410,65 @@
             document.getElementById('resetNeonColor').addEventListener('click', () => {
                 const color = '#a78bfa';
                 document.documentElement.style.setProperty('--neon-color', color);
-                document.documentElement.style.setProperty('--neon-glow', 'rgba(167,139,250,0.3)');
+                document.documentElement.style.setProperty('--neon-glow', `rgba(167,139,250,0.3)`);
                 localStorage.setItem('neonColor', color);
                 document.querySelectorAll('.preset-dot').forEach(d => d.classList.toggle('active', d.dataset.color === color));
                 document.getElementById('neonColorPicker').value = color;
             });
-            document.getElementById('accentColor').addEventListener('input', function() {
-                const color = this.value;
+            document.getElementById('accentColor').addEventListener('input', (e) => {
+                const color = e.target.value;
                 document.documentElement.style.setProperty('--accent', color);
                 document.documentElement.style.setProperty('--accent-hover', color + 'cc');
                 document.documentElement.style.setProperty('--accent-glow', color + '66');
                 localStorage.setItem('accentColor', color);
             });
             document.querySelectorAll('.theme-preset-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const name = this.dataset.themePreset;
-                    const p = {
-                        matrix: { bg: '#0a0f0a', text: '#00ff41', neon: '#00ff41', accent: '#00ff41' },
-                        sunset: { bg: '#1a0f0a', text: '#ff6b35', neon: '#ff6b35', accent: '#ff6b35' },
-                        ice: { bg: '#0a0f1a', text: '#00b4d8', neon: '#00b4d8', accent: '#00b4d8' },
-                        lavender: { bg: '#1a0f2a', text: '#b388ff', neon: '#b388ff', accent: '#b388ff' }
-                    }[name];
-                    if (!p) return;
-                    document.documentElement.style.setProperty('--bg-gradient', `radial-gradient(circle at 50% 0%, ${p.bg} 0%, #000 70%)`);
-                    document.documentElement.style.setProperty('--text-primary', p.text);
-                    document.documentElement.style.setProperty('--accent', p.accent);
-                    document.documentElement.style.setProperty('--neon-color', p.neon);
-                    localStorage.setItem('themePreset', name);
-                    document.querySelectorAll('.theme-preset-btn').forEach(b => b.classList.toggle('active', b.dataset.themePreset === name));
-                });
+                btn.addEventListener('click', () => applyThemePreset(btn.dataset.themePreset));
             });
+            function applyThemePreset(name) {
+                const p = themePresets[name];
+                if (!p) return;
+                document.documentElement.style.setProperty('--bg-gradient', `radial-gradient(circle at 50% 0%, ${p.bg} 0%, #000 70%)`);
+                document.documentElement.style.setProperty('--text-primary', p.text);
+                document.documentElement.style.setProperty('--accent', p.accent);
+                document.documentElement.style.setProperty('--neon-color', p.neon);
+                localStorage.setItem('themePreset', name);
+                document.querySelectorAll('.theme-preset-btn').forEach(b => b.classList.toggle('active', b.dataset.themePreset === name));
+            }
 
             // Метаданные
             document.getElementById('toggleMetaBtn').addEventListener('click', () => {
                 showMeta = !showMeta;
+                document.getElementById('toggleMetaBtn').innerHTML = `<i class="fas fa-eye"></i> ${showMeta ? 'Метаданные' : 'Метаданные'}`;
                 renderFiles();
             });
 
             // Сортировка
             document.querySelectorAll('.sort-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const sort = this.dataset.sort;
+                btn.addEventListener('click', () => {
+                    const sort = btn.dataset.sort;
                     if (currentSort === sort) sortAsc = !sortAsc;
                     else { currentSort = sort; sortAsc = true; }
                     document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    this.textContent = this.textContent.replace(/[▲▼]/, '') + (sortAsc ? ' ▲' : ' ▼');
+                    btn.classList.add('active');
+                    btn.textContent = btn.textContent.replace(/[▲▼]/, '') + (sortAsc ? ' ▲' : ' ▼');
                     renderFiles();
                 });
             });
 
             // Фильтры
             document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', () => {
                     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    currentFilter = this.dataset.filter;
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
                     renderFiles();
                 });
             });
 
             // Поиск
-            document.getElementById('search').addEventListener('input', function() {
-                currentSearch = this.value.toLowerCase().trim();
+            document.getElementById('search').addEventListener('input', (e) => {
+                currentSearch = e.target.value.toLowerCase().trim();
                 renderFiles();
             });
 
@@ -1813,14 +1479,18 @@
                 }
             });
 
-            // Первоначальный рендер
+            // Рендер при загрузке и при переходе на вкладку статистики
             renderFiles();
-            if (document.querySelector('.tab-btn.active').dataset.tab === 'stats') {
-                setTimeout(initStats, 100);
-            }
+            // Если вкладка статистики уже активна — инициализировать
+            if (document.querySelector('.tab-btn.active').dataset.tab === 'stats') initStats();
+
+            // Дополнительно: при клике на вкладку статистики, если ещё не инициализирована
+            document.querySelector('[data-tab="stats"]').addEventListener('click', () => {
+                if (!chartsInitialized) initStats();
+            });
         })();
 
-        // Дополнительный вызов рендера после полной загрузки
+        // ===== ГАРАНТИЯ РЕНДЕРА ПОСЛЕ ПОЛНОЙ ЗАГРУЗКИ =====
         document.addEventListener('DOMContentLoaded', function() {
             renderFiles();
         });
