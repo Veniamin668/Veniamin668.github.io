@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        /* ===== ПОЛНЫЙ НАБОР СТИЛЕЙ (все, что мы наработали) ===== */
+        /* ===== БАЗОВЫЕ ПЕРЕМЕННЫЕ ===== */
         :root {
             --bg-gradient: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 70%);
             --bg-item: rgba(30,41,59,0.4);
@@ -298,7 +298,7 @@
         .tab-content.active { display:block; }
         @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 
-        /* СТАТИСТИКА (вкладка) */
+        /* СТАТИСТИКА (вкладка) упрощённая */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -315,7 +315,7 @@
         .stats-card h3 {
             margin:0 0 12px; color:var(--text-secondary); font-size:1rem; display:flex; align-items:center; gap:8px;
         }
-        .stats-card canvas { max-height:250px; max-width:100%; }
+        .stats-card canvas { max-height:200px; max-width:100%; }
         .stats-summary {
             display: flex;
             gap: 20px;
@@ -514,7 +514,7 @@
         }
         .modal-download-btn:hover { transform:scale(1.05); background:var(--accent-hover); }
 
-        /* ===== ПЛЕЕР ===== */
+        /* ===== ПЛЕЕР (БАЗОВЫЙ) ===== */
         .player-wrapper {
             position:relative; width:100%; max-width:900px; background:#000; border-radius:12px; overflow:hidden; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
         }
@@ -536,7 +536,6 @@
             background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer; padding:4px 6px; transition:0.15s; border-radius:6px; display:flex; align-items:center; justify-content:center; width:32px; height:32px; background:rgba(255,255,255,0.05); backdrop-filter:blur(4px);
         }
         .controls-row .btn-ctrl:hover { background:rgba(255,255,255,0.15); transform:scale(1.05); }
-        .controls-row .btn-ctrl.active { color:var(--accent); }
         .progress-container {
             flex:1; display:flex; align-items:center; gap:10px; min-width:100px;
         }
@@ -564,27 +563,11 @@
             color:#fff; font-size:1rem; width:24px; text-align:center; cursor:pointer;
         }
 
-        .speed-control {
-            display:flex; align-items:center; gap:4px;
-        }
-        .speed-control select {
-            background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:4px; color:#fff; padding:2px 6px; font-size:0.8rem; cursor:pointer; outline:none;
-        }
-        .speed-control select option { background:#222; }
-
         .fullscreen-btn {
             background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer; padding:4px 6px; border-radius:6px; transition:0.15s; background:rgba(255,255,255,0.05); backdrop-filter:blur(4px); width:32px; height:32px; display:flex; align-items:center; justify-content:center;
         }
         .fullscreen-btn:hover { background:rgba(255,255,255,0.15); transform:scale(1.05); }
 
-        /* ЭКВАЛАЙЗЕР */
-        .equalizer-canvas {
-            position:absolute; bottom:70px; left:0; right:0; height:60px; width:100%; pointer-events:none; opacity:0.7; transition:opacity 0.3s;
-        }
-        .player-wrapper:hover .equalizer-canvas,
-        .equalizer-canvas.show { opacity:0.9; }
-
-        /* ПИЦЦА И БУФЕРИЗАЦИЯ */
         .pizza-spinner {
             position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:4rem; animation:spin 1.5s linear infinite; z-index:5; opacity:0; transition:opacity 0.3s; filter:drop-shadow(0 0 20px rgba(255,200,0,0.3)); pointer-events:none;
         }
@@ -621,7 +604,7 @@
         }
         .slide-auto-btn:hover { background:rgba(255,255,255,0.2); }
 
-        /* ===== ЗУМ И ПАН ===== */
+        /* ===== ЗУМ И ПАН (для одиночного фото) ===== */
         .photo-container {
             width:100%; height:100%; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative;
         }
@@ -750,7 +733,7 @@
             <ul class="file-list" id="fileList"></ul>
         </div>
 
-        <!-- ВКЛАДКА "СТАТИСТИКА" (улучшенная) -->
+        <!-- ВКЛАДКА "СТАТИСТИКА" (упрощённая) -->
         <div class="tab-content" id="tab-stats">
             <div class="stats-summary" id="statsSummary">
                 <div class="stat-item">
@@ -776,16 +759,8 @@
                     <canvas id="pieChart"></canvas>
                 </div>
                 <div class="stats-card">
-                    <h3><i class="fas fa-chart-bar"></i> По расширениям (топ-10)</h3>
+                    <h3><i class="fas fa-chart-bar"></i> По расширениям</h3>
                     <canvas id="barChart"></canvas>
-                </div>
-                <div class="stats-card">
-                    <h3><i class="fas fa-chart-line"></i> Файлы по дате</h3>
-                    <canvas id="lineChart"></canvas>
-                </div>
-                <div class="stats-card">
-                    <h3><i class="fas fa-weight-hanging"></i> Распределение размеров</h3>
-                    <canvas id="sizeHistogram"></canvas>
                 </div>
             </div>
         </div>
@@ -800,289 +775,8 @@
         // ===== ДАННЫЕ =====
         const BASE_URL = 'https://veniamin668.github.io/files/';
         const fileData = [
-  {
-    "name": "ARch-on-unisoc.png",
-    "size": "126.5 КБ",
-    "type": "image",
-    "metadata": {
-      "width": 1279,
-      "height": 1023,
-      "date": null
-    },
-    "modified": "2026-07-26T08:54:06.676Z"
-  },
-  {
-    "name": "BFTSetup1.7.exe",
-    "size": "31.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:06.706Z"
-  },
-  {
-    "name": "BoosterX.exe",
-    "size": "37.8 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:06.748Z"
-  },
-  {
-    "name": "CrystalDiskInfo9_9_1Aoi.exe",
-    "size": "61.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:06.819Z"
-  },
-  {
-    "name": "devka_10min.jpg",
-    "size": "101.1 КБ",
-    "type": "image",
-    "metadata": {
-      "width": 1280,
-      "height": 591,
-      "date": null
-    },
-    "modified": "2026-07-26T08:54:07.443Z"
-  },
-  {
-    "name": "Explorer++.exe",
-    "size": "3.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:06.842Z"
-  },
-  {
-    "name": "flux-setup.exe",
-    "size": "673.3 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.444Z"
-  },
-  {
-    "name": "huy_dovolen.jpg",
-    "size": "201.1 КБ",
-    "type": "image",
-    "metadata": {
-      "width": 1080,
-      "height": 2376,
-      "date": null
-    },
-    "modified": "2026-07-26T08:54:07.445Z"
-  },
-  {
-    "name": "kuro_ax_build_1028[EXTREME].zip",
-    "size": "9.4 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.453Z"
-  },
-  {
-    "name": "LAN_Atheros_1.0.0.29.zip",
-    "size": "4.6 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:06.848Z"
-  },
-  {
-    "name": "lk-garden_Q.img",
-    "size": "1.3 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.459Z"
-  },
-  {
-    "name": "magisk-v28.1.zip",
-    "size": "11.2 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.479Z"
-  },
-  {
-    "name": "mark.via.gp-20260410.apk",
-    "size": "4.0 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.491Z"
-  },
-  {
-    "name": "MAS_AIO.cmd",
-    "size": "725.3 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:06.851Z"
-  },
-  {
-    "name": "MikuWallpapers.apk",
-    "size": "25.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.055Z"
-  },
-  {
-    "name": "MIO-KITCHEN-4.1.9-win.7z",
-    "size": "97.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:06.940Z"
-  },
-  {
-    "name": "mitigations-check.txt",
-    "size": "0.1 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.491Z"
-  },
-  {
-    "name": "npp.8.9.6.4.Installer.x64.exe",
-    "size": "6.6 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.497Z"
-  },
-  {
-    "name": "OOSU10.exe",
-    "size": "76.1 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.244Z"
-  },
-  {
-    "name": "RadeonMod.zip",
-    "size": "676.5 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.246Z"
-  },
-  {
-    "name": "README.md",
-    "size": "3.7 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.245Z"
-  },
-  {
-    "name": "Redact-Setup.exe",
-    "size": "65.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.303Z"
-  },
-  {
-    "name": "rewriting_rust.jpg",
-    "size": "128.0 КБ",
-    "type": "image",
-    "metadata": {
-      "width": 1280,
-      "height": 1046,
-      "date": null
-    },
-    "modified": "2026-07-26T08:54:07.497Z"
-  },
-  {
-    "name": "server.bat",
-    "size": "0.3 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.497Z"
-  },
-  {
-    "name": "sosal1.mp4",
-    "size": "6.6 МБ",
-    "type": "video",
-    "metadata": {
-      "duration": 125.016213,
-      "bitrate": 444069,
-      "sampleRate": 44100,
-      "width": 564,
-      "height": 406,
-      "codec": "h264"
-    },
-    "modified": "2026-07-26T08:54:07.525Z"
-  },
-  {
-    "name": "TgWsProxy_windows.exe",
-    "size": "20.0 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.337Z"
-  },
-  {
-    "name": "ultra_opt.bat",
-    "size": "4.7 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.525Z"
-  },
-  {
-    "name": "UNISOC_GENERAL_LICENSE_V1.0-EN_US",
-    "size": "7.1 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.338Z"
-  },
-  {
-    "name": "unisuck-logo.txt",
-    "size": "0.0 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.525Z"
-  },
-  {
-    "name": "vibranceGUI.exe",
-    "size": "776.0 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.528Z"
-  },
-  {
-    "name": "WinNTSetup.zip",
-    "size": "3.4 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.342Z"
-  },
-  {
-    "name": "winutil.ps1",
-    "size": "569.0 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.530Z"
-  },
-  {
-    "name": "zapret_module.zip",
-    "size": "367.8 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.531Z"
-  },
-  {
-    "name": "Zapret2Setup_21_1_1_2.exe",
-    "size": "32.5 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.373Z"
-  },
-  {
-    "name": "Zed-x86_64.exe",
-    "size": "81.4 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.441Z"
-  },
-  {
-    "name": "zen-mods-export.json",
-    "size": "8.4 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.531Z"
-  },
-  {
-    "name": "zen.installer.exe",
-    "size": "90.3 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T08:54:07.603Z"
-  }
-];
+            // FILE_DATA_PLACEHOLDER
+        ];
 
         // ===== СОСТОЯНИЕ =====
         let currentFilter = 'all';
@@ -1091,9 +785,6 @@
         let currentSort = 'name';
         let sortAsc = true;
         let currentPlayer = null;
-        let audioCtx = null;
-        let analyser = null;
-        let animationId = null;
         let chartsInitialized = false;
 
         // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
@@ -1250,7 +941,7 @@
             updateStats(list);
         }
 
-        // ===== ПРОСМОТР (ФОТО + ПЛЕЕР) =====
+        // ===== ПРОСМОТР (ФОТО + ПЛЕЕР) ИСПРАВЛЕННЫЙ =====
         function openPreview(url, name, type) {
             const overlay = document.getElementById('modalOverlay');
             const content = document.getElementById('modalContent');
@@ -1259,11 +950,9 @@
                 <button class="modal-download-btn" id="modalDownloadBtn"><i class="fas fa-download"></i> Скачать</button>
                 <div class="player-wrapper" id="playerWrapper">
                     <div id="playerContainer" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;"></div>
-                    <canvas class="equalizer-canvas" id="equalizerCanvas"></canvas>
                     <div class="custom-controls" id="customControls">
                         <div class="controls-row">
                             <button class="btn-ctrl" id="playBtn"><i class="fas fa-play"></i></button>
-                            <button class="btn-ctrl" id="loopBtn"><i class="fas fa-repeat"></i></button>
                             <div class="progress-container">
                                 <span class="progress-time" id="currentTimeDisplay">0:00</span>
                                 <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
@@ -1272,16 +961,6 @@
                             <div class="volume-control">
                                 <span class="vol-icon" id="volIcon"><i class="fas fa-volume-up"></i></span>
                                 <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1">
-                            </div>
-                            <div class="speed-control">
-                                <select id="speedSelect">
-                                    <option value="0.5">0.5×</option>
-                                    <option value="0.75">0.75×</option>
-                                    <option value="1" selected>1×</option>
-                                    <option value="1.25">1.25×</option>
-                                    <option value="1.5">1.5×</option>
-                                    <option value="2">2×</option>
-                                </select>
                             </div>
                             <button class="fullscreen-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
                         </div>
@@ -1298,7 +977,6 @@
             const container = document.getElementById('playerContainer');
             const spinner = document.getElementById('pizzaSpinner');
             const buffering = document.getElementById('bufferingIndicator');
-            const equalizerCanvas = document.getElementById('equalizerCanvas');
 
             const closeHandler = () => closeModal();
             document.getElementById('modalClose').addEventListener('click', closeHandler);
@@ -1322,7 +1000,12 @@
                 wrapper.style.aspectRatio = 'auto';
                 document.querySelector('.custom-controls').style.display = 'none';
                 spinner.style.display = 'none';
-                equalizerCanvas.style.display = 'none';
+                // Настройка контейнера для фото
+                container.style.position = 'relative';
+                container.style.width = '100%';
+                container.style.height = '100%';
+                container.style.overflow = 'hidden';
+                container.style.display = 'block';
 
                 let currentSlide = currentIndex;
                 let slides = sameTypeFiles;
@@ -1330,9 +1013,8 @@
                 let autoPlay = false;
 
                 function showSlide(index) {
-                    // Удаляем старые слайды
+                    // Удаляем старые слайды и элементы управления
                     container.querySelectorAll('.photo-slide').forEach(el => el.remove());
-                    // Удаляем старые элементы управления (они могут быть добавлены ранее)
                     document.querySelectorAll('.slide-nav, .slide-counter, .slide-auto-btn').forEach(el => el.remove());
                     if (slides.length === 0) return;
 
@@ -1341,13 +1023,16 @@
                     const img = document.createElement('img');
                     img.src = BASE_URL + slides[index].name;
                     img.alt = slides[index].name;
-                    // Добавляем зум и панорамирование
+                    img.style.maxWidth = '100%';
+                    img.style.maxHeight = '100%';
+                    img.style.objectFit = 'contain';
+                    img.style.cursor = 'grab';
+                    // Зум и панорамирование
                     let zoom = 1;
                     let panX = 0, panY = 0;
                     let isDragging = false;
                     let startX, startY, startPanX, startPanY;
-                    img.style.transition = 'transform 0.2s ease';
-                    img.style.cursor = 'grab';
+
                     img.addEventListener('mousedown', (e) => {
                         if (zoom === 1) return;
                         isDragging = true;
@@ -1371,13 +1056,11 @@
                             img.style.cursor = 'grab';
                         }
                     });
-                    // Колесико для зума
                     img.addEventListener('wheel', (e) => {
                         e.preventDefault();
                         const delta = e.deltaY > 0 ? -0.1 : 0.1;
                         zoom = Math.min(Math.max(zoom + delta, 0.5), 4);
-                        // Сброс пана при зуме, чтобы не вылететь за пределы
-                        panX = 0; panY = 0;
+                        panX = 0; panY = 0; // сброс пана
                         updateTransform();
                     }, { passive: false });
 
@@ -1435,9 +1118,8 @@
                     });
                     container.appendChild(nextBtn);
 
-                    // Обновляем имя файла
+                    // Обновляем имя файла и ссылку
                     document.querySelector('.modal-filename').textContent = slides[index].name;
-                    // Обновляем ссылку для скачивания
                     document.getElementById('modalDownloadBtn').onclick = () => {
                         const a = document.createElement('a');
                         a.href = BASE_URL + slides[index].name;
@@ -1452,7 +1134,7 @@
                 return;
             }
 
-            // === ВИДЕО / АУДИО С ЭКВАЛАЙЗЕРОМ ===
+            // === ВИДЕО / АУДИО (БАЗОВЫЙ ПЛЕЕР) ===
             let media;
             if (type === 'video') {
                 media = document.createElement('video');
@@ -1469,62 +1151,6 @@
             container.appendChild(media);
             currentPlayer = media;
 
-            // Настройка эквалайзера (только для аудио)
-            let audioCtxLocal = null;
-            let analyserNode = null;
-            let dataArray = null;
-            let animationFrame = null;
-
-            if (type === 'audio') {
-                const canvas = document.getElementById('equalizerCanvas');
-                canvas.style.display = 'block';
-                const ctx = canvas.getContext('2d');
-                canvas.width = canvas.clientWidth || 600;
-                canvas.height = 60;
-
-                function setupAudio() {
-                    if (audioCtxLocal) return;
-                    audioCtxLocal = new (window.AudioContext || window.webkitAudioContext)();
-                    analyserNode = audioCtxLocal.createAnalyser();
-                    analyserNode.fftSize = 256;
-                    const source = audioCtxLocal.createMediaElementSource(media);
-                    source.connect(analyserNode);
-                    analyserNode.connect(audioCtxLocal.destination);
-                    dataArray = new Uint8Array(analyserNode.frequencyBinCount);
-
-                    function drawEqualizer() {
-                        if (!analyserNode) return;
-                        analyserNode.getByteFrequencyData(dataArray);
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        const barWidth = (canvas.width / dataArray.length) * 2.5;
-                        let x = 0;
-                        for (let i = 0; i < dataArray.length; i++) {
-                            const value = dataArray[i];
-                            const percent = value / 255;
-                            const height = percent * canvas.height;
-                            ctx.fillStyle = `hsl(${200 - percent * 40}, 80%, 50%)`;
-                            ctx.fillRect(x, canvas.height - height, barWidth - 1, height);
-                            x += barWidth;
-                        }
-                        animationFrame = requestAnimationFrame(drawEqualizer);
-                    }
-                    drawEqualizer();
-                }
-
-                media.addEventListener('play', () => {
-                    if (!audioCtxLocal) setupAudio();
-                });
-                media.addEventListener('pause', () => {
-                    if (animationFrame) {
-                        cancelAnimationFrame(animationFrame);
-                        animationFrame = null;
-                    }
-                });
-            } else {
-                document.getElementById('equalizerCanvas').style.display = 'none';
-            }
-
-            // Пицца и буферизация
             spinner.classList.add('show');
             buffering.classList.remove('show');
             media.addEventListener('waiting', () => {
@@ -1540,16 +1166,13 @@
                 spinner.classList.remove('show');
             });
 
-            // Контролы плеера
             const playBtn = document.getElementById('playBtn');
-            const loopBtn = document.getElementById('loopBtn');
             const progressBar = document.getElementById('progressBar');
             const progressFill = document.getElementById('progressFill');
             const currentTimeDisplay = document.getElementById('currentTimeDisplay');
             const durationDisplay = document.getElementById('durationDisplay');
             const volumeSlider = document.getElementById('volumeSlider');
             const volIcon = document.getElementById('volIcon');
-            const speedSelect = document.getElementById('speedSelect');
             const fullscreenBtn = document.getElementById('fullscreenBtn');
 
             function formatTime(seconds) {
@@ -1574,38 +1197,27 @@
             media.addEventListener('play', () => playBtn.innerHTML = '<i class="fas fa-pause"></i>');
             media.addEventListener('pause', () => playBtn.innerHTML = '<i class="fas fa-play"></i>');
             media.addEventListener('ended', () => {
-                if (!media.loop) {
-                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                    progressFill.style.width = '0%';
-                    currentTimeDisplay.textContent = '0:00';
-                }
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                progressFill.style.width = '0%';
+                currentTimeDisplay.textContent = '0:00';
             });
 
             playBtn.addEventListener('click', () => media.paused ? media.play() : media.pause());
-
-            loopBtn.addEventListener('click', () => {
-                media.loop = !media.loop;
-                loopBtn.classList.toggle('active', media.loop);
-            });
-
             progressBar.addEventListener('click', (e) => {
                 const rect = progressBar.getBoundingClientRect();
                 const x = (e.clientX - rect.left) / rect.width;
                 if (media.duration) media.currentTime = x * media.duration;
             });
-
             volumeSlider.addEventListener('input', (e) => {
                 const val = parseFloat(e.target.value);
                 media.volume = val;
                 updateVolumeIcon(val);
             });
-
             volIcon.addEventListener('click', () => {
                 if (media.muted) { media.muted = false; volumeSlider.value = media.volume; }
                 else { media.muted = true; volumeSlider.value = 0; }
                 updateVolumeIcon(media.muted ? 0 : media.volume);
             });
-
             function updateVolumeIcon(val) {
                 if (val === 0 || media.muted) volIcon.innerHTML = '<i class="fas fa-volume-mute"></i>';
                 else if (val < 0.5) volIcon.innerHTML = '<i class="fas fa-volume-down"></i>';
@@ -1613,10 +1225,6 @@
             }
             volumeSlider.value = media.volume || 1;
             updateVolumeIcon(media.volume);
-
-            speedSelect.addEventListener('change', (e) => {
-                media.playbackRate = parseFloat(e.target.value);
-            });
 
             fullscreenBtn.addEventListener('click', () => {
                 if (!document.fullscreenElement) wrapper.requestFullscreen?.() || wrapper.webkitRequestFullscreen?.();
@@ -1638,25 +1246,6 @@
             };
             document.addEventListener('keydown', keyHandler);
             media._keyHandler = keyHandler;
-
-            // Навигация J/K
-            const navHandler = (e) => {
-                if (!overlay.classList.contains('active')) return;
-                if (e.target.tagName === 'INPUT') return;
-                const list = getFilteredData();
-                const idx = list.findIndex(f => f.name === name);
-                if (e.key === 'j' || e.key === 'J') {
-                    e.preventDefault();
-                    const next = list[(idx + 1) % list.length];
-                    if (next) openPreview(BASE_URL + next.name, next.name, next.type);
-                } else if (e.key === 'k' || e.key === 'K') {
-                    e.preventDefault();
-                    const prev = list[(idx - 1 + list.length) % list.length];
-                    if (prev) openPreview(BASE_URL + prev.name, prev.name, prev.type);
-                }
-            };
-            document.addEventListener('keydown', navHandler);
-            media._navHandler = navHandler;
 
             media.play().catch(() => {});
         }
@@ -1706,23 +1295,13 @@
                     currentPlayer.pause();
                     currentPlayer.currentTime = 0;
                     if (currentPlayer._keyHandler) document.removeEventListener('keydown', currentPlayer._keyHandler);
-                    if (currentPlayer._navHandler) document.removeEventListener('keydown', currentPlayer._navHandler);
-                    if (audioCtx) {
-                        audioCtx.close();
-                        audioCtx = null;
-                        analyser = null;
-                        if (animationId) {
-                            cancelAnimationFrame(animationId);
-                            animationId = null;
-                        }
-                    }
                     currentPlayer = null;
                 }
                 content.innerHTML = '';
             }, 200);
         }
 
-        // ===== СТАТИСТИКА (УЛУЧШЕННАЯ) =====
+        // ===== СТАТИСТИКА (упрощённая) =====
         function initStats() {
             if (chartsInitialized) return;
             const list = fileData;
@@ -1730,40 +1309,21 @@
             let totalBytes = 0;
             const typeCount = {};
             const extCount = {};
-            const dateCount = {};
-            const sizeBuckets = { '<1KB':0, '1KB-100KB':0, '100KB-1MB':0, '1MB-10MB':0, '10MB-100MB':0, '>100MB':0 };
             let lastModified = 0;
-
             list.forEach(f => {
-                const bytes = getFileSizeBytes(f.size);
-                totalBytes += bytes;
+                totalBytes += getFileSizeBytes(f.size);
                 const t = f.type || 'other';
                 typeCount[t] = (typeCount[t] || 0) + 1;
                 const ext = f.name.split('.').pop().toLowerCase();
                 extCount[ext] = (extCount[ext] || 0) + 1;
-                // Дата
-                if (f.modified) {
-                    const d = new Date(f.modified).toISOString().split('T')[0];
-                    dateCount[d] = (dateCount[d] || 0) + 1;
-                }
-                // Бакеты размеров
-                if (bytes < 1024) sizeBuckets['<1KB']++;
-                else if (bytes < 1024*100) sizeBuckets['1KB-100KB']++;
-                else if (bytes < 1048576) sizeBuckets['100KB-1MB']++;
-                else if (bytes < 10485760) sizeBuckets['1MB-10MB']++;
-                else if (bytes < 104857600) sizeBuckets['10MB-100MB']++;
-                else sizeBuckets['>100MB']++;
-
                 const m = new Date(f.modified || 0).getTime();
                 if (m > lastModified) lastModified = m;
             });
-
             document.getElementById('statTotal').textContent = total;
             document.getElementById('statSize').textContent = formatSize(totalBytes);
             document.getElementById('statTypes').textContent = Object.keys(typeCount).length;
             document.getElementById('statLastUpdated').textContent = lastModified ? new Date(lastModified).toLocaleString() : '—';
 
-            // Круговая диаграмма по типам
             const ctxPie = document.getElementById('pieChart').getContext('2d');
             const typeLabels = Object.keys(typeCount);
             const typeData = typeLabels.map(k => typeCount[k]);
@@ -1782,7 +1342,6 @@
                 }
             });
 
-            // Гистограмма по расширениям
             const ctxBar = document.getElementById('barChart').getContext('2d');
             const sortedExts = Object.entries(extCount).sort((a,b) => b[1] - a[1]).slice(0,10);
             const barLabels = sortedExts.map(e => e[0]);
@@ -1792,64 +1351,6 @@
                 data: {
                     labels: barLabels,
                     datasets: [{ label: 'Количество файлов', data: barData, backgroundColor: 'var(--accent)', borderRadius: 4 }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { color: 'var(--text-muted)', stepSize: 1 } },
-                        x: { ticks: { color: 'var(--text-muted)' } }
-                    }
-                }
-            });
-
-            // Линейный график по датам
-            const ctxLine = document.getElementById('lineChart').getContext('2d');
-            const dates = Object.keys(dateCount).sort();
-            const dateValues = dates.map(d => dateCount[d]);
-            new Chart(ctxLine, {
-                type: 'line',
-                data: {
-                    labels: dates,
-                    datasets: [{
-                        label: 'Файлов добавлено',
-                        data: dateValues,
-                        borderColor: 'var(--accent)',
-                        backgroundColor: 'rgba(37,99,235,0.1)',
-                        fill: true,
-                        tension: 0.1,
-                        pointBackgroundColor: 'var(--accent)',
-                        pointRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { color: 'var(--text-muted)', stepSize: 1 } },
-                        x: { ticks: { color: 'var(--text-muted)', maxRotation: 45, autoSkip: true, maxTicksLimit: 15 } }
-                    }
-                }
-            });
-
-            // Гистограмма размеров
-            const ctxSize = document.getElementById('sizeHistogram').getContext('2d');
-            const sizeLabels = Object.keys(sizeBuckets);
-            const sizeData = sizeLabels.map(k => sizeBuckets[k]);
-            new Chart(ctxSize, {
-                type: 'bar',
-                data: {
-                    labels: sizeLabels,
-                    datasets: [{
-                        label: 'Количество файлов',
-                        data: sizeData,
-                        backgroundColor: 'rgba(37,99,235,0.6)',
-                        borderColor: 'var(--accent)',
-                        borderWidth: 1,
-                        borderRadius: 4
-                    }]
                 },
                 options: {
                     responsive: true,
@@ -1927,7 +1428,7 @@
                 }
             }
 
-            // Обработчики тем
+            // Обработчики
             document.querySelectorAll('.theme-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const theme = btn.dataset.theme;
@@ -1936,8 +1437,6 @@
                     document.querySelectorAll('.theme-btn').forEach(b => b.classList.toggle('active', b.dataset.theme === theme));
                 });
             });
-
-            // Обработчики пресетов неона
             document.querySelectorAll('.preset-dot').forEach(dot => {
                 dot.addEventListener('click', () => {
                     const color = dot.dataset.color;
@@ -1965,8 +1464,6 @@
                 document.querySelectorAll('.preset-dot').forEach(d => d.classList.toggle('active', d.dataset.color === color));
                 document.getElementById('neonColorPicker').value = color;
             });
-
-            // Акцентный цвет
             document.getElementById('accentColor').addEventListener('input', function() {
                 const color = this.value;
                 document.documentElement.style.setProperty('--accent', color);
@@ -1974,8 +1471,6 @@
                 document.documentElement.style.setProperty('--accent-glow', color + '66');
                 localStorage.setItem('accentColor', color);
             });
-
-            // Пресеты тем (Matrix, Sunset, etc.)
             document.querySelectorAll('.theme-preset-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const name = this.dataset.themePreset;
@@ -2039,9 +1534,7 @@
 
             // Первоначальный рендер
             renderFiles();
-            // Если вкладка статистики активна — инициализировать
             if (document.querySelector('.tab-btn.active').dataset.tab === 'stats') {
-                // отложим, чтобы дать время на рендер
                 setTimeout(initStats, 100);
             }
         })();
