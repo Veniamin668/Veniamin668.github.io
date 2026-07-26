@@ -153,6 +153,30 @@
         .theme-btn:hover { background: var(--bg-item-hover); transform: scale(1.05); }
         .theme-btn.active { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
 
+        /* ===== ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА ===== */
+        .lang-switch {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-item);
+            padding: 4px 12px 4px 8px;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+        }
+        .lang-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 20px;
+            transition: 0.2s;
+            font-size: 0.8rem;
+        }
+        .lang-btn:hover { color: var(--text-secondary); }
+        .lang-btn.active { background: var(--accent); color: #fff; }
+
         /* ===== НАСТРОЙКИ НЕОНА ===== */
         .neon-control {
             display: flex;
@@ -221,7 +245,7 @@
         .theme-preset-btn:hover { transform:scale(1.15); }
         .theme-preset-btn.active { border-color:#fff; box-shadow:0 0 12px var(--neon-glow); }
 
-        /* ===== СТАТИСТИКА (верхняя панель) ===== */
+        /* ===== СТАТИСТИКА (верх) ===== */
         .stats-bar {
             display: flex;
             flex-wrap: wrap;
@@ -564,11 +588,18 @@
 
         <!-- ===== ШАПКА ===== -->
         <div class="header">
-            <h1 class="glow-title">📁 Архив файлов</h1>
+            <h1 class="glow-title" data-i18n="title">📁 Архив файлов</h1>
             <div class="top-controls">
                 <button class="theme-btn active" data-theme="dark" title="Тёмная"><i class="fas fa-moon"></i></button>
                 <button class="theme-btn" data-theme="light" title="Светлая"><i class="fas fa-sun"></i></button>
                 <button class="theme-btn" data-theme="neon" title="Неон"><i class="fas fa-wand-magic-sparkles"></i></button>
+
+                <!-- Переключатель языка -->
+                <div class="lang-switch">
+                    <button class="lang-btn active" data-lang="ru">RU</button>
+                    <span style="color:var(--text-dim);">/</span>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                </div>
 
                 <div class="theme-presets">
                     <span style="font-size:0.7rem;color:var(--text-muted);margin-right:4px;">🎭</span>
@@ -605,40 +636,40 @@
         <!-- ===== СТАТИСТИКА (верх) ===== -->
         <div class="stats-bar">
             <div class="stats" id="stats">
-                <span><i class="fas fa-file"></i> Всего: <strong id="totalFiles">0</strong></span>
-                <span><i class="fas fa-hdd"></i> Общий размер: <strong id="totalSize">0</strong></span>
+                <span><i class="fas fa-file"></i> <span data-i18n="total">Всего</span>: <strong id="totalFiles">0</strong></span>
+                <span><i class="fas fa-hdd"></i> <span data-i18n="totalSize">Общий размер</span>: <strong id="totalSize">0</strong></span>
             </div>
             <div class="bar-actions">
                 <a href="https://github.com/veniamin668/veniamin668.github.io/archive/refs/heads/main.zip" class="bar-btn accent" target="_blank"><i class="fas fa-file-archive"></i> ZIP (весь репо)</a>
                 <a href="https://download-directory.github.io/?url=https://github.com/veniamin668/veniamin668.github.io/tree/main/files" class="bar-btn" target="_blank"><i class="fas fa-folder-open"></i> Только files</a>
-                <button class="bar-btn" id="toggleMetaBtn"><i class="fas fa-eye"></i> Метаданные</button>
+                <button class="bar-btn" id="toggleMetaBtn"><i class="fas fa-eye"></i> <span data-i18n="metaToggle">Метаданные</span></button>
             </div>
         </div>
 
         <!-- ===== ВКЛАДКИ ===== -->
         <div class="tabs" id="tabs">
-            <button class="tab-btn active" data-tab="files"><i class="fas fa-list"></i> Файлы</button>
-            <button class="tab-btn" data-tab="stats"><i class="fas fa-chart-pie"></i> Статистика</button>
+            <button class="tab-btn active" data-tab="files" data-i18n="tabFiles"><i class="fas fa-list"></i> Файлы</button>
+            <button class="tab-btn" data-tab="stats" data-i18n="tabStats"><i class="fas fa-chart-pie"></i> Статистика</button>
         </div>
 
         <!-- ===== ВКЛАДКА "ФАЙЛЫ" ===== -->
         <div class="tab-content active" id="tab-files">
             <div class="sort-controls">
-                <span class="sort-label"><i class="fas fa-arrow-up-wide-short"></i> Сортировка:</span>
-                <button class="sort-btn active" data-sort="name">По имени</button>
-                <button class="sort-btn" data-sort="size">По размеру</button>
-                <button class="sort-btn" data-sort="date">По дате</button>
+                <span class="sort-label"><i class="fas fa-arrow-up-wide-short"></i> <span data-i18n="sortLabel">Сортировка:</span></span>
+                <button class="sort-btn active" data-sort="name" data-i18n="sortByName">По имени</button>
+                <button class="sort-btn" data-sort="size" data-i18n="sortBySize">По размеру</button>
+                <button class="sort-btn" data-sort="date" data-i18n="sortByDate">По дате</button>
             </div>
 
             <div class="filters" id="filters">
-                <button class="filter-btn active" data-filter="all">Все</button>
-                <button class="filter-btn" data-filter="image"><i class="fas fa-image"></i> Фото</button>
-                <button class="filter-btn" data-filter="video"><i class="fas fa-video"></i> Видео</button>
-                <button class="filter-btn" data-filter="audio"><i class="fas fa-music"></i> Аудио</button>
-                <button class="filter-btn" data-filter="other"><i class="fas fa-file"></i> Прочее</button>
+                <button class="filter-btn active" data-filter="all" data-i18n="filterAll">Все</button>
+                <button class="filter-btn" data-filter="image" data-i18n="filterImage"><i class="fas fa-image"></i> Фото</button>
+                <button class="filter-btn" data-filter="video" data-i18n="filterVideo"><i class="fas fa-video"></i> Видео</button>
+                <button class="filter-btn" data-filter="audio" data-i18n="filterAudio"><i class="fas fa-music"></i> Аудио</button>
+                <button class="filter-btn" data-filter="other" data-i18n="filterOther"><i class="fas fa-file"></i> Прочее</button>
             </div>
 
-            <input type="text" id="search" class="search-box" placeholder="🔍 Поиск файлов по названию..." />
+            <input type="text" id="search" class="search-box" data-i18n="searchPlaceholder" placeholder="🔍 Поиск файлов по названию..." />
 
             <ul class="file-list" id="fileList"></ul>
         </div>
@@ -648,28 +679,28 @@
             <div class="stats-summary" id="statsSummary">
                 <div class="stat-item">
                     <span class="number" id="statTotal">0</span>
-                    <span class="label">Всего файлов</span>
+                    <span class="label" data-i18n="statsTotal">Всего файлов</span>
                 </div>
                 <div class="stat-item">
                     <span class="number" id="statSize">0</span>
-                    <span class="label">Общий размер</span>
+                    <span class="label" data-i18n="totalSize">Общий размер</span>
                 </div>
                 <div class="stat-item">
                     <span class="number" id="statTypes">0</span>
-                    <span class="label">Типов файлов</span>
+                    <span class="label" data-i18n="statsTypes">Типов файлов</span>
                 </div>
                 <div class="stat-item">
                     <span class="number" id="statLastUpdated">—</span>
-                    <span class="label">Последнее обновление</span>
+                    <span class="label" data-i18n="statsLastUpdated">Последнее обновление</span>
                 </div>
             </div>
             <div class="stats-grid">
                 <div class="stats-card">
-                    <h3><i class="fas fa-chart-pie"></i> По типам</h3>
+                    <h3 data-i18n="statsByType"><i class="fas fa-chart-pie"></i> По типам</h3>
                     <canvas id="pieChart"></canvas>
                 </div>
                 <div class="stats-card">
-                    <h3><i class="fas fa-chart-bar"></i> По расширениям</h3>
+                    <h3 data-i18n="statsByExt"><i class="fas fa-chart-bar"></i> По расширениям</h3>
                     <canvas id="barChart"></canvas>
                 </div>
             </div>
@@ -685,292 +716,77 @@
     </div>
 
     <script>
+        // ===== ПЕРЕВОДЫ =====
+        const translations = {
+            ru: {
+                title: '📁 Архив файлов',
+                total: 'Всего',
+                totalSize: 'Общий размер',
+                view: 'Смотреть',
+                download: 'Скачать',
+                copy: 'Копировать ссылку',
+                openTab: 'Открыть в новой вкладке',
+                sortByName: 'По имени',
+                sortBySize: 'По размеру',
+                sortByDate: 'По дате',
+                filterAll: 'Все',
+                filterImage: 'Фото',
+                filterVideo: 'Видео',
+                filterAudio: 'Аудио',
+                filterOther: 'Прочее',
+                searchPlaceholder: '🔍 Поиск файлов по названию...',
+                tabFiles: 'Файлы',
+                tabStats: 'Статистика',
+                noResults: 'Совпадений не найдено',
+                statsTotal: 'Всего файлов',
+                statsTypes: 'Типов файлов',
+                statsLastUpdated: 'Последнее обновление',
+                statsByType: 'По типам',
+                statsByExt: 'По расширениям',
+                metaToggle: 'Метаданные',
+                sortLabel: 'Сортировка:',
+                editorTitle: 'Редактирование:',
+                editorDownload: 'Скачать изменённый',
+                editorClose: 'Закрыть',
+            },
+            en: {
+                title: '📁 File Archive',
+                total: 'Total',
+                totalSize: 'Total size',
+                view: 'View',
+                download: 'Download',
+                copy: 'Copy link',
+                openTab: 'Open in new tab',
+                sortByName: 'By name',
+                sortBySize: 'By size',
+                sortByDate: 'By date',
+                filterAll: 'All',
+                filterImage: 'Photos',
+                filterVideo: 'Videos',
+                filterAudio: 'Audio',
+                filterOther: 'Other',
+                searchPlaceholder: '🔍 Search files by name...',
+                tabFiles: 'Files',
+                tabStats: 'Statistics',
+                noResults: 'No matches found',
+                statsTotal: 'Total files',
+                statsTypes: 'File types',
+                statsLastUpdated: 'Last updated',
+                statsByType: 'By type',
+                statsByExt: 'By extension',
+                metaToggle: 'Metadata',
+                sortLabel: 'Sort:',
+                editorTitle: 'Editing:',
+                editorDownload: 'Download modified',
+                editorClose: 'Close',
+            }
+        };
+
         // ===== БАЗОВЫЕ ПЕРЕМЕННЫЕ =====
         const BASE_URL = 'https://veniamin668.github.io/files/';
         const fileData = [
-  {
-    "name": "ARch-on-unisoc.png",
-    "size": "126.5 КБ",
-    "type": "image",
-    "metadata": {
-      "width": 1279,
-      "height": 1023,
-      "date": null
-    },
-    "modified": "2026-07-26T01:30:20.070Z"
-  },
-  {
-    "name": "BFTSetup1.7.exe",
-    "size": "31.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.104Z"
-  },
-  {
-    "name": "BoosterX.exe",
-    "size": "37.8 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.151Z"
-  },
-  {
-    "name": "CrystalDiskInfo9_9_1Aoi.exe",
-    "size": "61.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.229Z"
-  },
-  {
-    "name": "devka_10min.jpg",
-    "size": "101.1 КБ",
-    "type": "image",
-    "metadata": {
-      "width": 1280,
-      "height": 591,
-      "date": null
-    },
-    "modified": "2026-07-26T01:30:20.886Z"
-  },
-  {
-    "name": "Explorer++.exe",
-    "size": "3.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.251Z"
-  },
-  {
-    "name": "flux-setup.exe",
-    "size": "673.3 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.887Z"
-  },
-  {
-    "name": "huy_dovolen.jpg",
-    "size": "201.1 КБ",
-    "type": "image",
-    "metadata": {
-      "width": 1080,
-      "height": 2376,
-      "date": null
-    },
-    "modified": "2026-07-26T01:30:20.888Z"
-  },
-  {
-    "name": "kuro_ax_build_1028[EXTREME].zip",
-    "size": "9.4 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.898Z"
-  },
-  {
-    "name": "LAN_Atheros_1.0.0.29.zip",
-    "size": "4.6 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.258Z"
-  },
-  {
-    "name": "lk-garden_Q.img",
-    "size": "1.3 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.903Z"
-  },
-  {
-    "name": "magisk-v28.1.zip",
-    "size": "11.2 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.923Z"
-  },
-  {
-    "name": "mark.via.gp-20260410.apk",
-    "size": "4.0 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.935Z"
-  },
-  {
-    "name": "MAS_AIO.cmd",
-    "size": "725.3 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.261Z"
-  },
-  {
-    "name": "MikuWallpapers.apk",
-    "size": "25.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.473Z"
-  },
-  {
-    "name": "MIO-KITCHEN-4.1.9-win.7z",
-    "size": "97.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.361Z"
-  },
-  {
-    "name": "mitigations-check.txt",
-    "size": "0.1 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.935Z"
-  },
-  {
-    "name": "npp.8.9.6.4.Installer.x64.exe",
-    "size": "6.6 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.942Z"
-  },
-  {
-    "name": "OOSU10.exe",
-    "size": "76.1 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.661Z"
-  },
-  {
-    "name": "RadeonMod.zip",
-    "size": "676.5 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.665Z"
-  },
-  {
-    "name": "README.md",
-    "size": "3.7 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.664Z"
-  },
-  {
-    "name": "Redact-Setup.exe",
-    "size": "65.9 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.730Z"
-  },
-  {
-    "name": "rewriting_rust.jpg",
-    "size": "128.0 КБ",
-    "type": "image",
-    "metadata": {
-      "width": 1280,
-      "height": 1046,
-      "date": null
-    },
-    "modified": "2026-07-26T01:30:20.943Z"
-  },
-  {
-    "name": "server.bat",
-    "size": "0.3 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.943Z"
-  },
-  {
-    "name": "sosal1.mp4",
-    "size": "6.6 МБ",
-    "type": "video",
-    "metadata": {
-      "duration": 125.016213,
-      "bitrate": 444069,
-      "sampleRate": 44100,
-      "width": 564,
-      "height": 406,
-      "codec": "h264"
-    },
-    "modified": "2026-07-26T01:30:20.969Z"
-  },
-  {
-    "name": "TgWsProxy_windows.exe",
-    "size": "20.0 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.766Z"
-  },
-  {
-    "name": "ultra_opt.bat",
-    "size": "4.7 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.970Z"
-  },
-  {
-    "name": "UNISOC_GENERAL_LICENSE_V1.0-EN_US",
-    "size": "7.1 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.767Z"
-  },
-  {
-    "name": "unisuck-logo.txt",
-    "size": "0.0 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.970Z"
-  },
-  {
-    "name": "vibranceGUI.exe",
-    "size": "776.0 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.973Z"
-  },
-  {
-    "name": "WinNTSetup.zip",
-    "size": "3.4 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.772Z"
-  },
-  {
-    "name": "winutil.ps1",
-    "size": "569.0 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.975Z"
-  },
-  {
-    "name": "zapret_module.zip",
-    "size": "367.8 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.976Z"
-  },
-  {
-    "name": "Zapret2Setup_21_1_1_2.exe",
-    "size": "32.5 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.806Z"
-  },
-  {
-    "name": "Zed-x86_64.exe",
-    "size": "81.4 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.883Z"
-  },
-  {
-    "name": "zen-mods-export.json",
-    "size": "8.4 КБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:20.976Z"
-  },
-  {
-    "name": "zen.installer.exe",
-    "size": "90.3 МБ",
-    "type": "other",
-    "metadata": {},
-    "modified": "2026-07-26T01:30:21.058Z"
-  }
-];
+            // FILE_DATA_PLACEHOLDER
+        ];
 
         let currentFilter = 'all';
         let currentSearch = '';
@@ -979,6 +795,83 @@
         let sortAsc = true;
         let currentPlayer = null;
         let chartsInitialized = false;
+        let currentLang = localStorage.getItem('lang') || 'ru';
+
+        // ===== ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКА =====
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            document.documentElement.lang = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            // Обновляем все элементы с data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (translations[lang] && translations[lang][key] !== undefined) {
+                    if (el.tagName === 'INPUT' && el.placeholder !== undefined) {
+                        el.placeholder = translations[lang][key];
+                    } else {
+                        el.textContent = translations[lang][key];
+                    }
+                }
+            });
+            // Обновляем заголовок отдельно (так как он сложный)
+            const titleEl = document.querySelector('.glow-title');
+            if (titleEl) titleEl.textContent = translations[lang].title;
+            // Обновляем вкладки (сохраняя иконки)
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                const key = btn.dataset.i18n;
+                if (key && translations[lang][key]) {
+                    const icon = btn.querySelector('i');
+                    btn.innerHTML = `<i class="${icon.className}"></i> ${translations[lang][key]}`;
+                }
+            });
+            // Обновляем кнопки фильтров (сохраняя иконки)
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                const key = btn.dataset.i18n;
+                if (key && translations[lang][key]) {
+                    const icon = btn.querySelector('i');
+                    if (icon) {
+                        btn.innerHTML = `<i class="${icon.className}"></i> ${translations[lang][key]}`;
+                    } else {
+                        btn.textContent = translations[lang][key];
+                    }
+                }
+            });
+            // Обновляем кнопки сортировки
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                const key = btn.dataset.i18n;
+                if (key && translations[lang][key]) {
+                    const arrow = btn.textContent.includes('▲') ? ' ▲' : btn.textContent.includes('▼') ? ' ▼' : '';
+                    btn.textContent = translations[lang][key] + arrow;
+                }
+            });
+            // Обновляем мета-кнопку
+            const metaBtn = document.getElementById('toggleMetaBtn');
+            if (metaBtn) {
+                const icon = metaBtn.querySelector('i');
+                metaBtn.innerHTML = `<i class="${icon.className}"></i> ${translations[lang].metaToggle}`;
+            }
+            // Обновляем статистику (перерендерим списки, чтобы обновить кнопки "Смотреть", "Скачать" и т.д.)
+            renderFiles();
+            // Если статистика уже инициализирована — обновим подписи
+            if (chartsInitialized) {
+                document.querySelectorAll('.stats-card h3').forEach(h3 => {
+                    const key = h3.dataset.i18n;
+                    if (key && translations[lang][key]) {
+                        const icon = h3.querySelector('i');
+                        h3.innerHTML = `<i class="${icon.className}"></i> ${translations[lang][key]}`;
+                    }
+                });
+                document.querySelectorAll('.stats-summary .stat-item .label').forEach(label => {
+                    const key = label.dataset.i18n;
+                    if (key && translations[lang][key]) {
+                        label.textContent = translations[lang][key];
+                    }
+                });
+            }
+        }
 
         // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
         function getIcon(file) {
@@ -1134,7 +1027,7 @@
             const container = document.getElementById('fileList');
             container.innerHTML = '';
             if (list.length === 0) {
-                container.innerHTML = `<div class="no-results"><i class="fas fa-search"></i> Совпадений не найдено</div>`;
+                container.innerHTML = `<div class="no-results"><i class="fas fa-search"></i> ${translations[currentLang].noResults}</div>`;
                 updateStats([]);
                 return;
             }
@@ -1159,11 +1052,11 @@
                         </div>
                     </div>
                     <div class="file-actions">
-                        ${canPreview ? `<button class="btn btn-preview" data-url="${url}" data-name="${file.name}" data-type="${file.type}"><i class="fas fa-eye"></i> Смотреть</button>` : ''}
+                        ${canPreview ? `<button class="btn btn-preview" data-url="${url}" data-name="${file.name}" data-type="${file.type}"><i class="fas fa-eye"></i> ${translations[currentLang].view}</button>` : ''}
                         ${isText ? `<button class="btn btn-edit" data-url="${url}" data-name="${file.name}"><i class="fas fa-edit"></i></button>` : ''}
-                        <button class="btn btn-copy" data-url="${url}" title="Копировать ссылку"><i class="fas fa-link"></i></button>
-                        <a href="${url}" class="btn btn-newtab" target="_blank" title="Открыть в новой вкладке"><i class="fas fa-external-link-alt"></i></a>
-                        <a href="${url}" class="btn btn-download" download><i class="fas fa-download"></i> Скачать</a>
+                        <button class="btn btn-copy" data-url="${url}" title="${translations[currentLang].copy}"><i class="fas fa-link"></i></button>
+                        <a href="${url}" class="btn btn-newtab" target="_blank" title="${translations[currentLang].openTab}"><i class="fas fa-external-link-alt"></i></a>
+                        <a href="${url}" class="btn btn-download" download><i class="fas fa-download"></i> ${translations[currentLang].download}</a>
                     </div>
                 `;
                 container.appendChild(li);
@@ -1192,9 +1085,8 @@
         function openPreview(url, name, type) {
             const overlay = document.getElementById('modalOverlay');
             const content = document.getElementById('modalContent');
-            const container = document.getElementById('modalContent'); // переиспользуем
             // Очищаем модалку
-            container.innerHTML = `
+            content.innerHTML = `
                 <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
                 <div class="player-wrapper" id="playerWrapper">
                     <div id="playerContainer" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"></div>
@@ -1226,7 +1118,6 @@
 
             let media;
             if (type === 'image') {
-                // Для изображений показываем картинку с кнопкой фуллскрина
                 const img = document.createElement('img');
                 img.src = url;
                 img.style.maxWidth = '90vw';
@@ -1248,7 +1139,6 @@
                 return;
             }
 
-            // Видео/аудио
             if (type === 'video') {
                 media = document.createElement('video');
                 media.setAttribute('playsinline', '');
@@ -1264,13 +1154,11 @@
             mediaContainer.appendChild(media);
             currentPlayer = media;
 
-            // События для пиццы
             spinner.classList.add('show');
             media.addEventListener('waiting', () => spinner.classList.add('show'));
             media.addEventListener('canplay', () => spinner.classList.remove('show'));
             media.addEventListener('playing', () => spinner.classList.remove('show'));
 
-            // Кастомные контролы
             const playBtn = document.getElementById('playBtn');
             const progressBar = document.getElementById('progressBar');
             const progressFill = document.getElementById('progressFill');
@@ -1340,7 +1228,6 @@
                 else document.exitFullscreen?.() || document.webkitExitFullscreen?.();
             });
 
-            // Горячие клавиши для плеера
             const keyHandler = (e) => {
                 if (!overlay.classList.contains('active')) return;
                 if (e.target.tagName === 'INPUT') return;
@@ -1356,7 +1243,6 @@
             document.addEventListener('keydown', keyHandler);
             media._keyHandler = keyHandler;
 
-            // Навигация J/K по файлам
             const navHandler = (e) => {
                 if (!overlay.classList.contains('active')) return;
                 if (e.target.tagName === 'INPUT') return;
@@ -1375,12 +1261,10 @@
             document.addEventListener('keydown', navHandler);
             media._navHandler = navHandler;
 
-            // Закрытие по клику на крестик или фон
             document.getElementById('modalClose').addEventListener('click', closeModal);
             overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
             document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-            // Автозапуск
             media.play().catch(() => {});
         }
 
@@ -1393,11 +1277,11 @@
                 .then(text => {
                     content.innerHTML = `
                         <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
-                        <h3 style="margin:0 0 12px;color:var(--text-secondary);">Редактирование: ${name}</h3>
+                        <h3 style="margin:0 0 12px;color:var(--text-secondary);">${translations[currentLang].editorTitle} ${name}</h3>
                         <textarea class="editor-textarea" id="editorText">${text}</textarea>
                         <div style="display:flex;gap:10px;margin-top:12px;">
-                            <button class="btn btn-download" id="editorDownload"><i class="fas fa-download"></i> Скачать изменённый</button>
-                            <button class="btn btn-preview" id="editorClose"><i class="fas fa-times"></i> Закрыть</button>
+                            <button class="btn btn-download" id="editorDownload"><i class="fas fa-download"></i> ${translations[currentLang].editorDownload}</button>
+                            <button class="btn btn-preview" id="editorClose"><i class="fas fa-times"></i> ${translations[currentLang].editorClose}</button>
                         </div>
                     `;
                     overlay.classList.add('active');
@@ -1430,7 +1314,6 @@
                     if (currentPlayer._navHandler) document.removeEventListener('keydown', currentPlayer._navHandler);
                     currentPlayer = null;
                 }
-                // Восстанавливаем содержимое модалки (можно оставить пустым)
                 content.innerHTML = '';
             }, 200);
         }
@@ -1460,7 +1343,6 @@
             document.getElementById('statTypes').textContent = Object.keys(typeCount).length;
             document.getElementById('statLastUpdated').textContent = lastModified ? new Date(lastModified).toLocaleString() : '—';
 
-            // Круговая диаграмма
             const ctxPie = document.getElementById('pieChart').getContext('2d');
             const typeLabels = Object.keys(typeCount);
             const typeData = typeLabels.map(k => typeCount[k]);
@@ -1484,7 +1366,6 @@
                 }
             });
 
-            // Гистограмма (топ-10 расширений)
             const ctxBar = document.getElementById('barChart').getContext('2d');
             const sortedExts = Object.entries(extCount).sort((a,b) => b[1] - a[1]).slice(0,10);
             const barLabels = sortedExts.map(e => e[0]);
@@ -1565,7 +1446,8 @@
         // Метаданные
         document.getElementById('toggleMetaBtn').addEventListener('click', () => {
             showMeta = !showMeta;
-            document.getElementById('toggleMetaBtn').innerHTML = showMeta ? '<i class="fas fa-eye"></i> Метаданные' : '<i class="fas fa-eye-slash"></i> Метаданные';
+            const btn = document.getElementById('toggleMetaBtn');
+            btn.innerHTML = `<i class="fas fa-eye"></i> ${translations[currentLang].metaToggle}`;
             renderFiles();
         });
 
@@ -1577,7 +1459,10 @@
                 else { currentSort = sort; sortAsc = true; }
                 document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                btn.textContent = btn.textContent.replace(/[▲▼]/, '') + (sortAsc ? ' ▲' : ' ▼');
+                const arrow = sortAsc ? ' ▲' : ' ▼';
+                const key = btn.dataset.i18n;
+                const label = translations[currentLang][key] || btn.textContent.replace(/[▲▼]/, '');
+                btn.textContent = label + arrow;
                 renderFiles();
             });
         });
@@ -1598,7 +1483,17 @@
             renderFiles();
         });
 
-        // Закрытие модалки по Escape глобально
+        // Язык
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+        });
+        // Устанавливаем язык по умолчанию
+        const browserLang = navigator.language.slice(0,2);
+        const defaultLang = ['ru', 'en'].includes(browserLang) ? browserLang : 'ru';
+        currentLang = localStorage.getItem('lang') || defaultLang;
+        setLanguage(currentLang);
+
+        // Закрытие модалки по Escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && document.getElementById('modalOverlay').classList.contains('active')) {
                 closeModal();
@@ -1607,7 +1502,6 @@
 
         // ===== СТАРТ =====
         renderFiles();
-        // Если вкладка статистики активна по умолчанию
         if (document.querySelector('.tab-btn.active').dataset.tab === 'stats') initStats();
     </script>
 </body>
