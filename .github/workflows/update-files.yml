@@ -18,7 +18,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # Устанавливаем ffmpeg (включает ffprobe) и exiftool
     - name: Install dependencies
       run: |
         sudo apt-get update
@@ -42,7 +41,6 @@ jobs:
           process.exit(1);
         }
 
-        // Определение типа по расширению
         function getFileType(ext) {
           const imageExts = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp"];
           const videoExts = [".mp4", ".avi", ".mov", ".mkv", ".webm", ".flv", ".wmv"];
@@ -54,7 +52,6 @@ jobs:
           return "other";
         }
 
-        // Извлечение метаданных для изображений (exiftool)
         function getImageMetadata(filePath) {
           try {
             const output = execSync(`exiftool -CreateDate -ImageWidth -ImageHeight -j "${filePath}"`, { encoding: "utf8" });
@@ -69,7 +66,6 @@ jobs:
           }
         }
 
-        // Извлечение метаданных для видео/аудио (ffprobe)
         function getMediaMetadata(filePath) {
           try {
             const output = execSync(`ffprobe -v quiet -print_format json -show_format -show_streams "${filePath}"`, { encoding: "utf8" });
@@ -107,7 +103,6 @@ jobs:
           }
         }
 
-        // Чтение файлов
         const files = fs.readdirSync(folderPath).filter(f => !f.startsWith("."));
         files.sort((a, b) => a.localeCompare(b));
 
@@ -141,18 +136,27 @@ jobs:
           };
         });
 
-        // Формируем JSON-строку для вставки
-        const jsonStr = JSON.stringify(result, null, 2);
+        // Сохраняем статистику в stats.json (для будущего использования)
+        const stats = {
+          totalFiles: result.length,
+          totalSize: result.reduce((acc, f) => acc + parseFloat(f.size) * (f.size.includes("МБ") ? 1048576 : 1024), 0),
+          lastUpdated: new Date().toISOString(),
+          types: {}
+        };
+        result.forEach(f => {
+          const t = f.type || "other";
+          stats.types[t] = (stats.types[t] || 0) + 1;
+        });
+        fs.writeFileSync("stats.json", JSON.stringify(stats, null, 2));
 
-        // Заменяем содержимое fileData в HTML
+        // Вставляем массив в files.html
+        const jsonStr = JSON.stringify(result, null, 2);
         const htmlPath = path.join(process.cwd(), "files.html");
         let htmlContent = fs.readFileSync(htmlPath, "utf8");
-
         htmlContent = htmlContent.replace(
           /const fileData = \[\s*([\s\S]*?)\s*\];/,
           `const fileData = ${jsonStr};`
         );
-
         fs.writeFileSync(htmlPath, htmlContent, "utf8");
         console.log("✅ files.html обновлён с метаданными!");
         '
@@ -162,7 +166,25 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
         
-        git add files.html
+        git add files.html stats.json
         git commit --allow-empty -m "chore: auto-update file list with metadata [skip ci]" || true
         git pull --rebase origin main || true
         git push origin main || true
+
+    # ===== НОВЫЙ ШАГ: УВЕДОМЛЕНИЕ В TELEGRAM =====
+    - name: Send Telegram notification
+      if: success()
+      env:
+        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      run: |
+        if [ -z "$TELEGRAM_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+          echo "⚠️ Telegram secrets not set, skipping notification."
+          exit 0
+        fi
+        COUNT=$(git diff --name-only HEAD~1 | grep 'files/' | wc -l)
+        MESSAGE="📁 *Архив файлов обновлён!*\nДобавлено/изменено: $COUNT файлов.\nСмотреть: https://veniamin668.github.io/files.html"
+        curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" \
+          -d chat_id="$TELEGRAM_CHAT_ID" \
+          -d text="$MESSAGE" \
+          -d parse_mode="Markdown"
