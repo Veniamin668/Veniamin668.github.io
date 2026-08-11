@@ -1,0 +1,10 @@
+/etc/nixos/configuration.nix # конфиг
+sudo nixos-rebuild switch # обновляет конфиг
+sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations old
+sudo nix-store --gc
+sudo nix-channel --update && sudo nixos-rebuild switch
+NixOS: Просто впишите/сотрите имя пакета в /etc/nixos/configuration.nix внутри environment.systemPackages и примените: sudo nixos-rebuild switch
+Быстро потестить программу без установки (Крутая фишка Nix, которой нет в Arch!)Хотите запустить, например, плеер mpv или утилиту один раз, не засоряя конфиг?Команда: nix-shell -p mpvЧто произойдет: Откроется временная консоль, где mpv доступен. Закроете консоль (exit) — программа исчезнет из системы, не оставив следов. 
+
+#ПЕРЕД ЗАКИДЫВАНИЕМ КОНФИГА
+sudo nixos-generate-config --root /mnt

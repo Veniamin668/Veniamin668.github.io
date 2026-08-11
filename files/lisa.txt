@@ -1,0 +1,26 @@
+# ==========================================
+# ORANGEFOX (FOX) SPECIFIC CONFIGURATION
+# ==========================================
+FOX_MAINTAINER_PATCH_VERSION := 1
+FOX_BUILD_TYPE := Stable
+OF_MAINTAINER := Kirill Nekrasov
+# Поддержка Aroma Filemanager / патчей
+OF_USE_TWRP_FALLBACK_MOUSE := true
+OF_ALLOW_DISABLE_NAVBAR := 0
+# Дополнительные фиксы для стабильности интерфейса Лисы
+TW_Y_OFFSET := 0
+TW_H_OFFSET := 0
+# Настройки бэкапов и разделов под Fox
+OF_KEEP_DM_VERITY := true
+OF_PATCH_AVB20 := true
+# Доп утилиты и фичи OrangeFox
+FOX_USE_BASH_SHELL := true
+FOX_ASH_IS_BASH := true
+FOX_USE_NANO_EDITOR := true
+FOX_USE_SED_BINARY := true
+FOX_USE_TAR_BINARY := true
+FOX_USE_ZIP_BINARY := true
+FOX_DELETE_AROMAFM := false
+# Дополнительные твики для Unisoc/девайса
+OF_NO_TREBLE_COMPATIBILITY_CHECK := true
+OF_QUICK_BACKUP_LIST := /boot,/recovery,/data,/vendor_boot
