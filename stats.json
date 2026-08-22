@@ -1,10 +1,10 @@
 {
-  "totalFiles": 80,
-  "totalSize": 812508364.7999998,
-  "lastUpdated": "2026-08-11T14:52:02.014Z",
+  "totalFiles": 135,
+  "totalSize": 1332095180.7999997,
+  "lastUpdated": "2026-08-22T17:44:42.223Z",
   "types": {
-    "image": 28,
-    "other": 50,
-    "video": 2
+    "image": 58,
+    "video": 4,
+    "other": 73
   }
 }
