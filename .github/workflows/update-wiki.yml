@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - 'wiki/**'
-      - 'wiki.html'
   workflow_dispatch:
 
 permissions:
@@ -15,34 +14,83 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '26'
-        
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Build Wiki HTML
-      run: node build-wiki.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '26'
 
-    - name: Commit and Push Changes
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        
-        git add wiki.html wiki/
-        if git diff --staged --quiet; then
-        echo "Никаких изменений в wiki.html не обнаружено, пропускаем коммит."
-        else
-        git commit -m "chore: auto-build wiki.html from markdown [skip ci]"
-        git push
-        fi
+      - name: Build Quartz 4 Obsidian Wiki
+        id: quartz
+        run: |
+          mkdir -p wiki
 
-    - name: Send Telegram Push Notification
-      env:
-        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-      run: |
-          node notify-wiki.js
-          
+          # Динамически определяем юзернейм и название репозитория
+          REPO_OWNER="${{ github.repository_owner }}"
+          REPO_NAME="${{ github.event.repository.name }}"
+
+          if [ "$REPO_NAME" = "${REPO_OWNER}.github.io" ]; then
+            BASE_URL="${REPO_OWNER}.github.io/wiki"
+            SITE_URL="https://${REPO_OWNER}.github.io/wiki"
+          else
+            BASE_URL="${REPO_OWNER}.github.io/${REPO_NAME}/wiki"
+            SITE_URL="https://${REPO_OWNER}.github.io/${REPO_NAME}/wiki"
+          fi
+
+          echo "WIKI_URL=$SITE_URL" >> $GITHUB_ENV
+
+          # Клонируем Quartz 4
+          git clone --depth 1 https://github.com/jackyzha0/quartz.git .quartz
+          cd .quartz
+          npm ci
+
+          # Конфигурируем baseUrl динамически
+          sed -i "s/pageTitle: \".*\"/pageTitle: \"🧠 Obsidian Wiki\"/" quartz.config.ts
+          sed -i "s|baseUrl: \".*\"|baseUrl: \"$BASE_URL\"|" quartz.config.ts
+
+          # Копируем твои заметки
+          cp -r ../wiki/* content/ 2>/dev/null || true
+
+          if [ ! -f content/index.md ]; then
+            echo "# 🧠 Obsidian Wiki" > content/index.md
+            echo "Добро пожаловать в базу знаний!" >> content/index.md
+          fi
+
+          # Компилируем статику Quartz 4
+          npx quartz build -o ../dist_wiki
+          cd ..
+
+          # Переносим скомпилированный Quartz в public/wiki
+          mkdir -p public/wiki
+          rm -rf public/wiki/*
+          cp -r dist_wiki/* public/wiki/
+
+          # Редирект для wiki.html
+          echo "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0; url=$SITE_URL\"></head></html>" > wiki.html
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add public/wiki/ wiki.html wiki/
+          if git diff --staged --quiet; then
+            echo "Никаких изменений в wiki не обнаружено, пропускаем коммит."
+          else
+            git commit -m "chore: auto-build Quartz 4 wiki [skip ci]"
+            git push
+          fi
+
+      - name: Send Telegram Push Notification
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          WIKI_URL: ${{ env.WIKI_URL }}
+        run: |
+          if [ -f "notify-wiki.js" ]; then
+            node notify-wiki.js
+          fi
