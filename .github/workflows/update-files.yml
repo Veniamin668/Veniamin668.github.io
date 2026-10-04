@@ -15,6 +15,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '26'
+        
     - name: Checkout repository
       uses: actions/checkout@v4
 
@@ -23,10 +28,6 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y ffmpeg exiftool
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
 
     - name: Generate File List with Metadata (Node.js)
       run: |
@@ -184,13 +185,11 @@ jobs:
         const path = require('path');
         const { execSync } = require('child_process');
 
-        // 1. Проверяем доступы
         if (!process.env.TELEGRAM_TOKEN || !process.env.TELEGRAM_CHAT_ID) {
-          console.log("⚠️ Токены Telegram не найдены, пропускаем отправку.");
+          console.log("⚠️️ Токены Telegram не найдены, пропускаем отправку.");
           process.exit(0);
         }
 
-        // 2. Сбор статистики по файлам
         const folderPath = path.join(process.cwd(), 'files');
         let images = 0, videos = 0, audios = 0, others = 0, totalBytes = 0, totalFiles = 0;
 
@@ -214,7 +213,6 @@ jobs:
           return (bytes / 1073741824).toFixed(2) + ' ГБ';
         };
 
-        // 3. Безопасное получение данных из Git (не крашит воркфлоу при ошибке)
         let changedCount = totalFiles;
         try {
           const diff = execSync('git diff --name-only HEAD~1 2>/dev/null').toString();
@@ -227,14 +225,13 @@ jobs:
           commits = execSync('git log -n 3 --pretty=format:"• <code>%h</code> %s"').toString().trim();
         } catch(e) {}
 
-        // 4. Формирование динамической ссылки
         const repo = process.env.REPO || 'user/repo';
         const [owner, project] = repo.split('/');
         const siteUrl = project === `${owner}.github.io` 
           ? `https://${owner}.github.io/files` 
           : `https://${owner}.github.io/${project}/files`;
 
-        // 5. Формирование URL для графика (Deep Dark Theme)
+        // Исправленный конфиг для Chart.js v2 (используем fontColor и fontSize)
         const chartConfig = {
           type: 'doughnut',
           data: {
@@ -247,18 +244,22 @@ jobs:
             }]
           },
           options: {
-            plugins: {
-              legend: { position: 'bottom', labels: { color: '#e2e8f0', font: { size: 14 } } },
-              title: { display: true, text: 'СТРУКТУРА АРХИВА', color: '#f8fafc', font: { size: 16, weight: 'bold' } }
+            legend: { 
+              position: 'bottom', 
+              labels: { fontColor: '#e2e8f0', fontSize: 14, padding: 20 } 
+            },
+            title: { 
+              display: true, 
+              text: 'СТРУКТУРА АРХИВА', 
+              fontColor: '#f8fafc', 
+              fontSize: 16 
             }
           }
         };
         const chartUrl = `https://quickchart.io/chart?w=600&h=480&bkg=111111&c=${encodeURIComponent(JSON.stringify(chartConfig))}`;
 
-        // 6. Текст сообщения
         const caption = `<b>✨ Архив файлов успешно обновлён!</b>\n\n📦 Всего файлов: <code>${totalFiles}</code> (Вес: <code>${formatSize(totalBytes)}</code>)\n📁 Изменено: <code>${changedCount}</code>\n\n📜 <b>Последние коммиты:</b>\n${commits}\n\n🌐 <a href="${siteUrl}">Открыть файлы</a>`;
 
-        // 7. Отправка через нативный fetch (Telegram умеет сам скачивать фото по ссылке)
         fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/sendPhoto`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
