@@ -172,95 +172,97 @@ jobs:
         git push origin main || true
 
     # ===== НОВЫЙ ШАГ: УВЕДОМЛЕНИЕ В TELEGRAM =====
-    - name: Wait for GitHub Pages Deployment & Notify Telegram
+    - name: Send Chart & Rich Notification to Telegram
       if: success()
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         REPO: ${{ github.repository }}
-        COMMIT_SHA: ${{ github.sha }}
       run: |
-        if [ -z "$TELEGRAM_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
-          echo "⚠️ Telegram secrets not set, skipping."
-          exit 0
-        fi
+        # 1. Собираем статистику через Node.js
+        STATS_JSON=$(node -e '
+          const fs = require("fs");
+          const path = require("path");
+          const folderPath = path.join(process.cwd(), "files");
+          if (!fs.existsSync(folderPath)) {
+            console.log(JSON.stringify({ totalSize: "0 Б", images: 0, videos: 0, audios: 0, others: 0, total: 0 }));
+            process.exit(0);
+          }
+          const files = fs.readdirSync(folderPath).filter(f => !f.startsWith("."));
+          let totalBytes = 0;
+          let images = 0, videos = 0, audios = 0, others = 0;
 
-        CHANGED_COUNT=$(git diff --name-only HEAD~1 2>/dev/null | grep 'files/' | wc -l || echo "1")
-        TOTAL_FILES=$(node -e 'console.log(require("fs").readdirSync("files").filter(f => !f.startsWith(".")).length)')
-
-        # 1. Отправляем первичное сообщение
-        INIT_MSG="⏳ *Файлы загружены, ждём завершения деплоя...*%0A📁 Изменено: $CHANGED_COUNT | Всего: $TOTAL_FILES"
-        
-        RESPONSE=$(curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" \
-          -d chat_id="$TELEGRAM_CHAT_ID" \
-          -d text="$INIT_MSG" \
-          -d parse_model="Markdown")
-        
-        MSG_ID=$(echo "$RESPONSE" | node -e '
-          let data = "";
-          process.stdin.on("data", chunk => data += chunk);
-          process.stdin.on("end", () => {
-            try {
-              const json = JSON.parse(data);
-              if (json.ok) console.log(json.result.message_id);
-            } catch(e) {}
+          files.forEach(file => {
+            const stat = fs.statSync(path.join(folderPath, file));
+            totalBytes += stat.size;
+            const ext = path.extname(file).toLowerCase();
+            if ([".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"].includes(ext)) images++;
+            else if ([".mp4", ".mkv", ".avi", ".mov", ".webm"].includes(ext)) videos++;
+            else if ([".mp3", ".wav", ".flac", ".ogg", ".m4a"].includes(ext)) audios++;
+            else others++;
           });
+
+          let sizeStr = "";
+          if (totalBytes < 1024) sizeStr = totalBytes + " Б";
+          else if (totalBytes < 1048576) sizeStr = (totalBytes / 1024).toFixed(1) + " КБ";
+          else if (totalBytes < 1073741824) sizeStr = (totalBytes / 1048576).toFixed(1) + " МБ";
+          else sizeStr = (totalBytes / 1073741824).toFixed(2) + " ГБ";
+
+          console.log(JSON.stringify({ totalSize: sizeStr, images, videos, audios, others, total: files.length }));
         ')
 
-        echo "🔄 Ожидание завершения чеков для коммита $COMMIT_SHA..."
+        TOTAL_SIZE=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).totalSize)')
+        TOTAL_FILES=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).total)')
+        IMG_COUNT=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).images)')
+        VID_COUNT=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).videos)')
+        AUD_COUNT=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).audios)')
+        OTH_COUNT=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).others)')
 
-        # 2. Проверяем check-runs через GitHub API (ждем пока все связанные действия завершатся)
-        CONCLUSION="success"
-        for i in {1..30}; do
-          sleep 5
-          
-          CHECKS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-            "https://api.github.com/repos/$REPO/commits/$COMMIT_SHA/check-runs")
-          
-          STATUS_DATA=$(echo "$CHECKS" | node -e '
-            let data = "";
-            process.stdin.on("data", chunk => data += chunk);
-            process.stdin.on("end", () => {
-              try {
-                const json = JSON.parse(data);
-                const runs = json.check_runs || [];
-                // Ищем есть ли незавершенные чеки (кроме текущего, если он мешает)
-                let unfinished = runs.some(r => r.status !== "completed");
-                let failed = runs.some(r => r.conclusion && r.conclusion !== "success" && r.conclusion !== "skipped");
-                console.log(JSON.stringify({ unfinished, failed, count: runs.length }));
-              } catch(e) {
-                console.log(JSON.stringify({ unfinished: false, failed: false, count: 0 }));
-              }
-            });
-          ')
-          
-          UNFINISHED=$(echo "$STATUS_DATA" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).unfinished)')
-          FAILED=$(echo "$STATUS_DATA" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).failed)')
-          
-          echo "Попытка $i: Незавершённых чеков -> $UNFINISHED"
-          
-          if [ "$FAILED" = "true" ]; then
-            CONCLUSION="failure"
-            break
-          fi
-          
-          if [ "$UNFINISHED" = "false" ]; then
-            break
-          fi
-        done
+        CHANGED_COUNT=$(git diff --name-only HEAD~1 2>/dev/null | grep 'files/' | wc -l || echo "1")
+        COMMITS_LOG=$(git log -n 3 --pretty=format:"• \`%h\` %s" | sed ':a;N;$!ba;s/\n/%0A/g')
 
-        # 3. Финальное обновление сообщения в Телеграме
-        if [ "$CONCLUSION" = "success" ]; then
-          FINAL_MSG="✅ *Деплой успешно завершён!*%0A📁 Изменено файлов: $CHANGED_COUNT%0A📦 Всего в архиве: $TOTAL_FILES%0A🌐 [Открыть сайт](https://veniamin668.github.io/files.html)"
+        # 2. Динамически вычисляем URL сайта (username.github.io/repo/files)
+        OWNER=$(echo "$REPO" | cut -d'/' -f1)
+        PROJECT=$(echo "$REPO" | cut -d'/' -f2)
+        
+        if [ "$PROJECT" = "$OWNER.github.io" ]; then
+          SITE_URL="https://$OWNER.github.io/files"
         else
-          FINAL_MSG="❌ *Деплой завершился с ошибкой!*%0A📁 Изменено: $CHANGED_COUNT | Всего: $TOTAL_FILES"
+          SITE_URL="https://$OWNER.github.io/$PROJECT/files"
         fi
 
-        if [ -n "$MSG_ID" ]; then
-          curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/editMessageText" \
-            -d chat_id="$TELEGRAM_CHAT_ID" \
-            -d message_id="$MSG_ID" \
-            -d text="$FINAL_MSG" \
-            -d parse_mode="Markdown" > /dev/null
-        fi
+        # 3. Генерируем график через QuickChart
+        CHART_CONFIG='{
+          "type": "doughnut",
+          "data": {
+            "labels": ["Картинки", "Видео", "Аудио", "Прочее"],
+            "datasets": [{
+              "data": ['$IMG_COUNT', '$VID_COUNT', '$AUD_COUNT', '$OTH_COUNT'],
+              "backgroundColor": ["#36a2eb", "#ff6384", "#cc65fe", "#ffce56"]
+            }]
+          },
+          "options": {
+            "plugins": {
+              "legend": { "position": "bottom", "labels": { "font": { "size": 14 } } },
+              "title": { "display": true, "text": "Структура файлов архива", "font": { "size": 18 } }
+            }
+          }
+        }'
+        
+        curl -s -X POST -H "Content-Type: application/json" \
+          -d "{\"chart\": $(echo "$CHART_CONFIG" | tr -d '\n'), \"width\": 500, \"height\": 400, \"backgroundColor\": \"white\"}" \
+          "https://quickchart.io/chart" --output chart.png
+
+        # 4. Формируем текст с убранным расширением .html в ссылке
+        CAPTION="✨ *Архив файлов успешно обновлён!*%0A%0A"
+        CAPTION+="📦 Всего файлов: \`$TOTAL_FILES\` (Вес: \`$TOTAL_SIZE\`)%0A"
+        CAPTION+="📁 Изменено в коммите: \`$CHANGED_COUNT\`%0A%0A"
+        CAPTION+="📜 *Последние коммиты:*%0A$COMMITS_LOG%0A%0A"
+        CAPTION+="🌐 [Открыть файлы]($SITE_URL)"
+
+        # 5. Отправка в Telegram
+        curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendPhoto" \
+          -F chat_id="$TELEGRAM_CHAT_ID" \
+          -F photo=@chart.png \
+          -F caption="$CAPTION" \
+          -F parse_mode="Markdown"
