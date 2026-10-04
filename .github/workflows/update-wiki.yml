@@ -4,8 +4,6 @@ on:
   push:
     paths:
       - 'md-wiki/**'
-      - '.github/workflows/update-wiki.yml'
-      - 'custom.scss'
   workflow_dispatch:
 
 permissions:
@@ -72,10 +70,10 @@ jobs:
           fi
 
           # Копируем твой custom.scss из корня репы в нужную директорию Quartz 5
-          if [ -f "../custom.scss" ]; then
-            cp ../custom.scss quartz/styles/custom.scss
-            echo "✅ custom.scss успешно подтянут в Quartz 5!"
-          fi
+          # if [ -f "../custom.scss" ]; then
+            # cp ../custom.scss quartz/styles/custom.scss
+            # echo "✅ custom.scss успешно подтянут в Quartz 5!"
+          # fi
           
           # Сборка Quartz прямо в public/wiki
           npx quartz build -o ../public/wiki
