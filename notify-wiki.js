@@ -4,9 +4,10 @@ const { execSync } = require('child_process');
 
 const BOT_TOKEN = process.env.TELEGRAM_TOKEN;
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const WIKI_URL = process.env.WIKI_URL || 'https://veniamin668.github.io/wiki';
 
 if (!BOT_TOKEN || !CHAT_ID) {
-  console.log('⚠️️ TELEGRAM_TOKEN или TELEGRAM_CHAT_ID не настроены в Secrets. Пропускаем отправку.');
+  console.log('⚠ TELEGRAM_TOKEN или TELEGRAM_CHAT_ID не настроены в Secrets. Пропускаем отправку.');
   process.exit(0);
 }
 
@@ -71,7 +72,7 @@ if (added.length === 0 && modified.length === 0 && deleted.length === 0) {
 }
 
 message += `\n📜 <b>Свежие коммиты:</b>\n${recentCommits}\n\n`;
-message += `🌐 <a href="https://veniamin668.github.io/wiki">Перейти в Wiki</a>`;
+message += `🌐 <a href="${WIKI_URL}">Перейти в Wiki</a>`;
 
 // 5. Отправка через Telegram Bot API
 async function sendNotification() {
