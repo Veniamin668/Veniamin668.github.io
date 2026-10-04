@@ -43,29 +43,48 @@ jobs:
 
           echo "WIKI_URL=$SITE_URL" >> $GITHUB_ENV
 
-          # Клонируем Quartz 4
+          # Клонируем Quartz
           rm -rf .quartz
           git clone --depth 1 https://github.com/jackyzha0/quartz.git .quartz
           cd .quartz
           npm ci
 
-          # Безопасно обновляем конфиг через Node.js вместо sed
+          # Универсальный патч конфига (поддерживает и .yaml, и .ts)
           node -e "
             const fs = require('fs');
-            const cfgPath = 'quartz.config.ts';
-            if (fs.existsSync(cfgPath)) {
-              let cfg = fs.readFileSync(cfgPath, 'utf8');
-              cfg = cfg.replace(/pageTitle:\s*[\"'].*?[\"']/, 'pageTitle: \"🧠 Obsidian Wiki\"');
-              cfg = cfg.replace(/baseUrl:\s*[\"'].*?[\"']/, 'baseUrl: \"$BASE_URL\"');
-              fs.writeFileSync(cfgPath, cfg, 'utf8');
-              console.log('✅ quartz.config.ts успешно обновлен!');
+            
+            let targetFile = '';
+            if (fs.existsSync('quartz.config.ts')) {
+              targetFile = 'quartz.config.ts';
+            } else if (fs.existsSync('quartz.config.default.yaml')) {
+              fs.copyFileSync('quartz.config.default.yaml', 'quartz.config.yaml');
+              targetFile = 'quartz.config.yaml';
+            } else if (fs.existsSync('quartz.config.yaml')) {
+              targetFile = 'quartz.config.yaml';
+            }
+
+            if (targetFile) {
+              let cfg = fs.readFileSync(targetFile, 'utf8');
+              cfg = cfg.replace(/pageTitle:.*$/m, 'pageTitle: \"🧠 Obsidian Wiki\"');
+              cfg = cfg.replace(/baseUrl:.*$/m, 'baseUrl: \"$BASE_URL\"');
+              
+              // Если конфиг в дефолтном файле
+              if (fs.existsSync('quartz.config.default.yaml')) {
+                let defCfg = fs.readFileSync('quartz.config.default.yaml', 'utf8');
+                defCfg = defCfg.replace(/pageTitle:.*$/m, 'pageTitle: \"🧠 Obsidian Wiki\"');
+                defCfg = defCfg.replace(/baseUrl:.*$/m, 'baseUrl: \"$BASE_URL\"');
+                fs.writeFileSync('quartz.config.default.yaml', defCfg, 'utf8');
+              }
+
+              fs.writeFileSync(targetFile, cfg, 'utf8');
+              console.log('✅ Конфиг успешно пропатчен в:', targetFile);
             } else {
-              console.error('❌ quartz.config.ts не найден в директории .quartz');
+              console.error('❌ Ни один файл конфигурации Quartz не найден');
               process.exit(1);
             }
           "
 
-          # Копируем твои заметки в content
+          # Копируем заметки
           cp -r ../wiki/* content/ 2>/dev/null || true
 
           if [ ! -f content/index.md ]; then
@@ -73,18 +92,18 @@ jobs:
             echo "Добро пожаловать в базу знаний!" >> content/index.md
           fi
 
-          # Сборка статики Quartz 4
+          # Сборка
           npx quartz build -o ../dist_wiki
           cd ..
 
-          # Переносим скомпилированный сайт в public/wiki
+          # Перенос готовой статики
           mkdir -p public/wiki
           rm -rf public/wiki/*
           cp -r dist_wiki/* public/wiki/
 
-          # Редирект для wiki.html
+          # Редирект
           echo "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0; url=$SITE_URL\"></head></html>" > wiki.html
-
+          
       - name: Commit and Push Changes
         run: |
           git config --global user.name "github-actions[bot]"
