@@ -66,10 +66,16 @@ jobs:
           cp -r ../md-wiki/* content/ 2>/dev/null || true
 
           if [ ! -f content/index.md ]; then
-            echo "# 🧠 Obsidian Wiki" > content/index.md
+            echo "# 🧠 ktoya? Wiki" > content/index.md
             echo "Добро пожаловать в базу знаний!" >> content/index.md
           fi
 
+          # Копируем твой custom.scss из корня репы в нужную директорию Quartz 5
+          if [ -f "../custom.scss" ]; then
+            cp ../custom.scss quartz/styles/custom.scss
+            echo "✅ custom.scss успешно подтянут в Quartz 5!"
+          fi
+          
           # Сборка Quartz прямо в public/wiki
           npx quartz build -o ../public/wiki
           cd ..
