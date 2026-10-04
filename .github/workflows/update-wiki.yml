@@ -58,7 +58,7 @@ jobs:
               targetFile = 'quartz.config.yaml';
             }
             let cfg = fs.readFileSync(targetFile, 'utf8');
-            cfg = cfg.replace(/pageTitle:.*$/m, 'pageTitle: \"🧠 Obsidian Wiki\"');
+            cfg = cfg.replace(/pageTitle:.*$/m, 'pageTitle: \"🧠 ktoya? Wiki\"');
             cfg = cfg.replace(/baseUrl:.*$/m, 'baseUrl: \"$BASE_URL\"');
             fs.writeFileSync(targetFile, cfg, 'utf8');
           "
