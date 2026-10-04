@@ -1,64 +1,114 @@
-// Глобальный темный фон под стиль продвинутых вики
-body {
-  background-color: #0b0f19 !important;
-  color: #e2e8f0 !important;
+// ==========================================
+// 🧠 KTOYA? WIKI - CUSTOM STYLING (ULTIMATE)
+// ==========================================
+
+// Глобальные переменные темы
+:root {
+  --bg-main: #0b0f19;
+  --bg-card: rgba(15, 23, 42, 0.85);
+  --border-color: rgba(244, 63, 94, 0.2);
+  --accent-primary: #f43f5e;
+  --accent-hover: #fb7185;
+  --text-main: #e2e8f0;
+  --text-muted: #94a3b8;
+}
+
+// Кастомный курсор на весь сайт (киберпанк-стрелочка + палец на ссылки)
+html, body {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 3 21 12 12 21 9 14 3 3z"></polygon></svg>'), auto !important;
+  background-color: var(--bg-main) !important;
+  color: var(--text-main) !important;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+a, button, [role="button"], .internal, .external {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%23f43f5e" stroke="%23ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="6"></circle></svg>'), pointer !important;
 }
 
 // Лютое кастомное выделение текста (красно-малиновое свечение)
 ::selection {
-  background: #f43f5e;
+  background: var(--accent-primary);
   color: #0b0f19;
 }
 ::-moz-selection {
-  background: #f43f5e;
+  background: var(--accent-primary);
   color: #0b0f19;
 }
 
-// Сайдбары, шапка и граф-панель в виде полупрозрачных стеклянных карточек
-.sidebar, .page-header, footer, .toc, .desktop-only {
-  background-color: rgba(15, 23, 42, 0.8) !important;
-  backdrop-filter: blur(14px);
-  border-color: rgba(244, 63, 94, 0.15) !important;
+// Сайдбары, шапка и панели в виде полупрозрачных стеклянных карточек с блюром
+.sidebar, .page-header, footer, .toc, .desktop-only, .left, .right {
+  background-color: var(--bg-card) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-color: var(--border-color) !important;
 }
 
-// Заголовки с сочным градиентом
-h1, h2, h3 {
+// Заголовки с сочным акцентом
+h1, h2, h3, h4, h5, h6 {
   color: #f8fafc !important;
   font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
-// Ссылки с красным/неоновым ховером
+// Ссылки с неоновым ховером
 a.internal, a.external {
-  color: #f43f5e;
+  color: var(--accent-primary);
   text-decoration: none;
   transition: all 0.2s ease;
 
   &:hover {
-    color: #fb7185;
-    text-shadow: 0 0 10px rgba(244, 63, 94, 0.5);
+    color: var(--accent-hover);
+    text-shadow: 0 0 10px rgba(244, 63, 94, 0.6);
   }
 }
 
-// Карточки и блок-цитаты
+// Карточки, блоки и цитаты
 blockquote, .callout {
-  background: rgba(30, 41, 59, 0.6) !important;
-  border-left: 4px solid #f43f5e !important;
-  border-radius: 0 8px 8px 0;
+  background: rgba(30, 41, 59, 0.7) !important;
+  border-left: 4px solid var(--accent-primary) !important;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-// Кастомный скроллбар
+// ЖЕСТКО ФИКСИРУЕМ ГРАФ, ЧТОБЫ ОН БОЛЬШЕ НИКУДА НЕ УЛЕТАЛ
+.graph-view, .desktop-only, .right-sidebar {
+  overflow: hidden !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+
+svg.graph-visualization, canvas {
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: 8px;
+}
+
+// Убираем уродливые рамки фронтматтера / полей свойств, если они где-то пролезают
+.frontmatter-container, .metadata-container {
+  background: rgba(15, 23, 42, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 20px;
+}
+
+// Сочный кастомный скроллбар, чтобы дед на 775 сокете кайфовал
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #0b0f19;
+  background: var(--bg-main);
 }
+
 ::-webkit-scrollbar-thumb {
   background: #1e293b;
   border-radius: 3px;
+  border: 1px solid rgba(244, 63, 94, 0.2);
 
   &:hover {
-    background: #f43f5e;
+    background: var(--accent-primary);
+    box-shadow: 0 0 10px var(--accent-primary);
   }
 }
