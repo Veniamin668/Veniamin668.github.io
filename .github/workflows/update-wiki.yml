@@ -5,6 +5,7 @@ on:
     paths:
       - 'md-wiki/**'
       - '.github/workflows/update-wiki.yml'
+      - 'custom.scss'
   workflow_dispatch:
 
 permissions:
