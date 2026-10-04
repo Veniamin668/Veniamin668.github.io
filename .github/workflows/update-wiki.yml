@@ -1,0 +1,48 @@
+name: Auto Update Wiki
+
+on:
+  push:
+    paths:
+      - 'wiki/**'
+      - 'wiki.html'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '26'
+        
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Build Wiki HTML
+      run: node build-wiki.js
+
+    - name: Commit and Push Changes
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        
+        git add wiki.html wiki/
+        if git diff --staged --quiet; then
+        echo "Никаких изменений в wiki.html не обнаружено, пропускаем коммит."
+        else
+        git commit -m "chore: auto-build wiki.html from markdown [skip ci]"
+        git push
+        fi
+
+    - name: Send Telegram Push Notification
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      run: |
+          node notify-wiki.js
+          
