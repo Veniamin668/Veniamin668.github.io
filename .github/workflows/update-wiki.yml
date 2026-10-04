@@ -3,7 +3,8 @@ name: Auto Update Wiki
 on:
   push:
     paths:
-      - 'wiki/**'
+      - 'md-wiki/**'
+      - '.github/workflows/update-wiki.yml'
   workflow_dispatch:
 
 permissions:
@@ -25,19 +26,17 @@ jobs:
           node-version: '22'
 
       - name: Build Quartz 4 Obsidian Wiki
-        id: quartz
         run: |
-          mkdir -p wiki
+          mkdir -p md-wiki
 
-          # Динамически определяем юзернейм и название репозитория
           REPO_OWNER="${{ github.repository_owner }}"
           REPO_NAME="${{ github.event.repository.name }}"
 
           if [ "$REPO_NAME" = "${REPO_OWNER}.github.io" ]; then
-            BASE_URL="${REPO_OWNER}.github.io/wiki"
+            BASE_URL="${REPO_OWNER}.github.io/public/wiki"
             SITE_URL="https://${REPO_OWNER}.github.io/wiki"
           else
-            BASE_URL="${REPO_OWNER}.github.io/${REPO_NAME}/wiki"
+            BASE_URL="${REPO_OWNER}.github.io/${REPO_NAME}/public/wiki"
             SITE_URL="https://${REPO_OWNER}.github.io/${REPO_NAME}/wiki"
           fi
 
@@ -49,71 +48,74 @@ jobs:
           cd .quartz
           npm ci
 
-          # Универсальный патч конфига (поддерживает и .yaml, и .ts)
+          # Пропатчим конфиг Quartz
           node -e "
             const fs = require('fs');
-            
-            let targetFile = '';
-            if (fs.existsSync('quartz.config.ts')) {
-              targetFile = 'quartz.config.ts';
-            } else if (fs.existsSync('quartz.config.default.yaml')) {
+            let targetFile = fs.existsSync('quartz.config.ts') ? 'quartz.config.ts' : 'quartz.config.default.yaml';
+            if (fs.existsSync('quartz.config.default.yaml') && !fs.existsSync('quartz.config.yaml')) {
               fs.copyFileSync('quartz.config.default.yaml', 'quartz.config.yaml');
               targetFile = 'quartz.config.yaml';
-            } else if (fs.existsSync('quartz.config.yaml')) {
-              targetFile = 'quartz.config.yaml';
             }
-
-            if (targetFile) {
-              let cfg = fs.readFileSync(targetFile, 'utf8');
-              cfg = cfg.replace(/pageTitle:.*$/m, 'pageTitle: \"🧠 Obsidian Wiki\"');
-              cfg = cfg.replace(/baseUrl:.*$/m, 'baseUrl: \"$BASE_URL\"');
-              
-              // Если конфиг в дефолтном файле
-              if (fs.existsSync('quartz.config.default.yaml')) {
-                let defCfg = fs.readFileSync('quartz.config.default.yaml', 'utf8');
-                defCfg = defCfg.replace(/pageTitle:.*$/m, 'pageTitle: \"🧠 Obsidian Wiki\"');
-                defCfg = defCfg.replace(/baseUrl:.*$/m, 'baseUrl: \"$BASE_URL\"');
-                fs.writeFileSync('quartz.config.default.yaml', defCfg, 'utf8');
-              }
-
-              fs.writeFileSync(targetFile, cfg, 'utf8');
-              console.log('✅ Конфиг успешно пропатчен в:', targetFile);
-            } else {
-              console.error('❌ Ни один файл конфигурации Quartz не найден');
-              process.exit(1);
-            }
+            let cfg = fs.readFileSync(targetFile, 'utf8');
+            cfg = cfg.replace(/pageTitle:.*$/m, 'pageTitle: \"🧠 Obsidian Wiki\"');
+            cfg = cfg.replace(/baseUrl:.*$/m, 'baseUrl: \"$BASE_URL\"');
+            fs.writeFileSync(targetFile, cfg, 'utf8');
           "
 
-          # Копируем заметки
-          cp -r ../wiki/* content/ 2>/dev/null || true
+          # Копируем сырые заметки из md-wiki/
+          cp -r ../md-wiki/* content/ 2>/dev/null || true
 
           if [ ! -f content/index.md ]; then
             echo "# 🧠 Obsidian Wiki" > content/index.md
             echo "Добро пожаловать в базу знаний!" >> content/index.md
           fi
 
-          # Сборка
-          npx quartz build -o ../dist_wiki
+          # Сборка Quartz прямо в public/wiki
+          npx quartz build -o ../public/wiki
           cd ..
 
-          # Перенос готовой статики
-          mkdir -p public/wiki
-          rm -rf public/wiki/*
-          cp -r dist_wiki/* public/wiki/
+          # Генерируем корневой wiki.html с полноэкранным iframe
+          cat << 'EOF' > wiki.html
+          <!DOCTYPE html>
+          <html lang="ru">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Obsidian Wiki</title>
+            <style>
+              html, body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                background-color: #161618;
+              }
+              iframe {
+                width: 100%;
+                height: 100%;
+                border: none;
+                display: block;
+              }
+            </style>
+          </head>
+          <body>
+            <iframe src="./public/wiki/index.html"></iframe>
+          </body>
+          </html>
+          EOF
 
-          # Редирект
-          echo "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0; url=$SITE_URL\"></head></html>" > wiki.html
-          
       - name: Commit and Push Changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add public/wiki/ wiki.html wiki/
+          git add public/wiki/ wiki.html md-wiki/
+
           if git diff --staged --quiet; then
-            echo "Никаких изменений в wiki не обнаружено, пропускаем коммит."
+            echo "Никаких изменений не обнаружено, пропускаем коммит."
           else
-            git commit -m "chore: auto-build Quartz 4 wiki [skip ci]"
+            git commit -m "chore: build Quartz from md-wiki/ to public/wiki [skip ci]"
             git push
           fi
 
