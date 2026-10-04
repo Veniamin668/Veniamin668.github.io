@@ -2,21 +2,33 @@
 <rss version="2.0">
     <channel>
       <title>🧠 Obsidian Wiki</title>
-      <link>https://Veniamin668.github.io/wiki</link>
+      <link>https://Veniamin668.github.io/public/wiki</link>
       <description>Last 10 notes on 🧠 Obsidian Wiki</description>
       <generator>Quartz -- quartz.jzhao.xyz</generator>
       <item>
-    <title>Tag Index</title>
-    <link>https://Veniamin668.github.io/wiki/tags/</link>
-    <guid>https://Veniamin668.github.io/wiki/tags/</guid>
+    <title>wiki</title>
+    <link>https://Veniamin668.github.io/public/wiki/tags/wiki</link>
+    <guid>https://Veniamin668.github.io/public/wiki/tags/wiki</guid>
     <description><![CDATA[  ]]></description>
-    <pubDate>Sun, 04 Oct 2026 12:44:02 GMT</pubDate>
+    <pubDate>Sun, 04 Oct 2026 13:07:51 GMT</pubDate>
+  </item><item>
+    <title>obsidian</title>
+    <link>https://Veniamin668.github.io/public/wiki/tags/obsidian</link>
+    <guid>https://Veniamin668.github.io/public/wiki/tags/obsidian</guid>
+    <description><![CDATA[  ]]></description>
+    <pubDate>Sun, 04 Oct 2026 13:07:51 GMT</pubDate>
+  </item><item>
+    <title>Tag Index</title>
+    <link>https://Veniamin668.github.io/public/wiki/tags/</link>
+    <guid>https://Veniamin668.github.io/public/wiki/tags/</guid>
+    <description><![CDATA[  ]]></description>
+    <pubDate>Sun, 04 Oct 2026 13:07:51 GMT</pubDate>
   </item><item>
     <title>index</title>
-    <link>https://Veniamin668.github.io/wiki/</link>
-    <guid>https://Veniamin668.github.io/wiki/</guid>
-    <description><![CDATA[ 🧠 Obsidian Wiki Добро пожаловать в базу знаний!. ]]></description>
-    <pubDate>Sun, 04 Oct 2026 12:43:59 GMT</pubDate>
+    <link>https://Veniamin668.github.io/public/wiki/</link>
+    <guid>https://Veniamin668.github.io/public/wiki/</guid>
+    <description><![CDATA[ title: 🧠 Главная страница draft: false tags: wiki obsidian Добро пожаловать в Obsidian Wiki! Это главная страница нашей базы знаний. ]]></description>
+    <pubDate>Sun, 04 Oct 2026 13:07:49 GMT</pubDate>
   </item>
     </channel>
   </rss>
