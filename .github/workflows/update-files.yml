@@ -172,19 +172,110 @@ jobs:
         git push origin main || true
 
     # ===== НОВЫЙ ШАГ: УВЕДОМЛЕНИЕ В TELEGRAM =====
-    - name: Send Telegram notification
+    - name: Wait for GitHub Pages Deployment & Notify Telegram
       if: success()
       env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.sha }}
       run: |
         if [ -z "$TELEGRAM_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
-          echo "⚠️ Telegram secrets not set, skipping notification."
+          echo "⚠️ Telegram secrets not set, skipping."
           exit 0
         fi
-        COUNT=$(git diff --name-only HEAD~1 | grep 'files/' | wc -l)
-        MESSAGE="📁 *Архив файлов обновлён!*\nДобавлено/изменено: $COUNT файлов.\nСмотреть: https://veniamin668.github.io/files.html"
-        curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" \
+
+        CHANGED_COUNT=$(git diff --name-only HEAD~1 2>/dev/null | grep 'files/' | wc -l || echo "1")
+        TOTAL_FILES=$(node -e 'console.log(require("fs").readdirSync("files").filter(f => !f.startsWith(".")).length)')
+
+        # 1. Отправляем первичное сообщение, что деплой запущен
+        INIT_MSG="⏳ *Файлы загружены, деплой на GitHub Pages в процессе...*%0A📁 Изменено: $CHANGED_COUNT | Всего: $TOTAL_FILES"
+        
+        RESPONSE=$(curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" \
           -d chat_id="$TELEGRAM_CHAT_ID" \
-          -d text="$MESSAGE" \
-          -d parse_mode="Markdown"
+          -d text="$INIT_MSG" \
+          -d parse_mode="Markdown")
+        
+        # Вытаскиваем ID отправленного сообщения, чтобы потом его отредактировать
+        MSG_ID=$(echo "$RESPONSE" | node -e '
+          let data = "";
+          process.stdin.on("data", chunk => data += chunk);
+          process.stdin.on("end", () => {
+            try {
+              const json = JSON.parse(data);
+              if (json.ok) console.log(json.result.message_id);
+            } catch(e) {}
+          });
+        ')
+
+        echo "🔄 Ожидание деплоя на GitHub Pages для комита $COMMIT_SHA..."
+
+        # 2. Цикл проверки статуса деплоя через GitHub API (максимум ждем ~10 минут: 60 попыток по 10 секунд)
+        STATUS="queued"
+        for i in {1..60}; do
+          sleep 10
+          
+          # Получаем список деплоев для репозитория
+          DEPLOYMENTS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/$REPO/deployments?sha=$COMMIT_SHA")
+          
+          DEPLOY_ID=$(echo "$DEPLOYMENTS" | node -e '
+            let data = "";
+            process.stdin.on("data", chunk => data += chunk);
+            process.stdin.on("end", () => {
+              try {
+                const list = JSON.parse(data);
+                if (Array.isArray(list) && list.length > 0) console.log(list[0].id);
+              } catch(e) {}
+            });
+          ')
+
+          if [ -n "$DEPLOY_ID" ]; then
+            # Проверяем статус конкретного деплоя
+            STATUSES=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+              "https://api.github.com/repos/$REPO/deployments/$DEPLOY_ID/statuses")
+            
+            STATUS=$(echo "$STATUSES" | node -e '
+              let data = "";
+              process.stdin.on("data", chunk => data += chunk);
+              process.stdin.on("end", () => {
+                try {
+                  const list = JSON.parse(data);
+                  if (Array.isArray(list) && list.length > 0) console.log(list[0].state);
+                } catch(e) {}
+              });
+            ')
+            
+            echo "Попытка $i: Статус деплоя -> ${STATUS:-queued}"
+            
+            if [ "$STATUS" = "success" ]; then
+              break
+            elif [ "$STATUS" = "failure" ] || [ "$STATUS" = "error" ]; then
+              break
+            fi
+          else
+            echo "Попытка $i: Деплой еще не создан в API..."
+          fi
+        done
+
+        # 3. Обновляем сообщение в Телеграме в зависимости от результата
+        if [ "$STATUS" = "success" ]; then
+          FINAL_MSG="✅ *Деплой успешно завершён!*%0A📁 Изменено файлов: $CHANGED_COUNT%0A📦 Всего в архиве: $TOTAL_FILES%0A🌐 [Открыть сайт](https://veniamin668.github.io/files.html)"
+        else
+          FINAL_MSG="❌ *Деплой завершился с ошибкой или тайм-аутом!*%0A📁 Изменено: $CHANGED_COUNT | Всего: $TOTAL_FILES"
+        fi
+
+        if [ -n "$MSG_ID" ]; then
+          curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/editMessageText" \
+            -d chat_id="$TELEGRAM_CHAT_ID" \
+            -d message_id="$MSG_ID" \
+            -d text="$FINAL_MSG" \
+            -d parse_mode="Markdown" > /dev/null
+        else
+          # Если вдруг не удалось поймать ID сообщения, шлем новое
+          curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" \
+            -d chat_id="$TELEGRAM_CHAT_ID" \
+            -d text="$FINAL_MSG" \
+            -d parse_mode="Markdown" > /dev/null
+        fi
