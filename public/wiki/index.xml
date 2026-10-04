@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+      <title>🧠 Obsidian Wiki</title>
+      <link>https://Veniamin668.github.io/wiki</link>
+      <description>Last 10 notes on 🧠 Obsidian Wiki</description>
+      <generator>Quartz -- quartz.jzhao.xyz</generator>
+      <item>
+    <title>Tag Index</title>
+    <link>https://Veniamin668.github.io/wiki/tags/</link>
+    <guid>https://Veniamin668.github.io/wiki/tags/</guid>
+    <description><![CDATA[  ]]></description>
+    <pubDate>Sun, 04 Oct 2026 12:44:02 GMT</pubDate>
+  </item><item>
+    <title>index</title>
+    <link>https://Veniamin668.github.io/wiki/</link>
+    <guid>https://Veniamin668.github.io/wiki/</guid>
+    <description><![CDATA[ 🧠 Obsidian Wiki Добро пожаловать в базу знаний!. ]]></description>
+    <pubDate>Sun, 04 Oct 2026 12:43:59 GMT</pubDate>
+  </item>
+    </channel>
+  </rss>
