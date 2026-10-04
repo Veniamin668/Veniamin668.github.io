@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
     <channel>
-      <title>🧠 Obsidian Wiki</title>
-      <link>https://Veniamin668.github.io/public/wiki</link>
-      <description>Last 10 notes on 🧠 Obsidian Wiki</description>
+      <title>Quartz 5</title>
+      <link>https://quartz.jzhao.xyz</link>
+      <description>Last 10 notes on Quartz 5</description>
       <generator>Quartz -- quartz.jzhao.xyz</generator>
       <item>
     <title>wiki</title>
-    <link>https://Veniamin668.github.io/public/wiki/tags/wiki</link>
-    <guid>https://Veniamin668.github.io/public/wiki/tags/wiki</guid>
+    <link>https://quartz.jzhao.xyz/tags/wiki</link>
+    <guid>https://quartz.jzhao.xyz/tags/wiki</guid>
     <description><![CDATA[  ]]></description>
-    <pubDate>Sun, 04 Oct 2026 13:08:56 GMT</pubDate>
+    <pubDate>Sun, 04 Oct 2026 13:17:24 GMT</pubDate>
   </item><item>
     <title>obsidian</title>
-    <link>https://Veniamin668.github.io/public/wiki/tags/obsidian</link>
-    <guid>https://Veniamin668.github.io/public/wiki/tags/obsidian</guid>
+    <link>https://quartz.jzhao.xyz/tags/obsidian</link>
+    <guid>https://quartz.jzhao.xyz/tags/obsidian</guid>
     <description><![CDATA[  ]]></description>
-    <pubDate>Sun, 04 Oct 2026 13:08:56 GMT</pubDate>
+    <pubDate>Sun, 04 Oct 2026 13:17:24 GMT</pubDate>
   </item><item>
     <title>Tag Index</title>
-    <link>https://Veniamin668.github.io/public/wiki/tags/</link>
-    <guid>https://Veniamin668.github.io/public/wiki/tags/</guid>
+    <link>https://quartz.jzhao.xyz/tags/</link>
+    <guid>https://quartz.jzhao.xyz/tags/</guid>
     <description><![CDATA[  ]]></description>
-    <pubDate>Sun, 04 Oct 2026 13:08:56 GMT</pubDate>
-  </item><item>
-    <title>test-note</title>
-    <link>https://Veniamin668.github.io/public/wiki/test-note</link>
-    <guid>https://Veniamin668.github.io/public/wiki/test-note</guid>
-    <description><![CDATA[ title: 🚀 Тестовая заметка draft: false tags: test demo 🚀 Тестовая заметка Эта страница создана для проверки работы рендеринга Markdown, подсветки кода и связей между заметками. ]]></description>
-    <pubDate>Sun, 04 Oct 2026 13:08:53 GMT</pubDate>
+    <pubDate>Sun, 04 Oct 2026 13:17:24 GMT</pubDate>
   </item><item>
     <title>index</title>
-    <link>https://Veniamin668.github.io/public/wiki/</link>
-    <guid>https://Veniamin668.github.io/public/wiki/</guid>
+    <link>https://quartz.jzhao.xyz/</link>
+    <guid>https://quartz.jzhao.xyz/</guid>
     <description><![CDATA[ title: 🧠 Главная страница draft: false tags: wiki obsidian Добро пожаловать в Obsidian Wiki! Это главная страница нашей базы знаний. ]]></description>
-    <pubDate>Sun, 04 Oct 2026 13:08:53 GMT</pubDate>
+    <pubDate>Sun, 04 Oct 2026 13:17:22 GMT</pubDate>
+  </item><item>
+    <title>test-note</title>
+    <link>https://quartz.jzhao.xyz/test-note</link>
+    <guid>https://quartz.jzhao.xyz/test-note</guid>
+    <description><![CDATA[ title: 🚀 Тестовая заметка draft: false tags: test demo 🚀 Тестовая заметка Эта страница создана для проверки работы рендеринга Markdown, подсветки кода и связей между заметками. ]]></description>
+    <pubDate>Sun, 04 Oct 2026 13:17:22 GMT</pubDate>
   </item>
     </channel>
   </rss>
