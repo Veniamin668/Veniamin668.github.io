@@ -1,55 +1,64 @@
-// Глобальные стили Quartz под темную тему и эстетику Zapret Wiki
+// Глобальный темный фон под стиль продвинутых вики
 body {
   background-color: #0b0f19 !important;
-  color: #cbd5e1 !important;
+  color: #e2e8f0 !important;
 }
 
-// Кастомное выделение текста внутри вики
+// Лютое кастомное выделение текста (красно-малиновое свечение)
 ::selection {
-  background: #38bdf8;
+  background: #f43f5e;
+  color: #0b0f19;
+}
+::-moz-selection {
+  background: #f43f5e;
   color: #0b0f19;
 }
 
-// Сайдбары, шапка и карточки под полупрозрачное стекло с блюром
-.sidebar, .page-header, footer, .toc {
-  background-color: rgba(15, 23, 42, 0.75) !important;
+// Сайдбары, шапка и граф-панель в виде полупрозрачных стеклянных карточек
+.sidebar, .page-header, footer, .toc, .desktop-only {
+  background-color: rgba(15, 23, 42, 0.8) !important;
   backdrop-filter: blur(14px);
-  border-color: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(244, 63, 94, 0.15) !important;
 }
 
-// Ссылки с сочным неоновым ховером
+// Заголовки с сочным градиентом
+h1, h2, h3 {
+  color: #f8fafc !important;
+  font-weight: 800;
+}
+
+// Ссылки с красным/неоновым ховером
 a.internal, a.external {
-  color: #38bdf8;
+  color: #f43f5e;
+  text-decoration: none;
   transition: all 0.2s ease;
 
   &:hover {
-    color: #818cf8;
-    text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+    color: #fb7185;
+    text-shadow: 0 0 10px rgba(244, 63, 94, 0.5);
   }
 }
 
-// Кастомные блоки/коллауты
+// Карточки и блок-цитаты
 blockquote, .callout {
   background: rgba(30, 41, 59, 0.6) !important;
-  border-left: 3px solid #38bdf8 !important;
+  border-left: 4px solid #f43f5e !important;
   border-radius: 0 8px 8px 0;
 }
 
-// Скроллбар
+// Кастомный скроллбар
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
-
 ::-webkit-scrollbar-track {
   background: #0b0f19;
 }
-
 ::-webkit-scrollbar-thumb {
   background: #1e293b;
   border-radius: 3px;
 
   &:hover {
-    background: #334155;
+    background: #f43f5e;
   }
 }
