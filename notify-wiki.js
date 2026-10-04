@@ -6,7 +6,7 @@ const BOT_TOKEN = process.env.TELEGRAM_TOKEN;
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 if (!BOT_TOKEN || !CHAT_ID) {
-  console.log('⚠️️ TELEGRAM_BOT_TOKEN или TELEGRAM_CHAT_ID не настроены в Secrets. Пропускаем отправку.');
+  console.log('⚠️️ TELEGRAM_TOKEN или TELEGRAM_CHAT_ID не настроены в Secrets. Пропускаем отправку.');
   process.exit(0);
 }
 
