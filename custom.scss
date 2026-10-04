@@ -1,89 +1,55 @@
-// ==========================================
-// 🔴 RED GLASSMOPHISM THEME (PERFORMANCE OPTIMIZED)
-// ==========================================
+// Глобальные стили Quartz под темную тему и эстетику Zapret Wiki
+body {
+  background-color: #0b0f19 !important;
+  color: #cbd5e1 !important;
+}
 
-// 1. Выделение текста сочным красным
+// Кастомное выделение текста внутри вики
 ::selection {
-  background: rgba(255, 51, 68, 0.35);
-  color: #ffffff;
+  background: #38bdf8;
+  color: #0b0f19;
 }
 
-// 2. Легкое стекло БЕЗ лагов (только для плавающих блоков)
-.search-button,
-.popover,
-pre {
-  background: rgba(20, 20, 24, 0.75) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 51, 68, 0.2) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+// Сайдбары, шапка и карточки под полупрозрачное стекло с блюром
+.sidebar, .page-header, footer, .toc {
+  background-color: rgba(15, 23, 42, 0.75) !important;
+  backdrop-filter: blur(14px);
+  border-color: rgba(255, 255, 255, 0.06) !important;
 }
 
-// 3. Неоновые красные [[вики-ссылки]]
-a.internal {
-  text-decoration: none !important;
-  font-weight: 500;
-  padding: 2px 7px;
-  border-radius: 6px;
-  background: rgba(255, 51, 68, 0.12);
-  color: #ff5252 !important;
-  border: 1px solid rgba(255, 51, 68, 0.25);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-
-  &:hover {
-    background: rgba(255, 51, 68, 0.28);
-    box-shadow: 0 0 14px rgba(255, 51, 68, 0.5);
-    color: #fff !important;
-    border-color: #ff3344;
-    transform: translateY(-1px);
-  }
-}
-
-// 4. Теги в виде аккуратных бэйджей
-a.tag {
-  font-size: 0.82rem;
-  padding: 3px 8px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #ff8080 !important;
-  border: 1px solid rgba(255, 80, 80, 0.18);
+// Ссылки с сочным неоновым ховером
+a.internal, a.external {
+  color: #38bdf8;
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(255, 51, 68, 0.2);
-    border-color: #ff5252;
+    color: #818cf8;
+    text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
   }
 }
 
-// 5. Красный акцент для цитат и Callouts
+// Кастомные блоки/коллауты
 blockquote, .callout {
-  border-left: 3px solid #ff3344 !important;
-  background: rgba(255, 51, 68, 0.05) !important;
-  border-radius: 0 10px 10px 0;
-  padding: 0.8rem 1.2rem;
+  background: rgba(30, 41, 59, 0.6) !important;
+  border-left: 3px solid #38bdf8 !important;
+  border-radius: 0 8px 8px 0;
 }
 
-// 6. Оформление панели графа
-.graph-outer {
-  border-radius: 14px !important;
-  border: 1px solid rgba(255, 51, 68, 0.25) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-  overflow: hidden;
-}
-
-// 7. Ультра-тонкий скроллбар
+// Скроллбар
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
+
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #0b0f19;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 51, 68, 0.3);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #ff3344;
+  background: #1e293b;
+  border-radius: 3px;
+
+  &:hover {
+    background: #334155;
+  }
 }
