@@ -22,7 +22,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '26'
+          node-version: '22'
 
       - name: Build Quartz 4 Obsidian Wiki
         id: quartz
@@ -44,15 +44,28 @@ jobs:
           echo "WIKI_URL=$SITE_URL" >> $GITHUB_ENV
 
           # Клонируем Quartz 4
+          rm -rf .quartz
           git clone --depth 1 https://github.com/jackyzha0/quartz.git .quartz
           cd .quartz
           npm ci
 
-          # Конфигурируем baseUrl динамически
-          sed -i "s/pageTitle: \".*\"/pageTitle: \"🧠 Obsidian Wiki\"/" quartz.config.ts
-          sed -i "s|baseUrl: \".*\"|baseUrl: \"$BASE_URL\"|" quartz.config.ts
+          # Безопасно обновляем конфиг через Node.js вместо sed
+          node -e "
+            const fs = require('fs');
+            const cfgPath = 'quartz.config.ts';
+            if (fs.existsSync(cfgPath)) {
+              let cfg = fs.readFileSync(cfgPath, 'utf8');
+              cfg = cfg.replace(/pageTitle:\s*[\"'].*?[\"']/, 'pageTitle: \"🧠 Obsidian Wiki\"');
+              cfg = cfg.replace(/baseUrl:\s*[\"'].*?[\"']/, 'baseUrl: \"$BASE_URL\"');
+              fs.writeFileSync(cfgPath, cfg, 'utf8');
+              console.log('✅ quartz.config.ts успешно обновлен!');
+            } else {
+              console.error('❌ quartz.config.ts не найден в директории .quartz');
+              process.exit(1);
+            }
+          "
 
-          # Копируем твои заметки
+          # Копируем твои заметки в content
           cp -r ../wiki/* content/ 2>/dev/null || true
 
           if [ ! -f content/index.md ]; then
@@ -60,11 +73,11 @@ jobs:
             echo "Добро пожаловать в базу знаний!" >> content/index.md
           fi
 
-          # Компилируем статику Quartz 4
+          # Сборка статики Quartz 4
           npx quartz build -o ../dist_wiki
           cd ..
 
-          # Переносим скомпилированный Quartz в public/wiki
+          # Переносим скомпилированный сайт в public/wiki
           mkdir -p public/wiki
           rm -rf public/wiki/*
           cp -r dist_wiki/* public/wiki/
