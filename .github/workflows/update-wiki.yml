@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'md-wiki/**'
+      - 'custom.scss'
   workflow_dispatch:
 
 permissions:
@@ -47,21 +48,43 @@ jobs:
           cd .quartz
           npm ci
 
-          # Пропатчим конфиг Quartz
+          # Применяем кастомный SCSS
+          if [ -f "../custom.scss" ]; then
+            cp ../custom.scss quartz/styles/custom.scss
+            echo "✅ custom.scss успешно подтянут!"
+          fi
+
+          # Патчим палитру на глубокий черный + красный акцент (#ff3344)
           node -e "
             const fs = require('fs');
-            let targetFile = fs.existsSync('quartz.config.ts') ? 'quartz.config.ts' : 'quartz.config.default.yaml';
-            if (fs.existsSync('quartz.config.default.yaml') && !fs.existsSync('quartz.config.yaml')) {
-              fs.copyFileSync('quartz.config.default.yaml', 'quartz.config.yaml');
-              targetFile = 'quartz.config.yaml';
+            let targetFile = fs.existsSync('quartz.config.ts') ? 'quartz.config.ts' : 'quartz.config.yaml';
+            
+            if (fs.existsSync(targetFile)) {
+              let cfg = fs.readFileSync(targetFile, 'utf8');
+
+              cfg = cfg.replace(/pageTitle:.*$/m, 'pageTitle: \"🧠 Obsidian Wiki\"');
+              cfg = cfg.replace(/baseUrl:.*$/m, 'baseUrl: \"$BASE_URL\"');
+
+              // Шрифты
+              cfg = cfg.replace(/header:.*$/m, 'header: \"Outfit\",');
+              cfg = cfg.replace(/body:.*$/m, 'body: \"Inter\",');
+              cfg = cfg.replace(/code:.*$/m, 'code: \"Fira Code\",');
+
+              // Красная палитра
+              cfg = cfg.replace(/light:\s*\"#.*\"/, 'light: \"#0f0f12\"');
+              cfg = cfg.replace(/lightgray:\s*\"#.*\"/, 'lightgray: \"#222228\"');
+              cfg = cfg.replace(/gray:\s*\"#.*\"/, 'gray: \"#666675\"');
+              cfg = cfg.replace(/darkgray:\s*\"#.*\"/, 'darkgray: \"#e1e1e6\"');
+              cfg = cfg.replace(/dark:\s*\"#.*\"/, 'dark: \"#ffffff\"');
+              cfg = cfg.replace(/secondary:\s*\"#.*\"/, 'secondary: \"#ff3344\"');
+              cfg = cfg.replace(/tertiary:\s*\"#.*\"/, 'tertiary: \"#ff6677\"');
+
+              fs.writeFileSync(targetFile, cfg, 'utf8');
+              console.log('✅ Красный стиль и шрифты успешно настроены!');
             }
-            let cfg = fs.readFileSync(targetFile, 'utf8');
-            cfg = cfg.replace(/pageTitle:.*$/m, 'pageTitle: \"🧠 Obsidian Wiki\"');
-            cfg = cfg.replace(/baseUrl:.*$/m, 'baseUrl: \"$BASE_URL\"');
-            fs.writeFileSync(targetFile, cfg, 'utf8');
           "
 
-          # Копируем сырые заметки из md-wiki/
+          # Копируем заметки
           cp -r ../md-wiki/* content/ 2>/dev/null || true
 
           if [ ! -f content/index.md ]; then
@@ -69,11 +92,11 @@ jobs:
             echo "Добро пожаловать в базу знаний!" >> content/index.md
           fi
 
-          # Сборка Quartz прямо в public/wiki
+          # Сборка Quartz
           npx quartz build -o ../public/wiki
           cd ..
 
-          # Генерируем корневой wiki.html с полноэкранным iframe
+          # Генерируем корневой wiki.html с iframe (темный задник чтобы не мигало белым)
           cat << 'EOF' > wiki.html
           <!DOCTYPE html>
           <html lang="ru">
@@ -88,7 +111,7 @@ jobs:
                 width: 100%;
                 height: 100%;
                 overflow: hidden;
-                background-color: #161618;
+                background-color: #0f0f12;
               }
               iframe {
                 width: 100%;
@@ -109,12 +132,12 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add public/wiki/ wiki.html md-wiki/
+          git add public/wiki/ wiki.html md-wiki/ custom.scss
 
           if git diff --staged --quiet; then
             echo "Никаких изменений не обнаружено, пропускаем коммит."
           else
-            git commit -m "chore: build Quartz from md-wiki/ to public/wiki [skip ci]"
+            git commit -m "style: apply smooth red glassmorphism theme [skip ci]"
             git push
           fi
 
