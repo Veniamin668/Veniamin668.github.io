@@ -173,119 +173,122 @@ jobs:
 
     # ===== НОВЫЙ ШАГ: УВЕДОМЛЕНИЕ В TELEGRAM =====
     - name: Send Dark Chart & Notification to Telegram
-      if: success()
+      shell: bash
       env:
-        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        REPO: ${{ github.repository }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          REPO: ${{ github.repository }}
       run: |
-        # 1. Собираем статистику через Node.js
-        STATS_JSON=$(node -e '
-          const fs = require("fs");
-          const path = require("path");
-          const folderPath = path.join(process.cwd(), "files");
-          if (!fs.existsSync(folderPath)) {
-            console.log(JSON.stringify({ totalSize: "0 Б", images: 0, videos: 0, audios: 0, others: 0, total: 0 }));
-            process.exit(0);
-          }
-          const files = fs.readdirSync(folderPath).filter(f => !f.startsWith("."));
-          let totalBytes = 0;
-          let images = 0, videos = 0, audios = 0, others = 0;
-
-          files.forEach(file => {
-            const stat = fs.statSync(path.join(folderPath, file));
-            totalBytes += stat.size;
-            const ext = path.extname(file).toLowerCase();
-            if ([".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"].includes(ext)) images++;
-            else if ([".mp4", ".mkv", ".avi", ".mov", ".webm"].includes(ext)) videos++;
-            else if ([".mp3", ".wav", ".flac", ".ogg", ".m4a"].includes(ext)) audios++;
-            else others++;
-          });
-
-          let sizeStr = "";
-          if (totalBytes < 1024) sizeStr = totalBytes + " Б";
-          else if (totalBytes < 1048576) sizeStr = (totalBytes / 1024).toFixed(1) + " КБ";
-          else if (totalBytes < 1073741824) sizeStr = (totalBytes / 1048576).toFixed(1) + " МБ";
-          else sizeStr = (totalBytes / 1073741824).toFixed(2) + " ГБ";
-
-          console.log(JSON.stringify({ totalSize: sizeStr, images, videos, audios, others, total: files.length }));
-        ')
-
-        TOTAL_SIZE=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).totalSize)')
-        TOTAL_FILES=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).total)')
-        IMG_COUNT=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).images)')
-        VID_COUNT=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).videos)')
-        AUD_COUNT=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).audios)')
-        OTH_COUNT=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).others)')
-
-        CHANGED_COUNT=$(git diff --name-only HEAD~1 2>/dev/null | grep 'files/' | wc -l || echo "1")
-        
-        # Получаем коммиты без лишних спецсимволов для HTML
-        COMMITS_LOG=$(git log -n 3 --pretty=format:"• <code>%h</code> %s" | sed ':a;N;$!ba;s/\n/\n/g')
-
-        OWNER=$(echo "$REPO" | cut -d'/' -f1)
-        PROJECT=$(echo "$REPO" | cut -d'/' -f2)
-        
-        if [ "$PROJECT" = "$OWNER.github.io" ]; then
-          SITE_URL="https://$OWNER.github.io/files"
-        else
-          SITE_URL="https://$OWNER.github.io/$PROJECT/files"
-        fi
-
-        # 2. Настройка графика в темной стилистике (Deep Dark Theme)
-        CHART_CONFIG='{
-          "type": "doughnut",
-          "data": {
-            "labels": ["Картинки", "Видео", "Аудио", "Прочее"],
-            "datasets": [{
-              "data": ['$IMG_COUNT', '$VID_COUNT', '$AUD_COUNT', '$OTH_COUNT'],
-              "backgroundColor": ["#38bdf8", "#f43f5e", "#a855f7", "#eab308"],
-              "borderColor": "#111111",
-              "borderWidth": 3
-            }]
-          },
-          "options": {
-            "plugins": {
-              "legend": { 
-                "position": "bottom", 
-                "labels": { 
-                  "color": "#e2e8f0", 
-                  "font": { "size": 14, "family": "sans-serif" },
-                  "padding": 20
-                } 
-              },
-              "title": { 
-                "display": true, 
-                "text": "СТРУКТУРА АРХИВА ФАЙЛОВ", 
-                "color": "#f8fafc",
-                "font": { "size": 16, "weight": "bold" },
-                "padding": 20
-              }
+          # 1. Собираем статистику по папке files через Node.js
+          STATS_JSON=$(node -e '
+            const fs = require("fs");
+            const path = require("path");
+            const folderPath = path.join(process.cwd(), "files");
+            if (!fs.existsSync(folderPath)) {
+              console.log(JSON.stringify({ totalSize: "0 Б", images: 0, videos: 0, audios: 0, others: 0, total: 0 }));
+              process.exit(0);
             }
-          }
-        }'
-        
-        # Шлем запрос на генерацию картинки на черном фоне
-        curl -s -X POST -H "Content-Type: application/json" \
-          -d "{\"chart\": $(echo "$CHART_CONFIG" | tr -d '\n'), \"width\": 600, \"height\": 480, \"backgroundColor\": \"#111111\"}" \
-          "https://quickchart.io/chart" --output chart.png
+            const files = fs.readdirSync(folderPath).filter(f => !f.startsWith("."));
+            let totalBytes = 0;
+            let images = 0, videos = 0, audios = 0, others = 0;
+            files.forEach(file => {
+              const stat = fs.statSync(path.join(folderPath, file));
+              totalBytes += stat.size;
+              const ext = path.extname(file).toLowerCase();
+              if ([".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"].includes(ext)) images++;
+              else if ([".mp4", ".mkv", ".avi", ".mov", ".webm"].includes(ext)) videos++;
+              else if ([".mp3", ".wav", ".flac", ".ogg", ".m4a"].includes(ext)) audios++;
+              else others++;
+            });
+            let sizeStr = "";
+            if (totalBytes < 1024) sizeStr = totalBytes + " Б";
+            else if (totalBytes < 1048576) sizeStr = (totalBytes / 1024).toFixed(1) + " КБ";
+            else if (totalBytes < 1073741824) sizeStr = (totalBytes / 1048576).toFixed(1) + " МБ";
+            else sizeStr = (totalBytes / 1073741824).toFixed(2) + " ГБ";
+            console.log(JSON.stringify({ totalSize: sizeStr, images, videos, audios, others, total: files.length }));
+          ')
 
-        # 3. Формируем чистый HTML-текст без `%0A` мусора
-        read -r -d '' CAPTION << EOM || true
-        <b>✨ Архив файлов успешно обновлён!</b>
+          TOTAL_SIZE=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).totalSize)')
+          TOTAL_FILES=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).total)')
+          IMG_COUNT=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).images)')
+          VID_COUNT=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).videos)')
+          AUD_COUNT=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).audios)')
+          OTH_COUNT=$(echo "$STATS_JSON" | node -e 'console.log(JSON.parse(fs.readFileSync(0, "utf8")).others)')
 
-        📦 Всего файлов: <code>$TOTAL_FILES</code> (Вес: <code>$TOTAL_SIZE</code>)
-        📁 Изменено в коммите: <code>$CHANGED_COUNT</code>
+          # Безопасный подсчет измененных файлов (не падает на первом коммите)
+          if git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+            CHANGED_COUNT=$(git diff --name-only HEAD~1 2>/dev/null | grep -E '^files/' | wc -l || echo "1")
+          else
+            CHANGED_COUNT="$TOTAL_FILES"
+          fi
+          [ -z "$CHANGED_COUNT" ] && CHANGED_COUNT="1"
 
-        📜 <b>Последние коммиты:</b>
-        $COMMITS_LOG
+          # Получаем коммиты без лишних спецсимволов для HTML
+          COMMITS_LOG=$(git log -n 3 --pretty=format:"• <code>%h</code> %s" 2>/dev/null || echo "• <code>HEAD</code> Обновление репозитория")
 
-        🌐 <a href="$SITE_URL">Открыть файлы</a>
-        EOM
+          OWNER=$(echo "$REPO" | cut -d'/' -f1)
+          PROJECT=$(echo "$REPO" | cut -d'/' -f2)
 
-        # 4. Отправляем в Telegram
-        curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendPhoto" \
-          -F chat_id="$TELEGRAM_CHAT_ID" \
-          -F photo=@chart.png \
-          -F caption="$CAPTION" \
-          -F parse_mode="HTML"
+          if [ "$PROJECT" = "$OWNER.github.io" ]; then
+              SITE_URL="https://$OWNER.github.io/files"
+          else
+              SITE_URL="https://$OWNER.github.io/$PROJECT/files"
+          fi
+
+          # 2. Настройка графика в темной стилистике (Deep Dark Theme)
+          CHART_CONFIG='{
+              "type": "doughnut",
+              "data": {
+                "labels": ["Картинки", "Видео", "Аудио", "Прочее"],
+                "datasets": [{
+                  "data": ['$IMG_COUNT', '$VID_COUNT', '$AUD_COUNT', '$OTH_COUNT'],
+                  "backgroundColor": ["#38bdf8", "#f43f5e", "#a855f7", "#eab308"],
+                  "borderColor": "#111111",
+                  "borderWidth": 3
+                }]
+              },
+              "options": {
+                "plugins": {
+                  "legend": { 
+                    "position": "bottom", 
+                    "labels": { 
+                      "color": "#e2e8f0", 
+                      "font": { "size": 14, "family": "sans-serif" },
+                      "padding": 20
+                    } 
+                  },
+                  "title": { 
+                    "display": true, 
+                    "text": "СТРУКТУРА АРХИВА ФАЙЛОВ", 
+                    "color": "#f8fafc",
+                    "font": { "size": 16, "weight": "bold" },
+                    "padding": 20
+                  }
+                }
+              }
+          }'
+
+          # Генерируем картинку графиков
+          curl -s -X POST -H "Content-Type: application/json" \
+              -d "{\"chart\": $(echo "$CHART_CONFIG" | tr -d '\n'), \"width\": 600, \"height\": 480, \"backgroundColor\": \"#111111\"}" \
+              "https://quickchart.io/chart" --output chart.png
+
+          # 3. Формируем чистый HTML-текст
+          read -r -d '' CAPTION << EOM || true
+          <b>✨ Архив файлов успешно обновлён!</b>
+
+          📦 Всего файлов: <code>$TOTAL_FILES</code> (Вес: <code>$TOTAL_SIZE</code>)
+          📁 Изменено в коммите: <code>$CHANGED_COUNT</code>
+
+          📜 <b>Последние коммиты:</b>
+          $COMMITS_LOG
+
+          🌐 <a href="$SITE_URL">Открыть файлы</a>
+          EOM
+
+          # 4. Отправляем в Telegram
+          curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendPhoto" \
+              -F chat_id="$TELEGRAM_CHAT_ID" \
+              -F photo=@chart.png \
+              -F caption="$CAPTION" \
+              -F parse_mode="HTML"
