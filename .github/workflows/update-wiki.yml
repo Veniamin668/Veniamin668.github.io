@@ -34,10 +34,10 @@ jobs:
 
           if [ "$REPO_NAME" = "${REPO_OWNER}.github.io" ]; then
             BASE_URL="${REPO_OWNER}.github.io/wiki"
-            SITE_URL="https://${REPO_OWNER}.github.io/wiki"
+            SITE_URL="https://${REPO_OWNER}.github.io/md-wiki"
           else
             BASE_URL="${REPO_OWNER}.github.io/${REPO_NAME}/wiki"
-            SITE_URL="https://${REPO_OWNER}.github.io/${REPO_NAME}/wiki"
+            SITE_URL="https://${REPO_OWNER}.github.io/${REPO_NAME}/md-wiki"
           fi
 
           echo "WIKI_URL=$SITE_URL" >> $GITHUB_ENV
