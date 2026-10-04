@@ -11,17 +11,17 @@ if (!BOT_TOKEN || !CHAT_ID) {
   process.exit(0);
 }
 
-// 1. Общее количество заметок
-const wikiDir = path.join(__dirname, 'wiki');
+// 1. Общее количество заметок из md-wiki/
+const wikiDir = path.join(__dirname, 'md-wiki');
 let totalNotes = 0;
 if (fs.existsSync(wikiDir)) {
   totalNotes = fs.readdirSync(wikiDir).filter(f => f.endsWith('.md')).length;
 }
 
-// 2. Отслеживаем изменения в папке wiki/ за последний коммит
+// 2. Отслеживаем изменения в папке md-wiki/ за последний коммит
 let gitChanges = '';
 try {
-  gitChanges = execSync('git diff --name-status HEAD~1 HEAD -- wiki/', { encoding: 'utf8' }).trim();
+  gitChanges = execSync('git diff --name-status HEAD~1 HEAD -- md-wiki/', { encoding: 'utf8' }).trim();
 } catch (e) {
   gitChanges = '';
 }
