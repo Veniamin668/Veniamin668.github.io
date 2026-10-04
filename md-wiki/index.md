@@ -1,25 +1,16 @@
-title: 🧠 Главная страница
-draft: false
-tags:
+---
+title: 🧠 ktoya? Wiki
+description: База знаний и технический хаб
+---
 
-wiki
+<div style="background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 12px; padding: 30px; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+  <h1 style="margin-top: 0; font-size: 2.5rem; background: linear-gradient(90deg, #f43f5e, #fb7185); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">База знаний доступна</h1>
+  <p style="color: #94a3b8; font-size: 1.1rem;">Здесь собраны все технические заметки, мануалы, конфигурации и проекты.</p>
+</div>
 
-obsidian
+## 📌 Быстрая навигация
 
-Добро пожаловать в Obsidian Wiki!
+* [[test-note|Тестовая заметка и проверка функций]]
+* Скоро здесь появятся новые разделы...
 
-Это главная страница нашей базы знаний. Она сгенерирована с помощью Quartz 4.
-
-📌 Быстрая навигация
-
-[[test-note|Тестовая заметка и проверка функций]]
-
-🏷️ Теги: #wiki, #obsidian
-
-🛠️ Что здесь проверяем?
-
-Связи страниц (Wikilinks): кликабельность внутренних ссылок вида [[имя_файла]].
-
-Вид графа (Graph View): отображение узлов в правой панели.
-
-Оглавление (Table of Contents): автоматический список заголовков статьи.
+> **Статус системы:** Сборка настроена, пайплайн работает, стили зафиксированы.
