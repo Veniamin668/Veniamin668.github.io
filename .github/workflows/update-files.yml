@@ -292,7 +292,7 @@ jobs:
         const path = require('path');
         const { execSync } = require('child_process');
 
-        if (!process.env.TELEGRAM_TOKEN || !process.env.TELEGRAM_CHAT_ID) {
+        if (!process.env.TELEGRAM_TOKEN || !process.env.PRIV_TG_ID) {
           console.log("⚠️️ Токены Telegram не найдены, пропускаем отправку.");
           process.exit(0);
         }
@@ -371,7 +371,7 @@ jobs:
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            chat_id: process.env.TELEGRAM_CHAT_ID,
+            chat_id: process.env.PRIV_TG_ID,
             photo: chartUrl,
             caption: caption,
             parse_mode: 'HTML'
