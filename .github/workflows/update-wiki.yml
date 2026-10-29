@@ -152,3 +152,14 @@ jobs:
           if [ -f "notify-wiki.js" ]; then
             node notify-wiki.js
           fi
+
+      - name: Send Telegram Push Notification in chat private
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          PRIV_TG_ID: ${{ secrets.PRIV_TG_ID }}
+          WIKI_URL: ${{ env.WIKI_URL }}
+        run: |
+          if [ -f "notify-wiki.js" ]; then
+            node notify-wiki-private.js
+          fi
+          
